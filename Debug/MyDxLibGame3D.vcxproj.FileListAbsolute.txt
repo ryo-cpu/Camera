@@ -1,0 +1,8 @@
+C:\Users\student\Desktop\20250421_Prac1_又吉　諒\3D表示\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\20250426_Prac1_又吉　諒\20250426_Prac1_又吉　諒\3D表示\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\カメラワーク\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\Zoom\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\Updeta\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\Update2\Debug\MyDxLibGame3D.exe
+C:\Users\student\OneDrive - 滋慶学園グループ（COM）\デスクトップ\update3\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\update4\Debug\MyDxLibGame3D.exe
