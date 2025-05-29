@@ -1,4 +1,4 @@
 ﻿  main.cpp
-C:\Users\student\Desktop\update4\main.cpp(124,65): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
-C:\Users\student\Desktop\update4\main.cpp(176,15): warning C4244: '初期化中': 'LONGLONG' から 'int' への変換です。データが失われる可能性があります。
-  MyDxLibGame3D.vcxproj -> C:\Users\student\Desktop\update4\Debug\MyDxLibGame3D.exe
+C:\Users\student\Desktop\orj jajfjld\main.cpp(124,65): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+C:\Users\student\Desktop\orj jajfjld\main.cpp(176,15): warning C4244: '初期化中': 'LONGLONG' から 'int' への変換です。データが失われる可能性があります。
+  MyDxLibGame3D.vcxproj -> C:\Users\student\Desktop\orj jajfjld\Debug\MyDxLibGame3D.exe

@@ -77,29 +77,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		EnemyMove.z = PlayerPos.z - EnemyPos.z;
 		EnemyMove = VNorm(EnemyMove);
 		EnemyPos = VAdd(EnemyPos, EnemyMove);
-		dir = VGet(0, 0, 0);
+		
 		bool isInput = false;
 		if (CheckHitKey(KEY_INPUT_RIGHT)&&PlayerPos.x>-300)
 		{
 		
-			dir.x -= 10.0f;
+			dir.x -= 1.0f;
 			isInput = true;
 
 		}// 画面をクリア
 		if (CheckHitKey(KEY_INPUT_LEFT) && PlayerPos.x <300)
 		{
-			dir.x += 10.0f;
+			dir.x += 1.0f;
 			isInput = true;
 			
 		}
 		if (CheckHitKey(KEY_INPUT_UP)&&PlayerPos.z > -300)
 		{
-			dir.z -= 10.0f;
+			dir.z -= 1.0f;
 			isInput = true;
 		}
 		if (CheckHitKey(KEY_INPUT_DOWN) && PlayerPos.z<300)
 		{
-			dir.z += 10.0f;
+			dir.z += 1.0f;
 			isInput = true;
 		}
 		if (CheckHitKey(KEY_INPUT_SPACE) && (PlayerPos.y >= BaseY || BaseY == NULL))
@@ -191,9 +191,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		MV1SetAttachAnimTime(ModelHandle, AnimAttachIndex, AnimNowTime);  // アニメーション時間を設定
 		if (!isInput)
 		{
+			dir = VScale(dir,0.1f);
 			camera->ChangeMove(VScale(camera->GetDir(), 0.1f));
 		}
-		camera->StartMove(VScale( dir,0.8f));
+		camera->StartMove(VScale( dir,0.7f));
 		camera->Update(PlayerPos);
 
 		MV1SetPosition(ModelHandle, PlayerPos);
