@@ -165,6 +165,16 @@ VECTOR Camera::GetDir()
     return Dir;
 }
 
+VECTOR Camera::GetPos()
+{
+    return Pos;
+}
+
+VECTOR Camera::GetOffset()
+{
+    return Offset;
+}
+
 void Camera::Move()
 {
    

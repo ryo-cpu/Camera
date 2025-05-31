@@ -41,6 +41,8 @@ public:
     void ChangeMove(VECTOR dir);
     void EndMove();
     VECTOR GetDir();
+    VECTOR GetPos();
+    VECTOR GetOffset();
     void Move();
     /// <summary>
     ///  ターゲット軸回転

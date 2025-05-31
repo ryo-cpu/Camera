@@ -2,53 +2,71 @@
 
 int Player::GetImg()
 {
-    return 0;
+    return Img;
 }
 
-void Player::SetImg(int Img)
+void Player::SetImg(int img)
 {
+    Img = img;
 }
 
 VECTOR Player::GetPos()
 {
-    return VECTOR();
+    return Pos;
 }
 
-void Player::SetPos(VECTOR Pos)
+void Player::SetPos(VECTOR pos)
 {
+    Pos = pos;
 }
 
 VECTOR Player::GetDir()
 {
-    return VECTOR();
+    return Dir;
 }
 
-void Player::SetDir(VECTOR Dir)
+void Player::SetDir(VECTOR dir)
 {
+    Dir = dir;
 }
 
 float Player::GetSpeed()
 {
-    return 0.0f;
+    return Speed;
 }
 
-void Player::SetSpeed(float Speed)
+void Player::SetSpeed(float speed)
 {
+    Speed = speed;
 }
 
 float Player::GetSphereSize()
 {
-    return 0.0f;
+    return SphereSize;
 }
 
-void Player::SetSphereSize(float SpheereSize)
+void Player::SetSphereSize(float sphereSize)
 {
+    SphereSize = sphereSize;
+}
+
+float Player::GetScale()
+{
+    return Scale;
+}
+
+void Player::SetScale(float scale)
+{
+    Scale = scale;
 }
 
 void Player::Update()
 {
+    ////à íuÇÃçXêV
+    SetPos(VAdd(Pos, Dir));
 }
 
 void Player::Draw()
 {
+    MV1SetPosition(Img, Pos);
 }

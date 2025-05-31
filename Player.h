@@ -7,19 +7,21 @@ private:
 	VECTOR Dir;
 	float Speed;
 	float SphereSize;
-	int Img;
-
+	int Img ;
+	float Scale;
 public:
 	int 	GetImg();
-	void    SetImg(int Img);
+	void    SetImg(int img);
 	VECTOR  GetPos();
-	void    SetPos(VECTOR Pos);
+	void    SetPos(VECTOR pos);
 	VECTOR  GetDir();
-	void    SetDir(VECTOR Dir);
+	void    SetDir(VECTOR dir);
 	float   GetSpeed();
-	void    SetSpeed(float Speed);
+	void    SetSpeed(float speed);
 	float   GetSphereSize();
-	void    SetSphereSize(float SpheereSize);
+	void    SetSphereSize(float sphereSize);
+	float   GetScale();
+	void    SetScale(float scale);
 	void    Update();
 	void    Draw();
 

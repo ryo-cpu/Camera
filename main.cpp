@@ -5,6 +5,7 @@
 #include <chrono>  // chronoを使うため]
 #include<cmath>
 #include"Camera.h"
+#include"Player.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
@@ -68,6 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(-150.0f, 250.0f, 200.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
 	VECTOR dir=VGet(0,0,0);
+	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		++NowTime;
@@ -79,25 +81,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		EnemyPos = VAdd(EnemyPos, EnemyMove);
 		
 		bool isInput = false;
-		if (CheckHitKey(KEY_INPUT_RIGHT)&&PlayerPos.x>-300)
+		if (CheckHitKey(KEY_INPUT_RIGHT))
 		{
 		
 			dir.x -= 1.0f;
 			isInput = true;
 
 		}// 画面をクリア
-		if (CheckHitKey(KEY_INPUT_LEFT) && PlayerPos.x <300)
+		if (CheckHitKey(KEY_INPUT_LEFT))
 		{
 			dir.x += 1.0f;
 			isInput = true;
 			
 		}
-		if (CheckHitKey(KEY_INPUT_UP)&&PlayerPos.z > -300)
+		if (CheckHitKey(KEY_INPUT_UP))
 		{
 			dir.z -= 1.0f;
 			isInput = true;
 		}
-		if (CheckHitKey(KEY_INPUT_DOWN) && PlayerPos.z<300)
+		if (CheckHitKey(KEY_INPUT_DOWN))
 		{
 			dir.z += 1.0f;
 			isInput = true;
@@ -135,7 +137,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		
 		
-		PlayerPos = VAdd(PlayerPos, dir);
 		if (PlayerPos.y <= BaseY)
 		{
 			isJunp = false;
@@ -191,10 +192,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		MV1SetAttachAnimTime(ModelHandle, AnimAttachIndex, AnimNowTime);  // アニメーション時間を設定
 		if (!isInput)
 		{
-			dir = VScale(dir,0.1f);
-			camera->ChangeMove(VScale(camera->GetDir(), 0.1f));
+			dir =VScale(dir,0.5f);
+			camera->StartMove(VScale(VSub(VAdd(PlayerPos, camera->GetOffset()), camera->GetPos()), 0.1f));
+			if (VSize(dir) <= 0)
+			{
+				BesePoint = PlayerPos;
+			
+			}
 		}
-		camera->StartMove(VScale( dir,0.7f));
+		if (VSize(VSub(PlayerPos,BesePoint))>=100.0f&&isInput)
+		{
+			camera->StartMove(VScale(dir, 1.0f));
+		}
+
+		PlayerPos = VAdd(PlayerPos, dir);
 		camera->Update(PlayerPos);
 
 		MV1SetPosition(ModelHandle, PlayerPos);
