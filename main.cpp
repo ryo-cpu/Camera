@@ -27,6 +27,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetGraphMode(1600, 900, 16);
 	VECTOR PlayerPos = VGet(0,0,0);
 
+
 	SetDrawScreen(DX_SCREEN_BACK);	// 裏画面を描画対象にする
 	SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
 	SetWriteZBufferFlag(TRUE);		// Ｚバッファへの書き込みを行う
@@ -35,29 +36,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float  AnimTotalTime;
 	float  AnimNowTime;
 	int    AnimAttachIndex;
-	int ModelHandle, M2;
+	int M2;
 	float BaseY = NULL;
 	VECTOR JunpPower = VGet(0, 30, 0);
 	VECTOR EnemyPos = VGet(300.0f, 0.0f, 300.0f);
-
+	Character *player=new Player();
+	player->SetPos(StartPlayerPos);
 	VECTOR G = VGet(0, -1, 0);
 	bool isJunp = false;
-	ModelHandle = MV1LoadModel("data/walking.mv1");
-	AnimAttachIndex = MV1AttachAnim(ModelHandle, 0);
-	AnimTotalTime = MV1GetAttachAnimTotalTime(ModelHandle, AnimAttachIndex);
+	player->SetImg(MV1LoadModel("data/walking.mv1"));
+	AnimAttachIndex = MV1AttachAnim(player->GetImg(), 0);
+	AnimTotalTime = MV1GetAttachAnimTotalTime(player->GetImg(), AnimAttachIndex);
 	AnimNowTime = 0.0f;
-	MV1SetAttachAnimTime(ModelHandle, AnimAttachIndex, AnimNowTime);
+	MV1SetAttachAnimTime(player->GetImg(), AnimAttachIndex, AnimNowTime);
 	
-	M2 = MV1DuplicateModel(ModelHandle);
+	M2 = MV1LoadModel("data/Spider.mv1");
 
-	SetCameraPositionAndTarget_UpVecY(VGet(0, 0, 0), PlayerPos);
+	///////
+	SetCameraPositionAndTarget_UpVecY(VGet(0, 0, 0), player->GetPos());
 	
-	MV1SetPosition(ModelHandle, PlayerPos);
+	MV1SetPosition(player->GetImg(), player->GetPos());
 	MV1SetPosition(M2, VGet(300.0f, 0.0f,300.0f));
 
 
-	MV1SetScale(ModelHandle, VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
-	MV1SetScale(M2, VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
+	MV1SetScale(player->GetImg(), VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
+	MV1SetScale(M2, VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
 	// アニメーション再生時間を進める
 	static int lastTime = 0;
 	static float animSpeed = 0.1f;  // アニメーションの進行速度
@@ -75,8 +78,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		++NowTime;
 		ClearDrawScreen();
 		VECTOR EnemyMove;
-		EnemyMove.x = PlayerPos.x - EnemyPos.x;
-		EnemyMove.z = PlayerPos.z - EnemyPos.z;
+		EnemyMove.x = player->GetPos().x - EnemyPos.x;
+		EnemyMove.z = player->GetPos().z - EnemyPos.z;
 		EnemyMove = VNorm(EnemyMove);
 		EnemyPos = VAdd(EnemyPos, EnemyMove);
 		
@@ -167,10 +170,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			PlaySoundFile("data/Hit.mp3", DX_PLAYTYPE_BACK);
 			////あった時の処理
 		}
-		DrawSphere3D(PlayerPos, 30.0f, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		DrawSphere3D(player->GetPos(), 30.0f, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 		DrawTriangle3D(VGet(-300, 0, -300), VGet(300, 0, -300), VGet(-300, 0, 300), GetColor(200, 255, 255), TRUE);
-
-		DrawTriangle3D(VGet(300,0,300),VGet(300,0,-300), VGet(-300, 0, 300), GetColor(0, 0, 255), TRUE);
+        DrawTriangle3D(VGet(300,0,300),VGet(300,0,-300), VGet(-300, 0, 300), GetColor(0, 0, 255), TRUE);
 
 		
 		// 前回のフレームから経過した時間を取得
@@ -189,36 +191,40 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 		}
 		
-		MV1SetAttachAnimTime(ModelHandle, AnimAttachIndex, AnimNowTime);  // アニメーション時間を設定
+		MV1SetAttachAnimTime(player->GetImg(), AnimAttachIndex, AnimNowTime);  // アニメーション時間を設定
 		if (!isInput)
 		{
 			dir =VScale(dir,0.5f);
-			camera->StartMove(VScale(VSub(VAdd(PlayerPos, camera->GetOffset()), camera->GetPos()), 0.1f));
+			camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
 			if (VSize(dir) <= 0)
 			{
-				BesePoint = PlayerPos;
+				BesePoint = player->GetPos();
 			
 			}
 		}
-		if (VSize(VSub(PlayerPos,BesePoint))>=100.0f&&isInput)
+		if (VSize(VSub(player->GetPos(), BesePoint)) >= 100.0f && isInput)
 		{
 			camera->StartMove(VScale(dir, 1.0f));
 		}
 
-		PlayerPos = VAdd(PlayerPos, dir);
+		player->SetDir(dir);
+		player->Update();
 		camera->Update(PlayerPos);
 
-		MV1SetPosition(ModelHandle, PlayerPos);
+		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(M2, EnemyPos);
 
-		MV1DrawModel(ModelHandle);
+		MV1DrawModel(player->GetImg());
 		MV1DrawModel(M2);              // モデルの描画
 		// モデルの描画
 			   // モデルの描画
 
 		ScreenFlip();                           // 裏画面の内容を表画面に反映
 	}
-	MV1DeleteModel(ModelHandle);
+	MV1DeleteModel(player->GetImg());
+	delete(player);
+	delete(camera);
+
 
 
 	// ＤＸライブラリの後始末
