@@ -52,6 +52,7 @@ public:
     /// 自分軸回転
     /// </summary>
     void Rotaion(MATRIX TurnPower);
+    void SetOffset(VECTOR offset);
 
     /// <summary>
     /// オフセットの変更

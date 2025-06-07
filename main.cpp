@@ -4,6 +4,7 @@
 // 2023 Takeru Yui All Rights Reserved.
 #include <chrono>  // chronoを使うため]
 #include<cmath>
+#include "Arithmetic.h"
 #include"Camera.h"
 #include"Player.h"
 using namespace std::chrono;
@@ -39,7 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int M2;
 	float BaseY = NULL;
 	VECTOR JunpPower = VGet(0, 30, 0);
-	VECTOR EnemyPos = VGet(300.0f, 0.0f, 300.0f);
+	VECTOR EnemyPos = VGet(0.0f, 0.0f, -600.0f);
 	Character *player=new Player();
 	player->SetPos(StartPlayerPos);
 	VECTOR G = VGet(0, -1, 0);
@@ -69,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	const float ChangAnimTime = 3*60;
 	float NowTime = 0;
 	bool isWalk = true;
-	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(-150.0f, 250.0f, 200.0f)),PlayerPos);
+	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 300.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
 	VECTOR dir=VGet(0,0,0);
 	VECTOR BesePoint = VGet(0, 0, 0);
@@ -81,8 +82,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		EnemyMove.x = player->GetPos().x - EnemyPos.x;
 		EnemyMove.z = player->GetPos().z - EnemyPos.z;
 		EnemyMove = VNorm(EnemyMove);
-		EnemyPos = VAdd(EnemyPos, EnemyMove);
-		
+	
 		bool isInput = false;
 		if (CheckHitKey(KEY_INPUT_RIGHT))
 		{
@@ -162,7 +162,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			NowTime = 0;
 
 		}
-		VECTOR Distans = VSub(PlayerPos, EnemyPos);
+		VECTOR Distans = VSub(EnemyPos, player->GetPos());
+		VECTOR CPos = VCross(VNorm(Distans), VGet(0, -1, 0));
+		float rag = 60.f;
+		CPos = VScale(CPos,VSize(Distans)*atan(ConversionRad(rag)));
+		camera->ResetOffset(CPos,player->GetPos());
 		float Distance = VSize(Distans);
 		if (Distance <= 30.0f)
 		{
@@ -209,7 +213,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		player->SetDir(dir);
 		player->Update();
-		camera->Update(PlayerPos);
+		camera->Update(player->GetPos());
 
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(M2, EnemyPos);

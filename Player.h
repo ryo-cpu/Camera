@@ -4,12 +4,6 @@ class Player :public Character
 {
 
 
-
-
-
-
-
-
 public:
 
     void Update() override;

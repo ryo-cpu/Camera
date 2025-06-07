@@ -7,6 +7,9 @@ protected:
 	VECTOR Pos;
 	VECTOR Dir;
 	float Speed;
+	/// <summary>
+	/// ”¼Œa•\‹L
+	/// </summary>
 	float SphereSize;
 	int Img;
 	float Scale;
@@ -23,7 +26,8 @@ public:
 	void    SetSphereSize(float sphereSize);
 	float   GetScale();
 	void    SetScale(float scale);
-    virtual	void   Update() abstract;
+    virtual	void   Update();
  	void    Draw();
+	static bool Collison(Character C1, Character C2);
 };
 

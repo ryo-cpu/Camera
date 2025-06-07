@@ -60,9 +60,27 @@ void Character::SetScale(float scale)
     Scale = scale;
 }
 
+void Character::Update()
+{
+}
+
 
 
 void Character::Draw()
 {
     MV1SetPosition(Img, Pos);
+}
+
+bool Character::Collison(Character C1, Character C2)
+{
+    VECTOR Distance = VSub(C1.GetPos(),C2.GetPos());
+
+    if (VSize(Distance) < C1.SphereSize+C2.SphereSize)
+    {
+        return true;
+    }
+    else
+    {
+        false;
+    }
 }

@@ -12,7 +12,7 @@ Camera::Camera()
     isPan = false;
     isZoom = false;
     isChase = false;
-    zoomDistance = 0.0f;
+    zoomDistance = 1.0f;
 }
 
 Camera::Camera(float Near, float Far)
@@ -194,6 +194,11 @@ void Camera::Rotaion(MATRIX TurnPower)
 {
     Pos = VTransform(Pos, TurnPower);
 
+}
+
+void Camera::SetOffset(VECTOR offset)
+{
+    Offset = offset;
 }
 
 void Camera::ResetOffset(VECTOR offset, VECTOR TPos)
