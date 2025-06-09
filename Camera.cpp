@@ -141,6 +141,12 @@ void Camera::Chase(VECTOR TPos)
     GetAngle(TPos);
 }
 
+void Camera::Look(VECTOR TPos)
+{
+    SetCameraPositionAndTarget_UpVecY(VAdd(TPos, Offset), TPos);
+    GetAngle(TPos);
+}
+
 void Camera::StartMove(VECTOR dir)
 {
     isPan = false;

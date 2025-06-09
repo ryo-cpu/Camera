@@ -163,10 +163,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		}
 		VECTOR Distans = VSub(EnemyPos, player->GetPos());
-		VECTOR CPos = VCross(VNorm(Distans), VGet(0, -1, 0));
-		float rag = 60.f;
-		CPos = VScale(CPos,VSize(Distans)*atan(ConversionRad(rag)));
-		camera->ResetOffset(CPos,player->GetPos());
+		if (CheckHitKey(KEY_INPUT_A))
+		{
+			VECTOR CPos = VCross(VNorm(Distans), VGet(0, -1, 0));
+			float rag = 60.f;
+			CPos = VScale(CPos,VSize(Distans)*atan(ConversionRad(rag)));
+			camera->ResetOffset(CPos,player->GetPos());
+			camera->Look(VAdd(player->GetPos(), VScale(Distans, 0.5)));
+		}
 		float Distance = VSize(Distans);
 		if (Distance <= 30.0f)
 		{

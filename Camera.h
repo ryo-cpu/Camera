@@ -37,6 +37,7 @@ public:
     void StartChase();
     void EndChase();
     void Chase(VECTOR TPos);
+    void Look(VECTOR TPos);
     void StartMove(VECTOR dir);
     void ChangeMove(VECTOR dir);
     void EndMove();
