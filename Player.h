@@ -2,7 +2,8 @@
 #include"Character.h"
 class Player :public Character
 {
-
+    int Hp;
+    int Power;
 
 public:
 

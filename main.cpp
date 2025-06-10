@@ -38,6 +38,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float  AnimNowTime;
 	int    AnimAttachIndex;
 	int M2;
+	int MouseX, MouseY;
+	GetMousePoint(&MouseX, &MouseY);
 	float BaseY = NULL;
 	VECTOR JunpPower = VGet(0, 30, 0);
 	VECTOR EnemyPos = VGet(0.0f, 0.0f, -600.0f);
@@ -78,6 +80,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		++NowTime;
 		ClearDrawScreen();
+		////マウスの回転処理
+		int NowMouseX, NowMouseY;
+		GetMousePoint(&NowMouseX, &NowMouseY);
+		///移動量を出す
+		int MoveMouseX = MouseX - NowMouseX;
+		int MoveMouseY = MouseY - NowMouseY;
+		if (MoveMouseX != 0 || MoveMouseY != 0)
+		{
+			///マウスの位置を更新
+			MouseX = NowMouseX;
+			MouseY = NowMouseY;
+			////回転量を算出
+			MATRIX RotY = MGetRotY(MoveMouseX * 0.001);
+			camera->Rotaion(RotY);
+		
+
+		}
 		VECTOR EnemyMove;
 		EnemyMove.x = player->GetPos().x - EnemyPos.x;
 		EnemyMove.z = player->GetPos().z - EnemyPos.z;
@@ -107,11 +126,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			dir.z += 1.0f;
 			isInput = true;
 		}
-		if (CheckHitKey(KEY_INPUT_SPACE) && (PlayerPos.y >= BaseY || BaseY == NULL))
+		if (CheckHitKey(KEY_INPUT_SPACE) && (player->GetPos().y >= BaseY || BaseY == NULL))
 		{
 			if (BaseY == NULL)
 			{
-				BaseY = PlayerPos.y;
+				BaseY = player->GetPos().y;
 			}
 			isJunp = true;
 			
@@ -140,10 +159,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		
 		
-		if (PlayerPos.y <= BaseY)
+		if (player->GetPos().y <= BaseY)
 		{
 			isJunp = false;
-			PlayerPos.y = BaseY;
+			player->SetPos(VGet(player->GetPos().x, BaseY,player->GetPos().z));
 			JunpPower = VGet(0, 30, 0);
 
 		}
@@ -169,7 +188,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			float rag = 60.f;
 			CPos = VScale(CPos,VSize(Distans)*atan(ConversionRad(rag)));
 			camera->ResetOffset(CPos,player->GetPos());
-			camera->Look(VAdd(player->GetPos(), VScale(Distans, 0.5)));
+			camera->Look(VAdd(player->GetPos(), VScale(Distans, 0.75)));
 		}
 		float Distance = VSize(Distans);
 		if (Distance <= 30.0f)

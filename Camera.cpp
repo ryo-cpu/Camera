@@ -198,7 +198,7 @@ void Camera::RotaionAxis(VECTOR TPos, MATRIX TurnPower)
 
 void Camera::Rotaion(MATRIX TurnPower)
 {
-    Pos = VTransform(Pos, TurnPower);
+    Pos = VTransformSR(Pos, TurnPower);
 
 }
 
