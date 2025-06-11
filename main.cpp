@@ -92,8 +92,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MouseX = NowMouseX;
 			MouseY = NowMouseY;
 			////回転量を算出
-			MATRIX RotY = MGetRotY(MoveMouseX * 0.001);
-			camera->Rotaion(RotY);
+			MATRIX RotY = MGetRotY(ConversionRad(90.0f));
+			camera->RotaionAxis(player->GetPos(),RotY);
 		
 
 		}

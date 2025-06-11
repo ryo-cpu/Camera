@@ -192,6 +192,9 @@ void Camera::Move()
 void Camera::RotaionAxis(VECTOR TPos, MATRIX TurnPower)
 {
     RotFreeAxis(Pos, TPos, TurnPower);
+    ///ofsetÇÃçXêV
+    Offset = VSub(Pos,TPos);
+
 }
 
 
@@ -317,7 +320,7 @@ void Camera::Update(VECTOR TPos)
 VECTOR Camera::RotFreeAxis(VECTOR& V1, const VECTOR& Axis, const MATRIX& Power)
 {
     V1 = VSub(V1, Axis);
-    V1 = VTransform(V1, Power);
+    V1 = VTransformSR(V1, Power);
     V1 = VAdd(V1, Axis);
     return V1;
 }
