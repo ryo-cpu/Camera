@@ -1,4 +1,5 @@
 #include "Character.h"
+#include"iostream"
 int Character::GetImg()
 {
     return Img;
@@ -28,6 +29,16 @@ VECTOR Character::GetDir()
 void Character::SetDir(VECTOR dir)
 {
     Dir = dir;
+}
+
+VECTOR Character::GetMove()
+{
+    return Move;
+}
+
+void Character::SetMove(VECTOR move)
+{
+    Move = move;
 }
 
 float Character::GetSpeed()
@@ -83,4 +94,12 @@ bool Character::Collison(Character C1, Character C2)
     {
         false;
     }
+}
+
+void Character::Turn(VECTOR Power)
+{
+   
+    Dir = VAdd(Dir,Power);
+    // Šp“x‚ðYŽ²‰ñ“]‚ÉƒZƒbƒg
+    MV1SetRotationXYZ(Img,Dir);
 }

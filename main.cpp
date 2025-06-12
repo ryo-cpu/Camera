@@ -10,6 +10,7 @@
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
+
 /// <summary>
 /// メイン関数
 /// </summary>
@@ -48,6 +49,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR G = VGet(0, -1, 0);
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/walking.mv1"));
+	player->SetDir(VGet(0, 0, 0));
 	AnimAttachIndex = MV1AttachAnim(player->GetImg(), 0);
 	AnimTotalTime = MV1GetAttachAnimTotalTime(player->GetImg(), AnimAttachIndex);
 	AnimNowTime = 0.0f;
@@ -92,10 +94,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MouseX = NowMouseX;
 			MouseY = NowMouseY;
 			////回転量を算出
-			MATRIX RotY = MGetRotY(ConversionRad(90.0f));
+			MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX*0.1));
 			camera->RotaionAxis(player->GetPos(),RotY);
-		
-
+			player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1),0));
+			camera->Look(player->GetPos());
 		}
 		VECTOR EnemyMove;
 		EnemyMove.x = player->GetPos().x - EnemyPos.x;
@@ -234,7 +236,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			camera->StartMove(VScale(dir, 1.0f));
 		}
 
-		player->SetDir(dir);
+		player->SetMove(dir);
 		player->Update();
 		camera->Update(player->GetPos());
 

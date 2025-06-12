@@ -4,6 +4,6 @@ void Player::Update()
 {
 
     ////ˆÊ’u‚ÌXV
-    SetPos(VAdd(Pos, Dir));
+    SetPos(VAdd(Pos, Move));
 
 }
