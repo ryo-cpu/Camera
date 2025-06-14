@@ -20,6 +20,9 @@
     <Filter Include="ソース ファイル\Character\Enemy">
       <UniqueIdentifier>{91d21cd7-44dd-4ab9-97d9-754e6733d74f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character\Base\sphere_collison">
+      <UniqueIdentifier>{0a715ef4-0d2b-449c-80d0-58612254d182}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -37,6 +40,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Sphere_Collision.cpp">
+      <Filter>ソース ファイル\Character\Base\sphere_collison</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -50,6 +56,9 @@
     </ClInclude>
     <ClInclude Include="Enemy.h">
       <Filter>ソース ファイル\Character\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere_Collision.h">
+      <Filter>ソース ファイル\Character\Base\sphere_collison</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

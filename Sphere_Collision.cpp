@@ -1,20 +1,5 @@
 #include "Sphere_Collision.h"
 
-Sphere_Collision::Sphere_Collision()
-{
-}
-
-Sphere_Collision::Sphere_Collision(VECTOR pos)
-{
-    Pos = pos;
-    Size = 0;
-}
-
-Sphere_Collision::Sphere_Collision(VECTOR pos, float size)
-{
-    Pos = pos;
-    Size = size;
-}
 
 VECTOR Sphere_Collision::GetPos()
 {

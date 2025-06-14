@@ -107,25 +107,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		bool isInput = false;
 		if (CheckHitKey(KEY_INPUT_RIGHT))
 		{
-		
-			dir.x -= 1.0f;
+
+			VECTOR R = VGet(-1, 0, 0);
+			R = VTransformSR(R,MGetRotY(player->GetDir().y));
+			dir=VAdd(R,dir);
 			isInput = true;
 
 		}// 画面をクリア
 		if (CheckHitKey(KEY_INPUT_LEFT))
 		{
-			dir.x += 1.0f;
+			VECTOR L = VGet(1, 0, 0);
+			L = VTransformSR(L, MGetRotY(player->GetDir().y));
+			dir = VAdd(L, dir);
+
 			isInput = true;
 			
 		}
 		if (CheckHitKey(KEY_INPUT_UP))
 		{
-			dir.z -= 1.0f;
+			VECTOR F = VGet(0, 0, -1);
+			F = VTransformSR(F, MGetRotY(player->GetDir().y));
+			dir = VAdd(F, dir);
+
 			isInput = true;
+
 		}
 		if (CheckHitKey(KEY_INPUT_DOWN))
 		{
-			dir.z += 1.0f;
+			VECTOR D = VGet(0, 0, 1);
+			D= VTransformSR(D, MGetRotY(player->GetDir().y));
+			dir = VAdd(D, dir);
+
 			isInput = true;
 		}
 		if (CheckHitKey(KEY_INPUT_SPACE) && (player->GetPos().y >= BaseY || BaseY == NULL))
@@ -235,7 +247,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			camera->StartMove(VScale(dir, 1.0f));
 		}
-
+	
+		
 		player->SetMove(dir);
 		player->Update();
 		camera->Update(player->GetPos());

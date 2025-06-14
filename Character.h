@@ -1,6 +1,6 @@
 #pragma once
 #include"DxLib.h"
-
+#include"Sphere_Collision.h"
 class Character
 {
 protected:
@@ -14,6 +14,7 @@ protected:
 	float SphereSize;
 	int Img;
 	float Scale;
+	Sphere_Collision Collison;
 public:
 	int 	GetImg();
 	void    SetImg(int img);
@@ -21,8 +22,8 @@ public:
 	void    SetPos(VECTOR pos);
 	VECTOR  GetDir();
 	void    SetDir(VECTOR dir);
-	VECTOR GetMove();
-	void   SetMove(VECTOR move);
+	VECTOR  GetMove();
+	void    SetMove(VECTOR move);
 	float   GetSpeed();
 	void    SetSpeed(float speed);
 	float   GetSphereSize();
@@ -31,7 +32,6 @@ public:
 	void    SetScale(float scale);
     virtual	void   Update();
  	void    Draw();
-	static bool Collison(Character C1, Character C2);
-	void Turn(VECTOR Power);
+	void    Turn(VECTOR Power);
 };
 
