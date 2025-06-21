@@ -8,13 +8,15 @@ protected:
 	VECTOR Dir;
 	VECTOR Move;
 	float Speed;
-	/// <summary>
-	/// ”¼Œa•\‹L
-	/// </summary>
-	float SphereSize;
 	int Img;
 	float Scale;
 	Sphere_Collision Collison;
+	int Attack;
+	int Hp;
+	int AnimType;
+	float AnimTotalTime;
+	float NowAnimTime;
+	float AnimSpeed;
 public:
 	int 	GetImg();
 	void    SetImg(int img);
@@ -26,10 +28,20 @@ public:
 	void    SetMove(VECTOR move);
 	float   GetSpeed();
 	void    SetSpeed(float speed);
-	float   GetSphereSize();
-	void    SetSphereSize(float sphereSize);
 	float   GetScale();
 	void    SetScale(float scale);
+	void    SetAttack(int attack);
+	int     GetAttack();
+	void    SetHp(int hp);
+	int     GetHp();
+	void    SetAnimType(int animType);
+	int     GetAnimType();
+	float   GetNowAnimTime();
+	void    SetNowAnimTime(float nowanimtime);
+	void    SetTotalAnimTime(float animtotalTime);
+	float   GetTotalAnimTime();
+	void    SetAnimSpeed(float Speed);
+	void    AnimUpdate();
     virtual	void   Update();
  	void    Draw();
 	void    Turn(VECTOR Power);

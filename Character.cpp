@@ -51,15 +51,6 @@ void Character::SetSpeed(float speed)
     Speed = speed;
 }
 
-float Character::GetSphereSize()
-{
-    return SphereSize;
-}
-
-void Character::SetSphereSize(float sphereSize)
-{
-    SphereSize = sphereSize;
-}
 
 float Character::GetScale()
 {
@@ -69,6 +60,84 @@ float Character::GetScale()
 void Character::SetScale(float scale)
 {
     Scale = scale;
+}
+
+void Character::SetAttack(int attack)
+{
+    Attack = attack;
+}
+
+int Character::GetAttack()
+{
+    return Attack;
+}
+
+void Character::SetHp(int hp)
+{
+    Hp = hp;
+}
+
+int Character::GetHp()
+{
+    return Hp;
+}
+
+void Character::SetAnimType(int animType)
+{
+    AnimType = MV1AttachAnim(Img, animType);
+    AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimType);
+    NowAnimTime = 0;
+}
+
+int Character::GetAnimType()
+{
+    return AnimType;
+}
+
+float Character::GetNowAnimTime()
+{
+    return NowAnimTime;
+}
+
+void Character::SetNowAnimTime(float nowanimtime)
+{
+    NowAnimTime = nowanimtime;
+}
+
+void Character::SetTotalAnimTime(float animtotalTime)
+{
+    AnimTotalTime = animtotalTime;
+}
+
+float Character::GetTotalAnimTime()
+{
+    return AnimTotalTime;
+}
+
+void Character::SetAnimSpeed(float Speed)
+{
+    AnimSpeed = Speed;
+}
+
+void Character::AnimUpdate()
+{
+    // 前回のフレームから経過した時間を取得
+    int nowTime = GetNowHiPerformanceCount();
+    float deltaTime = (nowTime-0) / 10000000.0f;  // 時間を秒に変換
+
+    NowAnimTime+= deltaTime * 0.1;  // アニメーション時間を進める
+
+    if (AnimType >= 0)
+    {  // アニメーションが設定されていれば
+        NowAnimTime += deltaTime * 0.1;
+        // アニメーションが総時間を超えたらループ
+        if (NowAnimTime >= AnimTotalTime)
+        {
+            NowAnimTime = 0;
+
+        }
+    }
+    MV1SetAttachAnimTime(Img,AnimType,NowAnimTime);  // アニメーション時間を設定
 }
 
 void Character::Update()
