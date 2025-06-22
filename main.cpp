@@ -50,7 +50,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimType(0);
+	player->SetAnimSpeed(0.001);
+	player->SetAnimType(6);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	

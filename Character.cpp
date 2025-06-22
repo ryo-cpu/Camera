@@ -119,17 +119,22 @@ void Character::SetAnimSpeed(float Speed)
     AnimSpeed = Speed;
 }
 
+float Character::GetAnimSpeed()
+{
+    return AnimSpeed;
+}
+
 void Character::AnimUpdate()
 {
     // 前回のフレームから経過した時間を取得
     int nowTime = GetNowHiPerformanceCount();
     float deltaTime = (nowTime-0) / 10000000.0f;  // 時間を秒に変換
 
-    NowAnimTime+= deltaTime * 0.1;  // アニメーション時間を進める
+    NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 
     if (AnimType >= 0)
     {  // アニメーションが設定されていれば
-        NowAnimTime += deltaTime * 0.1;
+        NowAnimTime += deltaTime * AnimSpeed;
         // アニメーションが総時間を超えたらループ
         if (NowAnimTime >= AnimTotalTime)
         {

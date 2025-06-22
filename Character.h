@@ -41,6 +41,7 @@ public:
 	void    SetTotalAnimTime(float animtotalTime);
 	float   GetTotalAnimTime();
 	void    SetAnimSpeed(float Speed);
+	float   GetAnimSpeed();
 	void    AnimUpdate();
     virtual	void   Update();
  	void    Draw();
