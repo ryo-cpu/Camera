@@ -128,19 +128,13 @@ void Character::AnimUpdate()
 {
     // 前回のフレームから経過した時間を取得
     int nowTime = GetNowHiPerformanceCount();
-    float deltaTime = (nowTime-0) / 10000000.0f;  // 時間を秒に変換
+    float deltaTime = (-nowTime) / 10000000.0f;  // 時間を秒に変換
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 
     if (AnimType >= 0)
     {  // アニメーションが設定されていれば
         NowAnimTime += deltaTime * AnimSpeed;
-        // アニメーションが総時間を超えたらループ
-        if (NowAnimTime >= AnimTotalTime)
-        {
-            NowAnimTime = 0;
-
-        }
     }
     MV1SetAttachAnimTime(Img,AnimType,NowAnimTime);  // アニメーション時間を設定
 }

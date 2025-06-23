@@ -4,6 +4,7 @@
 // 2023 Takeru Yui All Rights Reserved.
 #include <chrono>  // chronoを使うため]
 #include<cmath>
+#include "fps.h"
 #include "Arithmetic.h"
 #include"Camera.h"
 #include"Player.h"
@@ -51,7 +52,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
 	player->SetAnimSpeed(0.001);
-	player->SetAnimType(6);
+	player->SetAnimType(2);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	
@@ -66,7 +67,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	MV1SetScale(player->GetImg(), VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
 	MV1SetScale(M2, VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
-
+	fps fps;
+	fps.Initialization(1.0 / 60.0);
+	
 	float StratTime=0;
 	float NowTime = 0;
 	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 300.0f)),PlayerPos);
@@ -75,6 +78,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
+		fps.Start();
 		++NowTime;
 		ClearDrawScreen();
 		////マウスの回転処理
@@ -156,8 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			camera->Action(VGet(100,100,200), PlayerPos, 0.0f, 9.50000f, -0.1000000);
 		
-			isInput = true;
-	
+			
 
 		}
 		if (isJunp)
@@ -225,10 +228,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			   // モデルの描画
 
 		ScreenFlip();                           // 裏画面の内容を表画面に反映
+		fps.End();
 	}
 	MV1DeleteModel(player->GetImg());
 	delete(player);
 	delete(camera);
+	delete(&fps);
 
 
 
