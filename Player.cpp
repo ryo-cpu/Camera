@@ -1,9 +1,14 @@
 #include "Player.h"
 
 
-bool Player::GetInput()
+bool Player::Input()
 {
-	return IsInput;
+    bool isInput = false;
+    if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+    {
+        SetAnimType(2);
+    }
+    return isInput;
 }
 
 void Player::Update()

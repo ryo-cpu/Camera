@@ -84,9 +84,12 @@ int Character::GetHp()
 
 void Character::SetAnimType(int animType)
 {
-    AnimType = MV1AttachAnim(Img, animType);
+   
+    AnimType=MV1AttachAnim(Img, animType);
     AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimType);
     NowAnimTime = 0;
+    MV1SetAttachAnimTime(Img, AnimType, NowAnimTime);  // アニメーション時間を設定
+
 }
 
 int Character::GetAnimType()

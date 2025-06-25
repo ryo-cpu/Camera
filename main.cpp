@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float BaseY = NULL;
 	VECTOR JunpPower = VGet(0, 30, 0);
 	VECTOR EnemyPos = VGet(0.0f, 0.0f, -600.0f);
-	Character *player=new Player();
+	Player *player=new Player();
 	player->SetPos(StartPlayerPos);
 	VECTOR G = VGet(0, -1, 0);
 	bool isJunp = false;
@@ -170,7 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			
 		}
 		
-		
+		player->Input();
 		if (player->GetPos().y <= BaseY)
 		{
 			isJunp = false;
