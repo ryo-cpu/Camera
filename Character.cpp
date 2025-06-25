@@ -85,6 +85,7 @@ int Character::GetHp()
 void Character::SetAnimType(int animType)
 {
    
+    MV1DetachAnim(Img,animType);
     AnimType=MV1AttachAnim(Img, animType);
     AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimType);
     NowAnimTime = 0;
@@ -131,7 +132,7 @@ void Character::AnimUpdate()
 {
     // 前回のフレームから経過した時間を取得
     int nowTime = GetNowHiPerformanceCount();
-    float deltaTime = (-nowTime) / 10000000.0f;  // 時間を秒に変換
+    float deltaTime = (nowTime) / 10000000.0f;  // 時間を秒に変換
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 

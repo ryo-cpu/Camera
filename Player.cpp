@@ -6,7 +6,7 @@ bool Player::Input()
     bool isInput = false;
     if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
     {
-        SetAnimType(2);
+        SetAnimType(3);
     }
     return isInput;
 }
