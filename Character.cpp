@@ -84,8 +84,9 @@ int Character::GetHp()
 
 void Character::SetAnimType(int animType)
 {
-   
-    MV1DetachAnim(Img,animType);
+    if (AnimType != -1) {
+        MV1DetachAnim(Img, AnimType);
+    }
     AnimType=MV1AttachAnim(Img, animType);
     AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimType);
     NowAnimTime = 0;
