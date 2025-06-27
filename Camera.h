@@ -1,5 +1,7 @@
 #pragma once
 #include<DxLib.h>
+#include <chrono>  // chrono‚ðŽg‚¤‚½‚ß]
+#include<cmath>
 
 
 class Camera
