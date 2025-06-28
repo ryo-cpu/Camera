@@ -88,7 +88,9 @@ void Player::Update()
     SetPos(VAdd(Pos, Move));
 	if (AnimType == 4)
 	{
-		SetAttackCollison(VAdd(Pos, VGet(0, 100, 0)), 30.f);
+		VECTOR AttackPos = VGet(0, 100, -100);
+		AttackPos=VTransformSR(AttackPos, MGetRotY(GetDir().y));
+		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}

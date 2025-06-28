@@ -98,10 +98,12 @@ void Character::SetAnimType(int animType)
 {
     if (IsAnim != -1) 
     {
-       MV1DetachAnim(Img, AnimType);
+       MV1DetachAnim(Img, IsAnim);
     }
     IsAnim=MV1AttachAnim(Img, animType);
     AnimTotalTime = MV1GetAttachAnimTotalTime(Img, IsAnim);
+    AnimType = animType;
+
     NowAnimTime = 0;
     MV1SetAttachAnimTime(Img, IsAnim, NowAnimTime);  // アニメーション時間を設定
 
