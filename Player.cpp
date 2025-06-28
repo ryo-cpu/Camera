@@ -57,7 +57,7 @@ bool Player::Input()
 
 		isInput = true;
 	}
-	if (isInput) 
+	if (isInput&&VSize(move)!=0) 
 	{
 		move = VNorm(move);         // 正規化（方向だけを抽出）
 		move = VScale(move,20);     // スピードを乗算
@@ -86,5 +86,24 @@ void Player::Update()
     AnimUpdate();
     ////位置の更新
     SetPos(VAdd(Pos, Move));
+	if (AnimType == 4)
+	{
+		SetAttackCollison(VAdd(Pos, VGet(0, 100, 0)), 30.f);
+		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
+	}
+	SetCollison(VAdd(Pos,VGet(0,100,0)), 40.0f);
+
+
+}
+
+Sphere_Collision Player::GetAttackCollison()
+{
+	return AttackCollison;
+}
+
+void Player::SetAttackCollison(VECTOR Pos, float size)
+{
+	AttackCollison.SetPos(Pos);
+	AttackCollison.SetSphereSize(size);
 }

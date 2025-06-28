@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
 	player->SetAnimSpeed(0.001);
-	player->SetAnimType(3);
+	player->SetAnimType(0);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	
@@ -159,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			PlaySoundFile("data/Hit.mp3", DX_PLAYTYPE_BACK);
 			////あった時の処理
 		}
-		DrawSphere3D(player->GetPos(), 30.0f, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		
 		DrawTriangle3D(VGet(-300, 0, -300), VGet(300, 0, -300), VGet(-300, 0, 300), GetColor(200, 255, 255), TRUE);
         DrawTriangle3D(VGet(300,0,300),VGet(300,0,-300), VGet(-300, 0, 300), GetColor(0, 0, 255), TRUE);
 
@@ -182,6 +182,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		
 		player->Update();
+		enemy->Update();
 		camera->Update(player->GetPos());
 
 		MV1SetPosition(player->GetImg(), player->GetPos());

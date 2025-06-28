@@ -14,6 +14,7 @@ protected:
 	int Attack;
 	int Hp;
 	int AnimType;
+	int IsAnim;
 	float AnimTotalTime;
 	float NowAnimTime;
 	float AnimSpeed;
@@ -34,6 +35,8 @@ public:
 	int     GetAttack();
 	void    SetHp(int hp);
 	int     GetHp();
+	void    SetIsAnim(int isAnim);
+	int     GetIsAnim();
 	void    SetAnimType(int animType);
 	int     GetAnimType();
 	float   GetNowAnimTime();
@@ -46,5 +49,7 @@ public:
     virtual	void   Update();
  	void    Draw();
 	void    Turn(VECTOR Power);
+	Sphere_Collision GetCollison();
+	void SetCollison(VECTOR Pos, float size);
 };
 

@@ -29,6 +29,8 @@ VECTOR Character::GetDir()
 void Character::SetDir(VECTOR dir)
 {
     Dir = dir;
+    MV1SetRotationXYZ(Img,Dir);
+
 }
 
 VECTOR Character::GetMove()
@@ -82,15 +84,26 @@ int Character::GetHp()
     return Hp;
 }
 
+void Character::SetIsAnim(int isAnim)
+{
+    IsAnim = isAnim;
+}
+
+int Character::GetIsAnim()
+{
+    return IsAnim;
+}
+
 void Character::SetAnimType(int animType)
 {
-    if (AnimType != -1) {
-        MV1DetachAnim(Img, AnimType);
+    if (IsAnim != -1) 
+    {
+       MV1DetachAnim(Img, AnimType);
     }
-    AnimType=MV1AttachAnim(Img, animType);
-    AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimType);
+    IsAnim=MV1AttachAnim(Img, animType);
+    AnimTotalTime = MV1GetAttachAnimTotalTime(Img, IsAnim);
     NowAnimTime = 0;
-    MV1SetAttachAnimTime(Img, AnimType, NowAnimTime);  // アニメーション時間を設定
+    MV1SetAttachAnimTime(Img, IsAnim, NowAnimTime);  // アニメーション時間を設定
 
 }
 
@@ -132,7 +145,7 @@ float Character::GetAnimSpeed()
 void Character::AnimUpdate()
 {
     // 前回のフレームから経過した時間を取得
-    int nowTime = GetNowHiPerformanceCount();
+    LONGLONG nowTime = GetNowHiPerformanceCount()/1000;
     float deltaTime = (nowTime) / 10000000.0f;  // 時間を秒に変換
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
@@ -141,7 +154,7 @@ void Character::AnimUpdate()
     {  // アニメーションが設定されていれば
         NowAnimTime += deltaTime * AnimSpeed;
     }
-    MV1SetAttachAnimTime(Img,AnimType,NowAnimTime);  // アニメーション時間を設定
+    MV1SetAttachAnimTime(Img,IsAnim,NowAnimTime);  // アニメーション時間を設定
 }
 
 void Character::Update()
@@ -163,4 +176,15 @@ void Character::Turn(VECTOR Power)
     Dir = VAdd(Dir,Power);
     // 角度をY軸回転にセット
     MV1SetRotationXYZ(Img,Dir);
+}
+
+Sphere_Collision Character::GetCollison()
+{
+    return Collison;
+}
+
+void Character::SetCollison(VECTOR Pos, float size)
+{
+    Collison.SetPos(Pos);
+    Collison.SetSphereSize(size);
 }
