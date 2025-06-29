@@ -147,7 +147,7 @@ float Character::GetAnimSpeed()
 void Character::AnimUpdate()
 {
     // 前回のフレームから経過した時間を取得
-    LONGLONG nowTime = GetNowHiPerformanceCount()/1000;
+    LONGLONG nowTime = GetNowHiPerformanceCount();
     float deltaTime = (nowTime) / 10000000.0f;  // 時間を秒に変換
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
