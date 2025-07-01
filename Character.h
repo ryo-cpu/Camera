@@ -20,8 +20,11 @@ protected:
 	float NowAnimTime;
 	float AnimSpeed;
 	bool IsAnim;
+	int LiveCount;
+	int StartLiveCount;
 
 public:
+	Character();
 	int 	GetImg();
 	void    SetImg(int img);
 	VECTOR  GetPos();
@@ -55,5 +58,7 @@ public:
 	Sphere_Collision GetCollison();
 	void SetCollison(VECTOR Pos, float size);
 	void MoveCollison(VECTOR move);
+	int GetLiveCount();
+	int GetStartLiveCount();
 };
 

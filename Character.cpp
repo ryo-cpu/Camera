@@ -1,5 +1,9 @@
 #include "Character.h"
 #include"iostream"
+Character::Character()
+{
+    LiveCount = 0;
+}
 int Character::GetImg()
 {
     return Img;
@@ -203,4 +207,14 @@ void Character::SetCollison(VECTOR Pos, float size)
 void Character::MoveCollison(VECTOR move)
 {
     Collison.SetPos(VAdd(Pos, move));
+}
+
+int Character::GetLiveCount()
+{
+    return LiveCount;
+}
+
+int Character::GetStartLiveCount()
+{
+    return StartLiveCount;
 }

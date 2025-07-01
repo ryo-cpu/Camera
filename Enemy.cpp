@@ -1,8 +1,4 @@
 #include "Enemy.h"
-template <typename T>
-T Clamp(const T& value, const T& minVal, const T& maxVal) {
-	return (value < minVal) ? minVal : (value > maxVal) ? maxVal : value;
-}
 
 void Enemy::SetTarget(Character &target)
 {
@@ -18,43 +14,96 @@ VECTOR Enemy::SearchTarget()
 	return VGet(0,0,0);
 }
 
+bool Enemy::TackleAttack(VECTOR targetPos)
+{
+	const int EndCount=4*60;
+	VECTOR move = VNorm(targetPos);
+	VECTOR Front = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
+
+	float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
+	rag = acosf(rag);
+	float crossY = Front.x * move.z - Front.z * move.x;
+
+	if (rag >= MaxTurn * DX_PI / 180.0f)
+	{
+		////‚¹‚¢‚°‚ñ‚æ‚è‚Å‚©‚¢‚Ì‚Å‚ ‚ê‚Î‚¹‚¢‚°‚ñ‚ß‚¢‚Á‚Ï‚¢
+		if (crossY < 0)
+		{
+			move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 1.0f * DX_PI / 180.0f));
+
+		}
+		else
+		{
+			move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y - 1.0f * DX_PI / 180.0f));
+		}
+
+	}
+	Pos = VAdd(Pos, move);
+	if (!IsAnim)
+	{
+		SetAnimType(Ran);
+	}
+	float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
+	SetDir(VGet(0, -targetAngle, 0));
+	if (LiveCount - StartLiveCount >= EndCount)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Enemy::ArmSwingDown(VECTOR targetPos)
+{
+	const int EndCount = 4 * 60;
+	if (LiveCount - StartLiveCount >= EndCount)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+
+
 void Enemy::Update()
 {
-	VECTOR distance=VSub(SearchTarget(),Pos);
-	if (VSize(distance)>=200)
-	{
-		VECTOR move = VNorm(distance);
-		VECTOR Front =VTransformSR(VGet(0,0,-1), MGetRotY(GetDir().y));
-		
-		float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
-		rag = acosf(rag);
-		float crossY = Front.x * move.z - Front.z * move.x;
-		if (crossY < 0) rag = -rag;
-		if (rag >= 1.0f * DX_PI / 180.0f|| rag <= -1.0f * DX_PI / 180.0f)
-		{
-			////‚¹‚¢‚°‚ñ‚æ‚è‚Å‚©‚¢‚Ì‚Å‚ ‚ê‚Î‚¹‚¢‚°‚ñ‚ß‚¢‚Á‚Ï‚¢
-			if (rag > 0)
-			{
-				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 10.0f * DX_PI / 180.0f));
+	enum AttackMotion {Tackle,DwonArmSwing,Tink};
 
-			}
-			else
-			{
-				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y+ -10.0f * DX_PI / 180.0f));
-			}
-			
-		}
-		Pos = VAdd(Pos, move);
-		if (!IsAnim)
+	VECTOR distance = VSub(SearchTarget(), Pos);
+	if (!IsMotion&&IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
+	{
+		if (VSize(distance) >= 300)
 		{
-			SetAnimType(Ran);
+			MotionType = Tackle;
 		}
-		float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
-		SetDir(VGet(0, -targetAngle, 0));
-		
+		else
+		{
+
+		}
+	StartLiveCount = LiveCount;
+	IsMotion = true;
+	}
+	else
+	{
+		switch (MotionType)
+		{
+		case Tackle:
+			IsMotion = TackleAttack(distance);
+			break;
+		case DwonArmSwing:
+			IsMotion = ArmSwingDown(distance);
+			break;
+		default:
+			IsMotion = false;
+			break;
+		}
 		
 	}
+	
+	
 	AnimUpdate();
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), 100.0f);
+	LiveCount++;
 	
 }

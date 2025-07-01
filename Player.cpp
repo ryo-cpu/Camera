@@ -99,7 +99,7 @@ void Player::Update()
 	}
 	SetCollison(VAdd(Pos,VGet(0,100,0)), 40.0f);
 
-
+	LiveCount++;
 }
 
 Sphere_Collision Player::GetAttackCollison()
