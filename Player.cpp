@@ -11,9 +11,9 @@ bool Player::Input()
 
 		VECTOR R = VGet(-1, 0, 0);
 		R = VTransformSR(R, MGetRotY(GetDir().y));
-		if (NowAnimTime >= AnimTotalTime)
+		if (!IsAnim)
 		{
-			SetAnimType(1);
+			SetAnimType(Ran);
 		}
 		move = VAdd(R, move);
 		isInput = true;
@@ -24,9 +24,9 @@ bool Player::Input()
 		VECTOR L = VGet(1, 0, 0);
 		L = VTransformSR(L, MGetRotY(GetDir().y));
 		move = VAdd(L, move);
-		if (NowAnimTime >= AnimTotalTime)
+		if (!IsAnim)
 		{
-			SetAnimType(1);
+			SetAnimType(Ran);
 		}
 
 		isInput = true;
@@ -37,9 +37,9 @@ bool Player::Input()
 		VECTOR F = VGet(0, 0, -1);
 		F = VTransformSR(F, MGetRotY(GetDir().y));
 		move = VAdd(F, move);
-		if (NowAnimTime >= AnimTotalTime)
+		if (!IsAnim)
 		{
-			SetAnimType(1);
+			SetAnimType(Ran);
 		}
 
 		isInput = true;
@@ -50,9 +50,9 @@ bool Player::Input()
 		VECTOR D = VGet(0, 0, 1);
 		D = VTransformSR(D, MGetRotY(GetDir().y));
 		move = VAdd(D, move);
-		if (NowAnimTime >= AnimTotalTime)
+		if (!IsAnim)
 		{
-			SetAnimType(1);
+			SetAnimType(Ran);
 		}
 
 		isInput = true;
@@ -60,7 +60,7 @@ bool Player::Input()
 	if (isInput&&VSize(move)!=0) 
 	{
 		move = VNorm(move);         // 正規化（方向だけを抽出）
-		move = VScale(move,20);     // スピードを乗算
+		move = VScale(move,10);     // スピードを乗算
 		float targetAngle = atan2f(move.x, -move.z); // ラジアン角
 		MV1SetRotationXYZ(Img, VGet(0, -targetAngle, 0));
 
@@ -72,7 +72,7 @@ bool Player::Input()
 	}
     if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
     {
-        SetAnimType(4);
+        SetAnimType(Kick);
     }
 	
 	
@@ -85,7 +85,10 @@ void Player::Update()
 	
     AnimUpdate();
     ////位置の更新
-    SetPos(VAdd(Pos, Move));
+	if (AnimType == Ran)
+	{
+		SetPos(VAdd(Pos, Move));
+	}
 	if (AnimType == 4)
 	{
 		VECTOR AttackPos = VGet(0, 100, -100);

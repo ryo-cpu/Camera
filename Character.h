@@ -1,6 +1,7 @@
 #pragma once
 #include"DxLib.h"
 #include"Sphere_Collision.h"
+#include<cmath>
 class Character
 {
 protected:
@@ -14,10 +15,12 @@ protected:
 	int Attack;
 	int Hp;
 	int AnimType;
-	int IsAnim;
+	int AnimIndex;
 	float AnimTotalTime;
 	float NowAnimTime;
 	float AnimSpeed;
+	bool IsAnim;
+
 public:
 	int 	GetImg();
 	void    SetImg(int img);
@@ -35,8 +38,8 @@ public:
 	int     GetAttack();
 	void    SetHp(int hp);
 	int     GetHp();
-	void    SetIsAnim(int isAnim);
-	int     GetIsAnim();
+	void    SetAnimIndex(int animIndex);
+	int     GetAnimIndex();
 	void    SetAnimType(int animType);
 	int     GetAnimType();
 	float   GetNowAnimTime();
@@ -51,5 +54,6 @@ public:
 	void    Turn(VECTOR Power);
 	Sphere_Collision GetCollison();
 	void SetCollison(VECTOR Pos, float size);
+	void MoveCollison(VECTOR move);
 };
 

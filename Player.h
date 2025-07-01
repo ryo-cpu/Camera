@@ -1,8 +1,10 @@
 #pragma once
 #include"Character.h"
-#include<cmath>
+
 class Player :public Character
 {
+   
+
     bool InJump;
     float Speed;
     VECTOR Grand;
@@ -10,6 +12,7 @@ class Player :public Character
     VECTOR JumpPower = VGet(0, 30, 0);
     Sphere_Collision AttackCollison;
 public:
+    enum Motion { Stop, Ran, Down, Rolling, Kick, Hit };
     bool Input();
     void Update() override;
     Sphere_Collision GetAttackCollison();

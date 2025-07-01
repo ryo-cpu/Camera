@@ -84,28 +84,33 @@ int Character::GetHp()
     return Hp;
 }
 
-void Character::SetIsAnim(int isAnim)
+void Character::SetAnimIndex(int animIndex)
 {
-    IsAnim = isAnim;
+    AnimIndex = animIndex;
+
 }
 
-int Character::GetIsAnim()
+int Character::GetAnimIndex()
 {
-    return IsAnim;
+    return AnimIndex;
 }
+
+
 
 void Character::SetAnimType(int animType)
 {
-    if (IsAnim != -1) 
+    if (AnimIndex != -1) 
     {
-       MV1DetachAnim(Img, IsAnim);
+       
+     MV1DetachAnim(Img, AnimIndex);
     }
-    IsAnim=MV1AttachAnim(Img, animType);
-    AnimTotalTime = MV1GetAttachAnimTotalTime(Img, IsAnim);
+    AnimIndex =MV1AttachAnim(Img, animType);
+    AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimIndex);
     AnimType = animType;
+    IsAnim = true;
 
     NowAnimTime = 0;
-    MV1SetAttachAnimTime(Img, IsAnim, NowAnimTime);  // アニメーション時間を設定
+    MV1SetAttachAnimTime(Img, AnimIndex, NowAnimTime);  // アニメーション時間を設定
 
 }
 
@@ -156,7 +161,11 @@ void Character::AnimUpdate()
     {  // アニメーションが設定されていれば
         NowAnimTime += deltaTime * AnimSpeed;
     }
-    MV1SetAttachAnimTime(Img,IsAnim,NowAnimTime);  // アニメーション時間を設定
+    if (NowAnimTime >= AnimTotalTime)
+    {
+        IsAnim=false;
+    }
+    MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime);  // アニメーション時間を設定
 }
 
 void Character::Update()
@@ -189,4 +198,9 @@ void Character::SetCollison(VECTOR Pos, float size)
 {
     Collison.SetPos(Pos);
     Collison.SetSphereSize(size);
+}
+
+void Character::MoveCollison(VECTOR move)
+{
+    Collison.SetPos(VAdd(Pos, move));
 }
