@@ -8,7 +8,7 @@ class Enemy: public Character
     bool IsMotion;
     int MotionType;
 public:
-    enum Motion {Ran, Down, Rolling, Kick, Hit };
+    enum Motion {Ran,Junp, Down, Rolling, Kick, Hit };
 
     void SetTarget(Character &target);
     VECTOR SearchTarget();

@@ -17,34 +17,41 @@ VECTOR Enemy::SearchTarget()
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const int EndCount=4*60;
-	VECTOR move = VNorm(targetPos);
-	VECTOR Front = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
-
-	float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
-	rag = acosf(rag);
-	float crossY = Front.x * move.z - Front.z * move.x;
-
-	if (rag >= MaxTurn * DX_PI / 180.0f)
-	{
-		////‚¹‚¢‚°‚ñ‚æ‚è‚Å‚©‚¢‚Ì‚Å‚ ‚ê‚Î‚¹‚¢‚°‚ñ‚ß‚¢‚Á‚Ï‚¢
-		if (crossY < 0)
-		{
-			move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 1.0f * DX_PI / 180.0f));
-
-		}
-		else
-		{
-			move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y - 1.0f * DX_PI / 180.0f));
-		}
-
-	}
-	Pos = VAdd(Pos, move);
-	if (!IsAnim)
+	if (!IsAnim && AnimType != Ran)
 	{
 		SetAnimType(Ran);
 	}
-	float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
-	SetDir(VGet(0, -targetAngle, 0));
+	else if (!IsAnim || AnimType == Ran)
+	{
+		VECTOR move = VNorm(targetPos);
+		VECTOR Front = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
+
+		float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
+		rag = acosf(rag);
+		float crossY = Front.x * move.z - Front.z * move.x;
+
+		if (rag >= MaxTurn * DX_PI / 180.0f)
+		{
+			////‚¹‚¢‚°‚ñ‚æ‚è‚Å‚©‚¢‚Ì‚Å‚ ‚ê‚Î‚¹‚¢‚°‚ñ‚ß‚¢‚Á‚Ï‚¢
+			if (crossY < 0)
+			{
+				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 1.0f * DX_PI / 180.0f));
+
+			}
+			else
+			{
+				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y - 1.0f * DX_PI / 180.0f));
+			}
+
+		}
+		Pos = VAdd(Pos, move);
+		if (!IsAnim)
+		{
+			SetAnimType(Ran);
+		}
+		float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
+		SetDir(VGet(0, -targetAngle, 0));
+	}
 	if (LiveCount - StartLiveCount >= EndCount)
 	{
 		return false;
@@ -68,7 +75,7 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 
 void Enemy::Update()
 {
-	enum AttackMotion {Tackle,DwonArmSwing,Tink};
+	enum AttackMotion {Tackle,DownArmSwing,Tink};
 
 	VECTOR distance = VSub(SearchTarget(), Pos);
 	if (!IsMotion&&IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
@@ -76,9 +83,12 @@ void Enemy::Update()
 		if (VSize(distance) >= 300)
 		{
 			MotionType = Tackle;
+			SetAnimType(Junp);
 		}
 		else
 		{
+			MotionType = DownArmSwing;
+	
 
 		}
 	StartLiveCount = LiveCount;
@@ -91,7 +101,7 @@ void Enemy::Update()
 		case Tackle:
 			IsMotion = TackleAttack(distance);
 			break;
-		case DwonArmSwing:
+		case DownArmSwing:
 			IsMotion = ArmSwingDown(distance);
 			break;
 		default:
