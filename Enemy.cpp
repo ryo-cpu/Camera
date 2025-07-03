@@ -44,6 +44,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 			}
 
 		}
+		move = VScale(move, GetSpeed());
 		Pos = VAdd(Pos, move);
 		if (!IsAnim)
 		{
@@ -78,12 +79,13 @@ void Enemy::Update()
 	enum AttackMotion {Tackle,DownArmSwing,Tink};
 
 	VECTOR distance = VSub(SearchTarget(), Pos);
-	if (!IsMotion&&IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
+	if (!IsMotion&&!IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
 	{
 		if (VSize(distance) >= 300)
 		{
 			MotionType = Tackle;
 			SetAnimType(Junp);
+			SetSpeed(15);
 		}
 		else
 		{

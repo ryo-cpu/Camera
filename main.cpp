@@ -49,14 +49,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(0.00001);
+	player->SetAnimSpeed(0.000001);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(0.00001);
+	enemy->SetAnimSpeed(0.000001);
 	enemy->SetAnimType(0);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);

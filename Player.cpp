@@ -11,7 +11,7 @@ bool Player::Input()
 
 		VECTOR R = VGet(-1, 0, 0);
 		R = VTransformSR(R, MGetRotY(GetDir().y));
-		if (!IsAnim)
+		if (AnimType!=Ran||!IsAnim)
 		{
 			SetAnimType(Ran);
 		}
@@ -24,7 +24,7 @@ bool Player::Input()
 		VECTOR L = VGet(1, 0, 0);
 		L = VTransformSR(L, MGetRotY(GetDir().y));
 		move = VAdd(L, move);
-		if (!IsAnim)
+		if (AnimType != Ran || !IsAnim)
 		{
 			SetAnimType(Ran);
 		}
@@ -37,7 +37,7 @@ bool Player::Input()
 		VECTOR F = VGet(0, 0, -1);
 		F = VTransformSR(F, MGetRotY(GetDir().y));
 		move = VAdd(F, move);
-		if (!IsAnim)
+		if (AnimType != Ran || !IsAnim)
 		{
 			SetAnimType(Ran);
 		}
@@ -50,7 +50,7 @@ bool Player::Input()
 		VECTOR D = VGet(0, 0, 1);
 		D = VTransformSR(D, MGetRotY(GetDir().y));
 		move = VAdd(D, move);
-		if (!IsAnim)
+		if (AnimType != Ran || !IsAnim)
 		{
 			SetAnimType(Ran);
 		}
