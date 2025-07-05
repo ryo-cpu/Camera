@@ -80,7 +80,10 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 	return true;
 }
 
-
+Sphere_Collision Enemy::GetAttackCollison()
+{
+	return AttackCollison;
+}
 
 void Enemy::Update()
 {

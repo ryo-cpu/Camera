@@ -49,14 +49,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(0.000001);
+	player->SetAnimSpeed(0.00001);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(0.000001);
+	enemy->SetAnimSpeed(0.00001);
 	enemy->SetAnimType(0);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
@@ -182,21 +182,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			camera->StartMove(VScale(player->GetMove(), 1.0f));
 		}
 	
-		
+		Sphere_Collision PlayerCollison = player->GetCollison();
+		PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
+		////シンプル衝突
+		if (Collision_Measurement->Collison(PlayerCollison, enemy->GetCollison()))
+		{
+			VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
+
+			Sphere_Collision PlayerCollison = player->GetCollison();
+			Sphere_Collision enemyCollison = enemy->GetCollison();
+
+			VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize()));
+
+			TakeDistance = VSub(TakeDistance, Distance);
+			player->SetMove(VAdd(player->GetMove(), TakeDistance));
+		}
 		
 		player->Update();
 		enemy->Update();
 		camera->Update(player->GetPos());
-		////シンプル衝突
-		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
-		{
-			Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
-
-		}
+	
 		////player攻撃
 		Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
 		///enemy攻撃
-		Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison());
+		Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison());
 
 
 		MV1SetPosition(player->GetImg(), player->GetPos());

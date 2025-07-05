@@ -18,6 +18,7 @@ public:
   
     bool TackleAttack(VECTOR targetPos);
     bool ArmSwingDown(VECTOR targetPos);
+    Sphere_Collision GetAttackCollison();
 
     void Update()override;
 
