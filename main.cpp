@@ -40,7 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int MouseX, MouseY;
 	GetMousePoint(&MouseX, &MouseY);
 	float BaseY = NULL;
-	VECTOR JunpPower = VGet(0, 30, 0);
+	VECTOR JumpPower = VGet(0, 30, 0);
 	Player *player=new Player();
 	Enemy* enemy = new Enemy();
 	player->SetPos(StartPlayerPos);
@@ -74,6 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetScale(enemy->GetImg(), VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
+	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
 	
 	float StratTime=0;
 	float NowTime = 0;
@@ -132,8 +133,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		if (isJunp)
 		{
-			player->SetMove(VAdd(player->GetMove(), JunpPower));
-			JunpPower = VAdd(JunpPower, G);
+			player->SetMove(VAdd(player->GetMove(), JumpPower));
+			JumpPower = VAdd(JumpPower, G);
 			
 		}
 		
@@ -142,7 +143,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			isJunp = false;
 			player->SetPos(VGet(player->GetPos().x, BaseY,player->GetPos().z));
-			JunpPower = VGet(0, 30, 0);
+			JumpPower = VGet(0, 30, 0);
 
 		}
 		VECTOR Distans = VSub(enemy->GetPos(), player->GetPos());
@@ -186,6 +187,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		player->Update();
 		enemy->Update();
 		camera->Update(player->GetPos());
+		////シンプル衝突
+		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
+		{
+			Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
+
+		}
+		////player攻撃
+		Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
+		///enemy攻撃
+		Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison());
+
 
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
@@ -203,6 +215,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete(enemy);
 	delete(camera);
 	delete(&fps);
+	delete(Collision_Measurement);
 
 
 

@@ -12,6 +12,6 @@ public:
     void     SetPos(VECTOR pos);
     float    GetSphereSize();
     void     SetSphereSize(float sphereSize);
-    static bool Collison(Sphere_Collision S1, Sphere_Collision S2);
+    static bool Collison( const Sphere_Collision &S1,const Sphere_Collision &S2);
 };
 

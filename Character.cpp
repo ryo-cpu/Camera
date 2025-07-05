@@ -172,6 +172,14 @@ void Character::AnimUpdate()
     MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime);  // アニメーション時間を設定
 }
 
+void Character::MoveUpdate(VECTOR move)
+{
+    Pos = VAdd(Pos, move);
+    MoveCollison(move);
+}
+
+
+
 void Character::Update()
 {
 }

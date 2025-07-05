@@ -21,19 +21,18 @@ void Sphere_Collision::SetSphereSize(float sphereSize)
     Size = sphereSize;
 }
 
-bool Sphere_Collision::Collison(Sphere_Collision S1, Sphere_Collision S2)
+bool Sphere_Collision::Collison(const Sphere_Collision& S1, const Sphere_Collision& S2)
 {
+    VECTOR Distance = VSub(S1.Pos, S2.Pos);
     
-        VECTOR Distance = VSub(S1.GetPos(), S2.GetPos());
-
-        if (VSize(Distance) < S1.Size + S2.Size)
-        {
-            return true;
-        }
-        else
-        {
-            false;
-        }
-    
-
+    if (VSize(Distance) <= S1.Size + S2.Size)
+    {
+        return true;
+    }
+    else
+    {
+        false;
+    }
 }
+
+

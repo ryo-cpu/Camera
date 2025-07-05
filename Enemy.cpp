@@ -1,4 +1,9 @@
 #include "Enemy.h"
+const float CollisonSize = 600.0f;
+Enemy::Enemy()
+{
+	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+}
 
 void Enemy::SetTarget(Character &target)
 {
@@ -25,7 +30,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 	{
 		VECTOR move = VNorm(targetPos);
 		VECTOR Front = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
-
+		
 		float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
 		rag = acosf(rag);
 		float crossY = Front.x * move.z - Front.z * move.x;
@@ -46,6 +51,9 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		}
 		move = VScale(move, GetSpeed());
 		Pos = VAdd(Pos, move);
+		AttackCollison.SetPos(Pos);
+		DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+
 		if (!IsAnim)
 		{
 			SetAnimType(Ran);
@@ -84,6 +92,7 @@ void Enemy::Update()
 		if (VSize(distance) >= 300)
 		{
 			MotionType = Tackle;
+			AttackCollison = GetCollison();
 			SetAnimType(Junp);
 			SetSpeed(15);
 		}
@@ -115,7 +124,8 @@ void Enemy::Update()
 	
 	
 	AnimUpdate();
-	SetCollison(VAdd(Pos, VGet(0, 500, 0)), 100.0f);
+	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+
 	LiveCount++;
 	
 }

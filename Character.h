@@ -52,6 +52,7 @@ public:
 	void    SetAnimSpeed(float Speed);
 	float   GetAnimSpeed();
 	void    AnimUpdate();
+	void    MoveUpdate(VECTOR move);
     virtual	void   Update();
  	void    Draw();
 	void    Turn(VECTOR Power);
