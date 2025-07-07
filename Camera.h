@@ -36,7 +36,7 @@ public:
     /// <summary>
     /// í«è]
     /// </summary>
-    void StartChase();
+    void StartChase(VECTOR TPos);
     void EndChase();
     void Chase(VECTOR TPos);
     void Look(VECTOR TPos);

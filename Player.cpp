@@ -3,6 +3,7 @@
 Player::Player()
 {
 	SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+	IsHit = false;
 }
 
 bool Player::Input()
@@ -68,7 +69,7 @@ bool Player::Input()
 		move = VScale(move,10);     // スピードを乗算
 		float targetAngle = atan2f(move.x, -move.z); // ラジアン角
 		MV1SetRotationXYZ(Img, VGet(0, -targetAngle, 0));
-
+		
 	}
 	else
 	{
@@ -80,8 +81,8 @@ bool Player::Input()
         SetAnimType(Kick);
     }
 	
-	
 	SetMove(move);
+	
     return isInput;
 }
 
@@ -89,11 +90,8 @@ void Player::Update()
 {
 	
     AnimUpdate();
-    ////位置の更新
-	if (AnimType == Ran)
-	{
-		SetPos(VAdd(Pos, Move));
-	}
+    
+	SetPos(VAdd(Pos, Move));
 	if (AnimType == Kick)
 	{
 		VECTOR AttackPos = VGet(0, 100, -100);
@@ -123,4 +121,14 @@ void Player::SetAttackCollison(VECTOR Pos, float size)
 {
 	AttackCollison.SetPos(Pos);
 	AttackCollison.SetSphereSize(size);
+}
+
+bool Player::GetIsHit()
+{
+	return IsHit;
+}
+
+void Player::SetIsHit(bool ishit)
+{
+	IsHit = ishit;
 }

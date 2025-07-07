@@ -19,6 +19,6 @@ void fps::End()
     double sleepTime = TargetFrameTime - elapsed.count();
     if (sleepTime > 0)
     {
-        std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
+     std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
     }
 }

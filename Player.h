@@ -6,6 +6,7 @@ class Player :public Character
    
 
     bool InJump;
+    bool IsHit;
     float Speed;
     VECTOR Grand;
     VECTOR G = VGet(0, -1, 0);
@@ -18,6 +19,8 @@ public:
     void Update() override;
     Sphere_Collision GetAttackCollison();
     void SetAttackCollison(VECTOR Pos, float size);
+    bool GetIsHit();
+    void SetIsHit(bool ishit);
 
 
 };

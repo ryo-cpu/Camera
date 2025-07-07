@@ -50,6 +50,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 
 		}
 		move = VScale(move, GetSpeed());
+		Move = move;
 		Pos = VAdd(Pos, move);
 		AttackCollison.SetPos(Pos);
 		DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
@@ -70,6 +71,17 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 }
 
 bool Enemy::ArmSwingDown(VECTOR targetPos)
+{
+	const int EndCount = 4 * 60;
+	if (LiveCount - StartLiveCount >= EndCount)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Enemy::Tink()
 {
 	const int EndCount = 4 * 60;
 	if (LiveCount - StartLiveCount >= EndCount)

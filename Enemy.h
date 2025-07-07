@@ -14,11 +14,13 @@ public:
 
     void SetTarget(Character &target);
     VECTOR SearchTarget();
+    Sphere_Collision GetAttackCollison();
     ///‚±‚¤‚Ç‚¤////
   
     bool TackleAttack(VECTOR targetPos);
     bool ArmSwingDown(VECTOR targetPos);
-    Sphere_Collision GetAttackCollison();
+    bool Tink();
+   
 
     void Update()override;
 

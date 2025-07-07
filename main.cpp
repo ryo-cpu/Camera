@@ -49,14 +49,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(0.00001);
+	player->SetAnimSpeed(0.000001);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
 	
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(0.00001);
+	enemy->SetAnimSpeed(0.000001);
 	enemy->SetAnimType(0);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
@@ -137,13 +137,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			JumpPower = VAdd(JumpPower, G);
 			
 		}
-		
-		bool isInput =player->Input();
+		bool isInput = false;
+		if (player->GetIsHit())
+		{
+			player->SetMove(VAdd(player->GetMove(), G));
+
+		}
+		else
+		{
+			isInput = player->Input();
+
+		}
 		if (player->GetPos().y <= BaseY)
 		{
 			isJunp = false;
 			player->SetPos(VGet(player->GetPos().x, BaseY,player->GetPos().z));
 			JumpPower = VGet(0, 30, 0);
+			player->SetIsHit(false);
 
 		}
 		VECTOR Distans = VSub(enemy->GetPos(), player->GetPos());
@@ -169,7 +179,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		if (!isInput)
 		{
-			player->SetMove(VScale(player->GetMove(), 0.5f));
+		/*	player->SetMove(VScale(player->GetMove(), 0.5f));*/
 			camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
 			if (VSize(player->GetMove()) <= 0)
 			{
@@ -184,6 +194,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 		Sphere_Collision PlayerCollison = player->GetCollison();
 		PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
+	
+		
+		player->Update();
+		enemy->Update();
+		camera->Update(player->GetPos());
 		////シンプル衝突
 		if (Collision_Measurement->Collison(PlayerCollison, enemy->GetCollison()))
 		{
@@ -196,16 +211,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			TakeDistance = VSub(TakeDistance, Distance);
 			player->SetMove(VAdd(player->GetMove(), TakeDistance));
+			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
 		}
 		
-		player->Update();
-		enemy->Update();
-		camera->Update(player->GetPos());
+		
+		///enemy攻撃
+
+		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()))
+		{
+			
+
+			player->SetMove(VAdd(VScale( enemy->GetMove(),2),VGet(0,10,0)));
+			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
+			player->SetIsHit(true);
+		}
+
 	
 		////player攻撃
 		Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
-		///enemy攻撃
-		Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison());
+	
 
 
 		MV1SetPosition(player->GetImg(), player->GetPos());

@@ -120,8 +120,9 @@ Camera::Camera(VECTOR CPos, VECTOR TPos)
 
 }
 
-void Camera::StartChase()
+void Camera::StartChase(VECTOR TPos)
 {
+    Offset = VSub(TPos,Pos);
     isChase = true;
     ///‚»‚Ì‘¼‚ÌPosŠ±Â‚·‚éƒtƒ‰ƒO~‚ß
     isPan = false;
