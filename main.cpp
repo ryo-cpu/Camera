@@ -221,8 +221,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			
 
-			player->SetMove(VAdd(VScale( enemy->GetMove(),2),VGet(0,10,0)));
+			player->SetMove(VAdd(VScale( enemy->GetMove(),5),VGet(0,30,0)));
 			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
+			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
 		}
 

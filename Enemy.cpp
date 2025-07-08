@@ -53,7 +53,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		Move = move;
 		Pos = VAdd(Pos, move);
 		AttackCollison.SetPos(Pos);
-		DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		
 
 		if (!IsAnim)
 		{
