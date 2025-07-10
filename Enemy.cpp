@@ -88,7 +88,7 @@ bool Enemy::Tink()
 	{
 		return false;
 	}
-
+	SetDir(VGet(0, LiveCount, 0));
 	return true;
 }
 

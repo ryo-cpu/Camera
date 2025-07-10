@@ -74,15 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(player->GetImg(), player->GetPos());
 	MV1SetPosition(enemy->GetImg(),enemy->GetPos());
 
-	int SpotL= CreateSpotLightHandle(
-		VGet(0.0f, 1000.0f, 0.0f),
-		VGet(0.0f, -1.0f, 0.0f),
-		DX_PI_F / 2.0f,
-		DX_PI_F / 4.0f,
-		2000.0f,
-		0.0f,
-		0.002f,
-		0.0f);
+	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
 	MV1SetScale(player->GetImg(), VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
 	MV1SetScale(enemy->GetImg(), VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
 	fps fps;
@@ -247,8 +239,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
 
+			
 			enemy->SetPos(VAdd(enemy->GetPos(),Knockback));
-			enemy->MoveCollison(Knockback);
+			enemy->SetCollison(VAdd(enemy->GetPos(),Knockback), enemy->GetCollison().GetSphereSize());
 			enemy->SetMoveType(enemy->hit_stop);
 			enemy->SetAnimIndex(enemy->Hit);
 		}

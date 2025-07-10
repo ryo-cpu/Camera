@@ -10,7 +10,7 @@ class Enemy: public Character
     Sphere_Collision AttackCollison;
 public:
     Enemy();
-    enum Motion {Ran,Junp, Down, Rolling, Kick, Hit };
+    enum Motion {Ran,Junp, Dance, ArmSwing,Dwon, bat, Hit };
     enum AttackMotion { Tackle, DownArmSwing, tink, hit_stop };
     void SetTarget(Character &target);
     VECTOR SearchTarget();
