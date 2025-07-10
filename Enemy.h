@@ -11,15 +11,18 @@ class Enemy: public Character
 public:
     Enemy();
     enum Motion {Ran,Junp, Down, Rolling, Kick, Hit };
-
+    enum AttackMotion { Tackle, DownArmSwing, tink, hit_stop };
     void SetTarget(Character &target);
     VECTOR SearchTarget();
     Sphere_Collision GetAttackCollison();
+    void SetMoveType(int movetype);
+    int GetMoveType();
     ///‚±‚¤‚Ç‚¤////
   
     bool TackleAttack(VECTOR targetPos);
     bool ArmSwingDown(VECTOR targetPos);
     bool Tink();
+    bool Hit_Stop();
    
 
     void Update()override;

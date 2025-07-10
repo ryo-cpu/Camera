@@ -35,8 +35,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
 	SetWriteZBufferFlag(TRUE);		// Ｚバッファへの書き込みを行う
 	SetUseBackCulling(TRUE);		// バックカリングを行う
-
-	int M2;
 	int MouseX, MouseY;
 	GetMousePoint(&MouseX, &MouseY);
 	float BaseY = NULL;
@@ -49,15 +47,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(0.000001);
+	player->SetAnimSpeed(0.00001);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
-	
+	int handle = player->GetImg();
+	int materialNum = MV1GetMaterialNum(handle);
+	for (int i = 0; i < materialNum; ++i)
+	{
+		MV1SetMaterialDifColor(handle, i, GetColorF(1.0f, 1.0f, 1.0f,1.0f)); // 拡散反射を最大に
+		MV1SetMaterialAmbColor(handle, i, GetColorF(0.3f, 0.3f, 0.3f,0.3f)); // 環境光の反射も設定
+	}
+	SetUseBackCulling(FALSE);
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(0.000001);
-	enemy->SetAnimType(0);
+	enemy->SetAnimSpeed(0.00001);
+	enemy->SetAnimType(enemy->Hit);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
 	
@@ -69,7 +74,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(player->GetImg(), player->GetPos());
 	MV1SetPosition(enemy->GetImg(),enemy->GetPos());
 
-
+	int SpotL= CreateSpotLightHandle(
+		VGet(0.0f, 1000.0f, 0.0f),
+		VGet(0.0f, -1.0f, 0.0f),
+		DX_PI_F / 2.0f,
+		DX_PI_F / 4.0f,
+		2000.0f,
+		0.0f,
+		0.002f,
+		0.0f);
 	MV1SetScale(player->GetImg(), VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
 	MV1SetScale(enemy->GetImg(), VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
 	fps fps;
@@ -80,10 +93,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float NowTime = 0;
 	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 300.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
+	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
+	ChangeLightTypeDir(VGet(0,-1,0));
 
 	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
+		SetUseLighting(true); // ライティングを有効にする
+
 		fps.Start();
 		++NowTime;
 		ClearDrawScreen();
@@ -173,8 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			////あった時の処理
 		}
 		
-		DrawTriangle3D(VGet(-300, 0, -300), VGet(300, 0, -300), VGet(-300, 0, 300), GetColor(200, 255, 255), TRUE);
-        DrawTriangle3D(VGet(300,0,300),VGet(300,0,-300), VGet(-300, 0, 300), GetColor(0, 0, 255), TRUE);
+		
 
 		
 		if (!isInput)
@@ -217,19 +233,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		///enemy攻撃
 
-		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()))
+		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison())&&player->GetAnimIndex()!=player->Hit)
 		{
-			
-
-			player->SetMove(VAdd(VScale( enemy->GetMove(),5),VGet(0,30,0)));
+			player->SetMove(VAdd(VScale( enemy->GetMove(),3),VGet(0,30,0)));
 			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
 			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
 		}
-
+		
 	
 		////player攻撃
-		Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison());
+		if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison())&&enemy->GetMoveType()!=enemy->hit_stop)
+		{
+			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
+
+			enemy->SetPos(VAdd(enemy->GetPos(),Knockback));
+			enemy->MoveCollison(Knockback);
+			enemy->SetMoveType(enemy->hit_stop);
+			enemy->SetAnimIndex(enemy->Hit);
+		}
 	
 
 

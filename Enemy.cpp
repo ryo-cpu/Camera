@@ -92,19 +92,44 @@ bool Enemy::Tink()
 	return true;
 }
 
+bool Enemy::Hit_Stop()
+{
+	if (!IsAnim)
+	{
+		return false;
+	}
+
+	return true;
+}
+
 Sphere_Collision Enemy::GetAttackCollison()
 {
 	return AttackCollison;
 }
 
+void Enemy::SetMoveType(int movetype)
+{
+	MotionType = movetype;
+}
+
+int Enemy::GetMoveType()
+{
+	return MotionType;
+}
+
+
 void Enemy::Update()
 {
-	enum AttackMotion {Tackle,DownArmSwing,Tink};
+	
 
 	VECTOR distance = VSub(SearchTarget(), Pos);
 	if (!IsMotion&&!IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
 	{
-		if (VSize(distance) >= 300)
+		if (MotionType == Tackle || MotionType == DownArmSwing)
+		{
+			MotionType = tink;
+		}
+		else if (VSize(distance) >= 300)
 		{
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
@@ -115,7 +140,6 @@ void Enemy::Update()
 		{
 			MotionType = DownArmSwing;
 	
-
 		}
 	StartLiveCount = LiveCount;
 	IsMotion = true;
@@ -130,6 +154,12 @@ void Enemy::Update()
 		case DownArmSwing:
 			IsMotion = ArmSwingDown(distance);
 			break;
+		case tink:
+			IsMotion = Tink();
+			break;
+		case hit_stop:
+			IsMotion = Hit_Stop();
+			break;
 		default:
 			IsMotion = false;
 			break;
@@ -140,6 +170,7 @@ void Enemy::Update()
 	
 	AnimUpdate();
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	LiveCount++;
 	

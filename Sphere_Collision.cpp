@@ -25,7 +25,7 @@ bool Sphere_Collision::Collison(const Sphere_Collision& S1, const Sphere_Collisi
 {
     VECTOR Distance = VSub(S1.Pos, S2.Pos);
     
-    if (VSize(Distance) <= (S1.Size + S2.Size))
+    if (VSize(Distance) <= (S1.Size + S2.Size)&&!(S1.Size==0||S2.Size==0))
     {
         return true;
     }
