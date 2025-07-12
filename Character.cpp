@@ -226,3 +226,8 @@ int Character::GetStartLiveCount()
 {
     return StartLiveCount;
 }
+
+int Character::GetMaxHp()
+{
+    return MaxHp;
+}

@@ -1,6 +1,8 @@
 #pragma once
 #include"DxLib.h"
 #include"Character.h"
+const int screenW = 1600;
+const int screenH = 900;
 class Bar
 {
 private:
@@ -9,7 +11,7 @@ private:
     int fillColor;
 
     bool handleEnabled;
-
+    Character Owner;
     VECTOR position;
 
     VECTOR handleSize;
@@ -21,7 +23,7 @@ private:
     float maxValue = 1;
     float minValue = 0;
 public:
-    Bar(Character Owner);
+    Bar(const Character &owner);
     void SetValue(float setValue);
     void SetMaxValue(float setMaxValue);
     void SetMinValue(float setMinValue);
@@ -31,6 +33,7 @@ public:
     void SetHandleSize(float setHandleWidth, float setHandleHeight);
     void SetBackColor(unsigned int setBackColor);
     void SetFillColor(unsigned int setFillColor);
+    bool inScreen();
 
     void Update(Character Owner);
     void Draw();

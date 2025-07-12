@@ -62,5 +62,6 @@ public:
 	void MoveCollison(VECTOR move);
 	int GetLiveCount();
 	int GetStartLiveCount();
+	int GetMaxHp();
 };
 

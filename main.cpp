@@ -8,6 +8,7 @@
 #include"Camera.h"
 #include"Player.h"
 #include"Enemy.h"
+#include"Bsr.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
@@ -87,6 +88,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	camera->GetAngle(PlayerPos);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
 	ChangeLightTypeDir(VGet(0,-1,0));
+	Bar playerHp(*player);
 
 	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -251,11 +253,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 
+	
 		MV1DrawModel(player->GetImg());
 		MV1DrawModel(enemy->GetImg());              // モデルの描画
 		// モデルの描画
 			   // モデルの描画
-
+		playerHp.Draw();
 		ScreenFlip();                           // 裏画面の内容を表画面に反映
 		fps.End();
 	}
