@@ -22,6 +22,7 @@ protected:
 	bool IsAnim;
 	int LiveCount;
 	int StartLiveCount;
+	int MaxHp;
 
 public:
 	Character();

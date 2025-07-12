@@ -21,14 +21,16 @@ private:
     float maxValue = 1;
     float minValue = 0;
 public:
+    Bar(Character Owner);
     void SetValue(float setValue);
     void SetMaxValue(float setMaxValue);
     void SetMinValue(float setMinValue);
     float GetValue();
     void SetPosition(float setPositionX, float setPositionY);
     void SetBackSize(float setBackWidth, float setBackHeight);
-    void SetBackColor(int setBackColor);
-    void SetFillColor(int setFillColor);
+    void SetHandleSize(float setHandleWidth, float setHandleHeight);
+    void SetBackColor(unsigned int setBackColor);
+    void SetFillColor(unsigned int setFillColor);
 
     void Update(Character Owner);
     void Draw();
