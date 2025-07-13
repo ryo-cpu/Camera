@@ -3,6 +3,10 @@
 Player::Player()
 {
 	SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+	MaxHp = 30;
+	Hp = MaxHp;
+	Attack = 10;
+
 	IsHit = false;
 }
 

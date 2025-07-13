@@ -1,21 +1,37 @@
 #include "Bsr.h"
+#include<iostream>
 const unsigned int BackColor = GetColor(200, 200, 200);
-const unsigned int BaseColor = GetColor(200, 200, 100);
+const unsigned int BaseColor = GetColor(100, 240, 100);
 const unsigned int HalfColor = GetColor(200, 200, 100);
 const unsigned int QuarterColor = GetColor(200, 200, 100);
+const int DefaultBarSizeX = 500;
+const int DefaultBarSizeY = 100;
 
 
-Bar::Bar(const Character &owner)
+Bar::Bar(Character *owner)
 {
     Owner = owner;
-    value = Owner.GetHp();
-    maxValue = Owner.GetMaxHp();
-    minValue = 0;
-    position=ConvWorldPosToScreenPos(Owner.GetPos());
-    SetHandleSize(100, 20);
-    SetBackSize(100, 20);
-    SetBackColor(BackColor);
-    SetFillColor(BaseColor);
+    if (Owner)
+    {
+        value = Owner->GetHp();
+
+        maxValue = Owner->GetMaxHp();
+        minValue = 0;
+        position = ConvWorldPosToScreenPos(Owner->GetPos());
+        SetHandleSize(DefaultBarSizeX , DefaultBarSizeY);
+        SetBackSize(DefaultBarSizeX , DefaultBarSizeY);
+        SetBackColor(BackColor);
+        SetFillColor(BaseColor);
+    }
+   
+    else
+    {
+        position =VGet(0,0,0);
+        SetHandleSize(100, 20);
+        SetBackSize(100, 20);
+        SetBackColor(BackColor);
+        SetFillColor(BaseColor);
+    }
     
 }
 
@@ -66,7 +82,7 @@ void Bar::SetFillColor(unsigned int setFillColor)
 
 bool Bar::inScreen()
 {
-    VECTOR screenPos = ConvWorldPosToScreenPos(Owner.GetPos());
+    VECTOR screenPos = ConvWorldPosToScreenPos(Owner->GetPos());
     
     return screenPos.z = 1.0f &&
         screenPos.x >= 0 && screenPos.x <= screenW &&
@@ -74,21 +90,66 @@ bool Bar::inScreen()
 
 }
 
-
-void Bar::Update(Character Owner)
+bool Bar::CheakIsDraw(Character CheakTarget,Camera camera)
 {
-    value = Owner.GetHp();
-    position = ConvWorldPosToScreenPos(Owner.GetPos());
+    float distance = VSize(VSub(camera.GetPos(), CheakTarget.GetPos()));
+    float scale = 1.0f / (distance / 100);  // 遠くなると小さく
+    // モデルの大きさに応じて調整
+    float Mscale = scale *CheakTarget.GetScale();
+    VECTOR C1=CheakTarget.GetPos(), C2=CheakTarget.GetPos();
+   
 
+    C1= ConvWorldPosToScreenPos(C1);
+    C2 = ConvWorldPosToScreenPos(C2);
+    C1 = VAdd(C1, VGet(-500*Mscale, -1500*Mscale, 0));////大体の大きさ
+    C2 = VAdd(C2, VGet(500*Mscale, 50*Mscale, 0));////大体の大きさ
+    DrawBox(C1.x,C1.y,C2.x,C2.y, HalfColor, true);
+
+    // UIの矩形座標（2D）
+    float uiLeft = position.x - (backSize.x / 2);
+    float uiRight = position.x + (backSize.x / 2);
+    float uiTop = position.y;
+    float uiBottom = position.y + backSize.y;
+
+    // モデルの2Dスクリーン上の矩形
+    float modelLeft = C1.x;
+    float modelRight = C2.x;
+    float modelTop = C1.y;
+    float modelBottom = C2.y;
+
+    return (modelRight < uiLeft || modelLeft > uiRight || modelBottom < uiTop || modelTop > uiBottom);
+}
+
+
+
+
+
+
+void Bar::Update(Camera camera)
+{
+    float distance =VSize(VSub(camera.GetPos() ,Owner->GetPos()));
+    float scale = 1.0f /(distance/100);  // 遠くなると小さく
+      // モデルの大きさに応じて調整
+    float Mscale = scale * Owner->GetScale();
+   
+    Scale = Mscale;
+    
+    SetHandleSize(DefaultBarSizeX  * Mscale, DefaultBarSizeY * Mscale);
+    SetBackSize(DefaultBarSizeX  * Mscale, DefaultBarSizeY * Mscale);
+    value = Owner->GetHp();
+    position = ConvWorldPosToScreenPos(Owner->GetPos());
+   
 }
 
 void Bar::Draw()
 {
     if (inScreen())
     {
+        float Proportion = value / maxValue;
         float MaxX = position.x + backSize.x;
-        DrawBox(position.x-(backSize.x/2), position.y, position.x + 1000, position.y - 200, fillColor, true);
-        DrawBox(position.x, position.y, MaxX, position.y + backSize.y, BackColor, true);
+        DrawBox(position.x - (backSize.x / 2), position.y, MaxX, position.y + backSize.y, BackColor, true);
+        DrawBox(position.x - (backSize.x / 2), position.y, position.x+(backSize.x*Proportion), position.y + backSize.y, fillColor, true);
+
     }
   
 

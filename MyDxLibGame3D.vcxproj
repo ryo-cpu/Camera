@@ -160,17 +160,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bsr.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="fps.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Sphere_Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bsr.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="fps.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Sphere_Collision.h" />
   </ItemGroup>

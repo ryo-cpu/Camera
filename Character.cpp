@@ -66,6 +66,8 @@ float Character::GetScale()
 void Character::SetScale(float scale)
 {
     Scale = scale;
+    MV1SetScale(Img, VGet(scale, scale, scale));
+
 }
 
 void Character::SetAttack(int attack)
@@ -230,4 +232,9 @@ int Character::GetStartLiveCount()
 int Character::GetMaxHp()
 {
     return MaxHp;
+}
+
+void Character::SubHp(int Damage)
+{
+    Hp = Hp - Damage;
 }

@@ -63,5 +63,6 @@ public:
 	int GetLiveCount();
 	int GetStartLiveCount();
 	int GetMaxHp();
+	void SubHp(int Damge);
 };
 

@@ -5,7 +5,6 @@
 
 #include "fps.h"
 #include "Arithmetic.h"
-#include"Camera.h"
 #include"Player.h"
 #include"Enemy.h"
 #include"Bsr.h"
@@ -76,8 +75,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(enemy->GetImg(),enemy->GetPos());
 
 	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
-	MV1SetScale(player->GetImg(), VGet(1.0f, 1.0f, 1.0f));  // 試しに10倍
-	MV1SetScale(enemy->GetImg(), VGet(5.0f, 5.0f, 5.0f));  // 試しに10倍
+	player->SetScale(1.0f);// 試しに10倍
+	enemy->SetScale(5.0f);  // 試しに10倍
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
 	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
@@ -88,7 +87,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	camera->GetAngle(PlayerPos);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
 	ChangeLightTypeDir(VGet(0,-1,0));
-	Bar playerHp(*player);
+	Bar *playerHp= new Bar(player);
+	Bar *enemyHpBar=new Bar(enemy);
 
 	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -209,6 +209,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		player->Update();
 		enemy->Update();
 		camera->Update(player->GetPos());
+		
 		////シンプル衝突
 		if (Collision_Measurement->Collison(PlayerCollison, enemy->GetCollison()))
 		{
@@ -233,6 +234,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
 			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
+			player->SubHp(enemy->GetAttack());
 		}
 		
 	
@@ -248,17 +250,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->SetAnimIndex(enemy->Hit);
 		}
 	
-
+		playerHp->Update(*camera);
+		enemyHpBar->Update(*camera);
 
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-
+		if(enemyHpBar->CheakIsDraw(*player,*camera))
+		{
+			enemyHpBar->Draw();
+		}
+		playerHp->Draw();
+		
 	
 		MV1DrawModel(player->GetImg());
 		MV1DrawModel(enemy->GetImg());              // モデルの描画
 		// モデルの描画
 			   // モデルの描画
-		playerHp.Draw();
+		
 		ScreenFlip();                           // 裏画面の内容を表画面に反映
 		fps.End();
 	}
@@ -268,6 +276,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete(camera);
 	delete(&fps);
 	delete(Collision_Measurement);
+	
 
 
 
