@@ -16,7 +16,7 @@ bool Player::Input()
 	VECTOR move=VGet(0,0,0);
 	float targetAngle =0.0f; // ラジアン角
 
-	if (CheckHitKey(KEY_INPUT_RIGHT))
+	if (CheckHitKey(KEY_INPUT_D))
 	{
 
 		VECTOR R = VGet(-1, 0, 0);
@@ -29,7 +29,7 @@ bool Player::Input()
 		isInput = true;
 
 	}// 画面をクリア
-	if (CheckHitKey(KEY_INPUT_LEFT))
+	if (CheckHitKey(KEY_INPUT_A))
 	{
 		VECTOR L = VGet(1, 0, 0);
 		L = VTransformSR(L, MGetRotY(GetDir().y));
@@ -42,7 +42,7 @@ bool Player::Input()
 		isInput = true;
 
 	}
-	if (CheckHitKey(KEY_INPUT_UP))
+	if (CheckHitKey(KEY_INPUT_W))
 	{
 		VECTOR F = VGet(0, 0, -1);
 		F = VTransformSR(F, MGetRotY(GetDir().y));
@@ -55,7 +55,7 @@ bool Player::Input()
 		isInput = true;
 
 	}
-	if (CheckHitKey(KEY_INPUT_DOWN))
+	if (CheckHitKey(KEY_INPUT_S))
 	{
 		VECTOR D = VGet(0, 0, 1);
 		D = VTransformSR(D, MGetRotY(GetDir().y));
@@ -94,7 +94,7 @@ void Player::Update()
 {
 	
     AnimUpdate();
-    
+	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
 	if (AnimType == Kick)
 	{
@@ -113,7 +113,7 @@ void Player::Update()
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
-	MoveCollison(Move);
+	
 	LiveCount++;
 }
 

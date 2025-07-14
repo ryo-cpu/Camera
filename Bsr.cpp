@@ -145,10 +145,20 @@ void Bar::Draw()
 {
     if (inScreen())
     {
-        float Proportion = value / maxValue;
+        float Proportion;
+        if (value>0)
+        {
+            Proportion = value / maxValue;
+        }
+        else
+        {
+            Proportion = 0;
+        }
+        
+        float StartX = position.x - (backSize.x / 2);
         float MaxX = position.x + backSize.x;
-        DrawBox(position.x - (backSize.x / 2), position.y, MaxX, position.y + backSize.y, BackColor, true);
-        DrawBox(position.x - (backSize.x / 2), position.y, position.x+(backSize.x*Proportion), position.y + backSize.y, fillColor, true);
+        DrawBox(StartX, position.y, StartX+backSize.x, position.y + backSize.y, BackColor, true);
+        DrawBox(StartX, position.y,StartX+(backSize.x*Proportion), position.y + backSize.y, fillColor, true);
 
     }
   

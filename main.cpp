@@ -98,6 +98,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		fps.Start();
 		++NowTime;
 		ClearDrawScreen();
+		
 		////マウスの回転処理
 		int NowMouseX, NowMouseY;
 		GetMousePoint(&NowMouseX, &NowMouseY);
@@ -110,13 +111,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MouseX = NowMouseX;
 			MouseY = NowMouseY;
 			////回転量を算出
-			MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX*0.1));
-			camera->RotaionAxis(player->GetPos(),RotY);
-			player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1),0));
+			MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX * 0.1));
+			camera->RotaionAxis(player->GetPos(), RotY);
+			player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1), 0));
 			camera->Look(player->GetPos());
 		}
-		
-		
 		
 		if (CheckHitKey(KEY_INPUT_SPACE) && (player->GetPos().y >= BaseY || BaseY == NULL))
 		{
@@ -129,7 +128,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 		}
-		if (CheckHitKey(KEY_INPUT_W))
+		if (CheckHitKey(KEY_INPUT_J))
 		{
 			
 		    
@@ -168,7 +167,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		}
 		VECTOR Distans = VSub(enemy->GetPos(), player->GetPos());
-		if (CheckHitKey(KEY_INPUT_A))
+		if (CheckHitKey(KEY_INPUT_C))
 		{
 			VECTOR CPos = VCross(VNorm(Distans), VGet(0, -1, 0));
 			float rag = 60.f;
@@ -210,6 +209,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		enemy->Update();
 		camera->Update(player->GetPos());
 		
+
+		
 		////シンプル衝突
 		if (Collision_Measurement->Collison(PlayerCollison, enemy->GetCollison()))
 		{
@@ -246,7 +247,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			
 			enemy->SetMove((Knockback));
 			enemy->SetMoveType(enemy->hit_stop);
-			enemy->SetAnimIndex(enemy->Hit);
+			enemy->SetAnimType(enemy->Hit);
 			enemy->SetHp(player->GetAttack());
 		}
 	
