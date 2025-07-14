@@ -244,10 +244,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
 
 			
-			enemy->SetPos(VAdd(enemy->GetPos(),Knockback));
-			enemy->SetCollison(VAdd(enemy->GetPos(),Knockback), enemy->GetCollison().GetSphereSize());
+			enemy->SetMove((Knockback));
 			enemy->SetMoveType(enemy->hit_stop);
 			enemy->SetAnimIndex(enemy->Hit);
+			enemy->SetHp(player->GetAttack());
 		}
 	
 		playerHp->Update(*camera);

@@ -103,7 +103,7 @@ bool Bar::CheakIsDraw(Character CheakTarget,Camera camera)
     C2 = ConvWorldPosToScreenPos(C2);
     C1 = VAdd(C1, VGet(-500*Mscale, -1500*Mscale, 0));////大体の大きさ
     C2 = VAdd(C2, VGet(500*Mscale, 50*Mscale, 0));////大体の大きさ
-    DrawBox(C1.x,C1.y,C2.x,C2.y, HalfColor, true);
+    
 
     // UIの矩形座標（2D）
     float uiLeft = position.x - (backSize.x / 2);

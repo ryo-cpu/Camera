@@ -92,7 +92,7 @@ bool Enemy::Tink()
 	{
 		return false;
 	}
-	SetDir(VGet(0, LiveCount, 0));
+	
 	return true;
 }
 
@@ -102,6 +102,7 @@ bool Enemy::Hit_Stop()
 	{
 		return false;
 	}
+	Pos=VAdd(Pos, Move);
 
 	return true;
 }
@@ -132,6 +133,7 @@ void Enemy::Update()
 		if (MotionType == Tackle || MotionType == DownArmSwing)
 		{
 			MotionType = tink;
+			SetAnimType(Dance);
 		}
 		else if (VSize(distance) >= 300)
 		{
