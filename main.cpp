@@ -45,7 +45,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	VECTOR G = VGet(0, -1, 0);
 	bool isJunp = false;
-	player->SetImg(MV1LoadModel("data/player.mv1"));
+	player->SetImg(MV1LoadModel("data/wall.mv1"));
 	player->SetDir(VGet(0, 0, 0));
 	player->SetAnimSpeed(0.00001);
 	player->SetAnimType(player->Stop);
@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(enemy->GetImg(),enemy->GetPos());
 
 	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
-	player->SetScale(1.0f);// 試しに10倍
+	player->SetScale(10.0f);// 試しに10倍
 	enemy->SetScale(5.0f);  // 試しに10倍
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	float StratTime=0;
 	float NowTime = 0;
-	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 300.0f)),PlayerPos);
+	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 600.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
 	ChangeLightTypeDir(VGet(0,-1,0));
