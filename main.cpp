@@ -136,7 +136,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			player->SetStartLiveCount(player->GetLiveCount());
 			player->SetInSpecialMove(true);
-			camera->ResetOffset(SpecaleMoveCamera, player->GetPos());
+			camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
 		}
 		if (CheckHitKey(KEY_INPUT_J))
 		{
@@ -195,20 +195,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 		
 
-		
-		if (!isInput)
+		if (player->GetInSpecialMove())
 		{
-		/*	player->SetMove(VScale(player->GetMove(), 0.5f));*/
-			camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
-			if (VSize(player->GetMove()) <= 0)
-			{
-				BesePoint = player->GetPos();
-			
-			}
+
 		}
-		if (VSize(VSub(player->GetPos(), BesePoint)) >= 100.0f && isInput)
+		else
 		{
-			camera->StartMove(VScale(player->GetMove(), 1.0f));
+			if (!isInput)
+			{
+				/*	player->SetMove(VScale(player->GetMove(), 0.5f));*/
+				camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
+				if (VSize(player->GetMove()) <= 0)
+				{
+					BesePoint = player->GetPos();
+
+				}
+			}
+			if (VSize(VSub(player->GetPos(), BesePoint)) >= 100.0f && isInput)
+			{
+				camera->StartMove(VScale(player->GetMove(), 1.0f));
+			}
 		}
 	
 		Sphere_Collision PlayerCollison = player->GetCollison();
