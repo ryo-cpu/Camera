@@ -1,18 +1,20 @@
-﻿// 2023 Takeru Yui All Rights Reserved.
+﻿
 #include<vector>
 #include "DxLib.h"
-// 2023 Takeru Yui All Rights Reserved.
+#include"Arithmetic.h"
+
 
 #include "fps.h"
-#include "Arithmetic.h"
 #include"Player.h"
 #include"Enemy.h"
 #include"Bsr.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
+const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
+const VECTOR SpecaleMoveCameraS = VGet(10, 0, 200);
+const VECTOR DefaultCamera = VGet(0, 200, 1000);
 
-/// <summary>
 /// メイン関数
 /// </summary>
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -45,7 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	VECTOR G = VGet(0, -1, 0);
 	bool isJunp = false;
-	player->SetImg(MV1LoadModel("data/wall.mv1"));
+	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
 	player->SetAnimSpeed(0.00001);
 	player->SetAnimType(player->Stop);
@@ -75,7 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(enemy->GetImg(),enemy->GetPos());
 
 	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
-	player->SetScale(10.0f);// 試しに10倍
+	player->SetScale(1.0f);// 試しに10倍
 	enemy->SetScale(5.0f);  // 試しに10倍
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
@@ -83,7 +85,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	float StratTime=0;
 	float NowTime = 0;
-	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 600.0f)),PlayerPos);
+	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 1000.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
 	ChangeLightTypeDir(VGet(0,-1,0));
@@ -98,23 +100,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		fps.Start();
 		++NowTime;
 		ClearDrawScreen();
-		
-		////マウスの回転処理
-		int NowMouseX, NowMouseY;
-		GetMousePoint(&NowMouseX, &NowMouseY);
-		///移動量を出す
-		int MoveMouseX = MouseX - NowMouseX;
-		int MoveMouseY = MouseY - NowMouseY;
-		if (MoveMouseX != 0 || MoveMouseY != 0)
+		if (!player->GetInSpecialMove())
 		{
-			///マウスの位置を更新
-			MouseX = NowMouseX;
-			MouseY = NowMouseY;
-			////回転量を算出
-			MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX * 0.1));
-			camera->RotaionAxis(player->GetPos(), RotY);
-			player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1), 0));
-			camera->Look(player->GetPos());
+			////マウスの回転処理
+			int NowMouseX, NowMouseY;
+			GetMousePoint(&NowMouseX, &NowMouseY);
+			///移動量を出す
+			int MoveMouseX = MouseX - NowMouseX;
+			int MoveMouseY = MouseY - NowMouseY;
+			if (MoveMouseX != 0 || MoveMouseY != 0)
+			{
+				///マウスの位置を更新
+				MouseX = NowMouseX;
+				MouseY = NowMouseY;
+				////回転量を算出
+				MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX * 0.1));
+				camera->RotaionAxis(player->GetPos(), RotY);
+				player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1), 0));
+				camera->Look(player->GetPos());
+			}
 		}
 		
 		if (CheckHitKey(KEY_INPUT_SPACE) && (player->GetPos().y >= BaseY || BaseY == NULL))
@@ -127,6 +131,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			
 
 
+		}
+		if (CheckHitKey(KEY_INPUT_G))
+		{
+			player->SetStartLiveCount(player->GetLiveCount());
+			player->SetInSpecialMove(true);
+			camera->ResetOffset(SpecaleMoveCamera, player->GetPos());
 		}
 		if (CheckHitKey(KEY_INPUT_J))
 		{
@@ -150,7 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		bool isInput = false;
 		if (player->GetIsHit())
 		{
-			player->SetMove(VAdd(player->GetMove(), G));
+		 player->SetMove(VAdd(player->GetMove(), G));
 
 		}
 		else

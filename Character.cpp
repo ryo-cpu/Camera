@@ -229,6 +229,11 @@ int Character::GetStartLiveCount()
     return StartLiveCount;
 }
 
+void Character::SetStartLiveCount(int count)
+{
+    StartLiveCount = count;
+}
+
 int Character::GetMaxHp()
 {
     return MaxHp;

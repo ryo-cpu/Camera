@@ -1,6 +1,8 @@
 #pragma once
 #include"Character.h"
 
+
+
 class Player :public Character
 {
    
@@ -8,6 +10,7 @@ class Player :public Character
     bool InJump;
     bool IsHit;
     float Speed;
+    bool InSpecialMove;
     VECTOR Grand;
     VECTOR G = VGet(0, -1, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
@@ -21,6 +24,10 @@ public:
     void SetAttackCollison(VECTOR Pos, float size);
     bool GetIsHit();
     void SetIsHit(bool ishit);
+    bool GetInSpecialMove();
+    void SetInSpecialMove(bool inSpecialMove);
+    void SpecialMove();
+
 
 
 };

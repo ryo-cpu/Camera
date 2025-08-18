@@ -19,3 +19,12 @@ float ConversionFrequency(float Rad)
 {
     return Rad * 180/PI;
 }
+bool InRange(int Strat, int Last,int Check)
+{
+    return Check >= Strat && Last >= Check;
+}
+
+bool InRange(float Strat, float  Last, float Check)
+{
+    return Check >= Strat && Last >= Check;
+}
