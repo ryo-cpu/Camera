@@ -43,6 +43,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR JumpPower = VGet(0, 30, 0);
 	Player *player=new Player();
 	Enemy* enemy = new Enemy();
+	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
+	MV1SetPosition(BackModel, VGet(0, 0, 0));
+	MV1SetScale(BackModel, VGet(5, 5, 5));
 	player->SetPos(StartPlayerPos);
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	VECTOR G = VGet(0, -1, 0);
@@ -79,6 +82,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
 	player->SetScale(1.0f);// 試しに10倍
 	enemy->SetScale(5.0f);  // 試しに10倍
+
+
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
 	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
@@ -100,6 +105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		fps.Start();
 		++NowTime;
 		ClearDrawScreen();
+/////入力およびその対応/////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (!player->GetInSpecialMove())
 		{
 			////マウスの回転処理
@@ -132,12 +138,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 		}
-		if (CheckHitKey(KEY_INPUT_G))
+		////////////////////必殺技スタート///////////////////////////////////////////////////////////
+		if (CheckHitKey(KEY_INPUT_G)&&!player->GetInSpecialMove())
 		{
 			player->SetStartLiveCount(player->GetLiveCount());
 			player->SetInSpecialMove(true);
-			camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
 		}
+		//////////////////////////////////////////////////////////////////////////////////////////
 		if (CheckHitKey(KEY_INPUT_J))
 		{
 			
@@ -193,12 +200,46 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			////あった時の処理
 		}
 		
-		
-
+////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//必殺技時のカメラの動き
 		if (player->GetInSpecialMove())
 		{
+			///必殺技の経過時間を出す
+			float MoveONTime = player->GetLiveCount() - player->GetStartLiveCount();
+			if (MoveONTime <= 20)
+			{
+				
+
+			}
+			else if (MoveONTime <= 120)
+			{
+				///中
+		     camera->StartPan();
+			 camera->EndMove();
+			 
+			 if (VSize(VSub(camera->GetOffset(),SpecaleMoveCamerafast))!=0)
+			 {
+				 camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
+			 }
+				
+			}
+			else if (MoveONTime <= 200)
+			{
+		      ///終わり
+			
+
+			}
+			else if (MoveONTime <= 300)
+			{
+				///終わり
+			}
+			else
+			{
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+			}
 
 		}
+		///通常時
 		else
 		{
 			if (!isInput)
@@ -216,18 +257,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->StartMove(VScale(player->GetMove(), 1.0f));
 			}
 		}
-	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		Sphere_Collision PlayerCollison = player->GetCollison();
 		PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
 	
-		
+//////更新///////////////////////////////////////////////////////////////////////////////////////////////////////	
 		player->Update();
 		enemy->Update();
 		camera->Update(player->GetPos());
-		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 		
-		////シンプル衝突
+/////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (Collision_Measurement->Collison(PlayerCollison, enemy->GetCollison()))
 		{
 			VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
@@ -266,9 +307,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->SetAnimType(enemy->Hit);
 			enemy->SetHp(player->GetAttack());
 		}
-	
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 		playerHp->Update(*camera);
 		enemyHpBar->Update(*camera);
+/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
@@ -278,13 +321,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		playerHp->Draw();
 		
-	
+		MV1DrawModel(BackModel);
 		MV1DrawModel(player->GetImg());
 		MV1DrawModel(enemy->GetImg());              // モデルの描画
 		// モデルの描画
 			   // モデルの描画
 		
-		ScreenFlip();                           // 裏画面の内容を表画面に反映
+		ScreenFlip();// 裏画面の内容を表画面に反映 
+///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		fps.End();
 	}
 	MV1DeleteModel(player->GetImg());

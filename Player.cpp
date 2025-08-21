@@ -165,10 +165,15 @@ void Player::SpecialMove()
 		///’†
 		Move = VGet(0, 10, 0);
 	}
-	else if (ElapsedTime <= 200)
+	else if (ElapsedTime <= 220)
 	{
 		///I‚í‚è
-		Move = VGet(0, -10, 1);
+		Move = VGet(0, -10, 0);
+		VECTOR AttackPos = VGet(0, 100, -200);
+		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
+		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
+		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+
 
 	}
 	else if (ElapsedTime <= 300)
