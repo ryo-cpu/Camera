@@ -12,7 +12,7 @@ using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
 const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
-const VECTOR SpecaleMoveCameraS = VGet(10, 0, 200);
+const VECTOR SpecaleMoveCameraS = VGet(100, -200, -200);
 const VECTOR DefaultCamera = VGet(0, 200, 1000);
 
 /// メイン関数
@@ -219,19 +219,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			 
 			 if (VSize(VSub(camera->GetOffset(),SpecaleMoveCamerafast))!=0)
 			 {
-				 camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
+				 camera->ResetOffset(SpecaleMoveCamerafast, player->GetPos());
 			 }
 				
 			}
 			else if (MoveONTime <= 200)
 			{
 		      ///終わり
-			
+				camera->EndPan();
+				camera->EndChase();
+				camera->StartMove(VScale(VSub(player->GetPos(),camera->GetPos()),0.01));
+
+				if (VSize(VSub(camera->GetOffset(), SpecaleMoveCameraS)) != 0)
+				{
+					camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
+				}
 
 			}
 			else if (MoveONTime <= 300)
 			{
 				///終わり
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+
 			}
 			else
 			{
@@ -263,7 +272,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 //////更新///////////////////////////////////////////////////////////////////////////////////////////////////////	
 		player->Update();
-		enemy->Update();
+		/*enemy->Update();*/
 		camera->Update(player->GetPos());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 

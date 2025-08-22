@@ -22,6 +22,7 @@ public:
     void Update() override;
     Sphere_Collision GetAttackCollison();
     void SetAttackCollison(VECTOR Pos, float size);
+    void SetGrand(VECTOR grand);
     bool GetIsHit();
     void SetIsHit(bool ishit);
     bool GetInSpecialMove();
