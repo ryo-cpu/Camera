@@ -23,7 +23,7 @@ protected:
 	int LiveCount;
 	int StartLiveCount;
 	int MaxHp;
-
+	bool isDraw;
 public:
 	Character();
 	int 	GetImg();
@@ -65,5 +65,7 @@ public:
 	void SetStartLiveCount(int count);
 	int GetMaxHp();
 	void SubHp(int Damge);
+	void SetisDraw(bool Flg);
+	bool GetisDraw();
 };
 

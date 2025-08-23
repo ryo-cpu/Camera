@@ -132,7 +132,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (CheckHitKey(KEY_INPUT_G)&&!player->GetInSpecialMove())
 		{
 			player->SetStartLiveCount(player->GetLiveCount());
-			player->SetInSpecialMove(true);
+			player->SetInSpecialMove(true,enemy->GetPos());
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////
 		if (CheckHitKey(KEY_INPUT_J))
@@ -177,12 +177,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			camera->Look(VAdd(player->GetPos(), VScale(Distans, 0.75)));
 		}
 		float Distance = VSize(Distans);
-		if (Distance <= 30.0f)
-		{
-		
-			PlaySoundFile("data/Hit.mp3", DX_PLAYTYPE_BACK);
-			////あった時の処理
-		}
+	
 		
 ////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//必殺技時のカメラの動き
@@ -255,8 +250,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
 	
 //////更新///////////////////////////////////////////////////////////////////////////////////////////////////////	
-		player->Update();
-		/*enemy->Update();*/
+		if (!player->GetInSpecialMove())
+		{
+			player->Update();
+			enemy->Update();
+		}
+		else
+		{
+			player->SpecialMove();
+		}
+		
 		camera->Update(player->GetPos());
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -293,7 +296,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison())&&enemy->GetMoveType()!=enemy->hit_stop)
 		{
 			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
-
+			Knockback.y = 0;
 			
 			enemy->SetMove((Knockback));
 			enemy->SetMoveType(enemy->hit_stop);
@@ -315,8 +318,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		playerHp->Draw();
 		
 		MV1DrawModel(BackModel);
-		MV1DrawModel(player->GetImg());
-		MV1DrawModel(enemy->GetImg());              // モデルの描画
+		player->Draw();
+		enemy->Draw();              // モデルの描画
 		// モデルの描画
 			   // モデルの描画
 		

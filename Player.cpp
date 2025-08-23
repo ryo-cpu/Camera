@@ -93,13 +93,9 @@ bool Player::Input()
 
 void Player::Update()
 {
-	if (InSpecialMove)
-	{
-		///•KŽE‹Z
-		SpecialMove();
-	}
-	else
-	{
+	
+	
+	
 	if (Grand.y < Pos.y)
 	{
 		Pos = VAdd(Pos, G);
@@ -118,7 +114,6 @@ void Player::Update()
 	else
 	{
 		AttackCollison = {};
-	}
 	}
 	if (Collison.GetSphereSize() == 0)
 	{
@@ -163,10 +158,13 @@ bool Player::GetInSpecialMove()
 	return InSpecialMove;
 }
 
-void Player::SetInSpecialMove(bool inSpecialMove)
+void Player::SetInSpecialMove(bool inSpecialMove, VECTOR Taget)
 {
 	InSpecialMove = inSpecialMove;
+	SpecialTaget = Taget;
 }
+
+
 
 void Player::SpecialMove()
 { 
@@ -188,17 +186,21 @@ void Player::SpecialMove()
 	else if (ElapsedTime <= 320)
 	{
 		///I‚í‚è
-		Move = VGet(0, -1, -10);
+		Move =VScale(VSub(SpecialTaget,Pos),0.1);
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
-		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
+		SetAttackCollison(VAdd(Pos, AttackPos), 100.f);
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 	}
 	else
 	{
 	 InSpecialMove = false;
 	}
+	AnimUpdate();
+	MoveCollison(Move);
+	SetPos(VAdd(Pos, Move));
 
+	LiveCount++;
 
 	
 }

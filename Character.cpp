@@ -190,7 +190,7 @@ void Character::Update()
 
 void Character::Draw()
 {
-    MV1SetPosition(Img, Pos);
+    MV1DrawModel(Img);
 }
 
 
@@ -242,4 +242,14 @@ int Character::GetMaxHp()
 void Character::SubHp(int Damage)
 {
     Hp = Hp - Damage;
+}
+
+void Character::SetisDraw(bool Flg)
+{
+    isDraw = Flg;
+}
+
+bool Character::GetisDraw()
+{
+    return isDraw;
 }

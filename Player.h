@@ -11,6 +11,7 @@ class Player :public Character
     bool IsHit;
     float Speed;
     bool InSpecialMove;
+    VECTOR SpecialTaget;
     VECTOR Grand;
     VECTOR G = VGet(0, -10, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
@@ -26,8 +27,9 @@ public:
     bool GetIsHit();
     void SetIsHit(bool ishit);
     bool GetInSpecialMove();
-    void SetInSpecialMove(bool inSpecialMove);
     void SpecialMove();
+    void SetInSpecialMove(bool inSpecialMove,VECTOR Taget);
+  
 
 
 
