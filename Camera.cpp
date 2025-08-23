@@ -239,6 +239,11 @@ void Camera::Action(VECTOR offset, VECTOR TPos, float VRotate, float HRotate, fl
      
 }
 
+ bool Camera::GetisZoom()
+ {
+     return isZoom;
+ }
+
  void Camera::EndZoom()
  {
      isZoom = false;

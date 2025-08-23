@@ -224,6 +224,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else
 			{
 				camera->ResetOffset(DefaultCamera, player->GetPos());
+				enemy->SetisDraw(true);
 			}
 
 		}
@@ -295,6 +296,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		////player攻撃
 		if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison())&&enemy->GetMoveType()!=enemy->hit_stop)
 		{
+			
 			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
 			Knockback.y = 0;
 			
@@ -302,6 +304,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->SetMoveType(enemy->hit_stop);
 			enemy->SetAnimType(enemy->Hit);
 			enemy->SetHp(player->GetAttack());
+			
 		}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -316,7 +319,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemyHpBar->Draw();
 		}
 		playerHp->Draw();
-		
+		////エネミーの点滅
+		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& player->GetLiveCount() % 7 == 0)
+		{
+			enemy->SetisDraw( !enemy->GetisDraw());
+			if (camera->GetisZoom())
+			{
+				camera->EndZoom();
+			}
+			else
+			{
+				camera->StartZoom(200.0f);
+			}
+		}
 		MV1DrawModel(BackModel);
 		player->Draw();
 		enemy->Draw();              // モデルの描画

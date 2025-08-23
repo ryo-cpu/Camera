@@ -66,6 +66,7 @@ public:
     void Action(VECTOR offset, VECTOR TPos, float VRotate, float HRotate, float TRotate);
 
     void StartZoom(float ZoomDistance);
+    bool GetisZoom();
     void EndZoom();
     /// <summary>
     /// ÉYÅ[ÉÄ

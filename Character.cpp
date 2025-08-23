@@ -3,6 +3,7 @@
 Character::Character()
 {
     LiveCount = 0;
+    isDraw = true;
 }
 int Character::GetImg()
 {
@@ -190,7 +191,10 @@ void Character::Update()
 
 void Character::Draw()
 {
-    MV1DrawModel(Img);
+    if (isDraw)
+    {
+        MV1DrawModel(Img);
+    }
 }
 
 
