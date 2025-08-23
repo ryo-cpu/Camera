@@ -127,17 +127,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 		}
 		
-		if (CheckHitKey(KEY_INPUT_SPACE) && (player->GetPos().y >= BaseY || BaseY == NULL))
-		{
-			if (BaseY == NULL)
-			{
-				BaseY = player->GetPos().y;
-			}
-			isJunp = true;
-			
-
-
-		}
+		
 		////////////////////必殺技スタート///////////////////////////////////////////////////////////
 		if (CheckHitKey(KEY_INPUT_G)&&!player->GetInSpecialMove())
 		{
@@ -157,12 +147,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		
 			
 
-		}
-		if (isJunp)
-		{
-			player->SetMove(VAdd(player->GetMove(), JumpPower));
-			JumpPower = VAdd(JumpPower, G);
-			
 		}
 		bool isInput = false;
 		if (player->GetIsHit())

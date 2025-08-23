@@ -8,6 +8,7 @@ Player::Player()
 	Attack = 10;
 	InSpecialMove = false;
 	IsHit = false;
+	Grand = VGet(0, 0, 0);
 }
 
 bool Player::Input()
@@ -97,10 +98,19 @@ void Player::Update()
 		///•KŽE‹Z
 		SpecialMove();
 	}
-	else if (AnimType == Kick&&(NowAnimTime>=30.0f&&NowAnimTime<=AnimTotalTime))
+	else
+	{
+	if (Grand.y < Pos.y)
+	{
+		Pos = VAdd(Pos, G);
+
+		Pos.y = Pos.y < 0 ? 0 : Pos.y;
+	 }
+
+	if (AnimType == Kick && (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime))
 	{
 		VECTOR AttackPos = VGet(0, 100, -200);
-		AttackPos=VTransformSR(AttackPos, MGetRotY(GetDir().y));
+		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
 		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
@@ -108,6 +118,7 @@ void Player::Update()
 	else
 	{
 		AttackCollison = {};
+	}
 	}
 	if (Collison.GetSphereSize() == 0)
 	{
@@ -177,7 +188,7 @@ void Player::SpecialMove()
 	else if (ElapsedTime <= 320)
 	{
 		///I‚í‚è
-		Move = VGet(0, -10, -10);
+		Move = VGet(0, -1, -10);
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
 		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);

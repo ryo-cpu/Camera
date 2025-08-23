@@ -12,7 +12,7 @@ class Player :public Character
     float Speed;
     bool InSpecialMove;
     VECTOR Grand;
-    VECTOR G = VGet(0, -1, 0);
+    VECTOR G = VGet(0, -10, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
     Sphere_Collision AttackCollison;
 public:
