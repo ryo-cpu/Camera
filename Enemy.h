@@ -25,7 +25,7 @@ public:
     bool Hit_Stop();
    
 
-    void Update()override;
+    void Update(float deltaTime)override;
 
 };
 

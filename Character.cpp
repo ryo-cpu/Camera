@@ -156,11 +156,10 @@ float Character::GetAnimSpeed()
     return AnimSpeed;
 }
 
-void Character::AnimUpdate()
+void Character::AnimUpdate(float deltaTime)
 {
-    // 前回のフレームから経過した時間を取得
-    LONGLONG nowTime = GetNowHiPerformanceCount();
-    float deltaTime = (nowTime) / 10000000.0f;  // 時間を秒に変換
+
+   
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 
@@ -181,11 +180,12 @@ void Character::MoveUpdate(VECTOR move)
     MoveCollison(move);
 }
 
-
-
-void Character::Update()
+void Character::Update(float deltaTime)
 {
 }
+
+
+
 
 
 

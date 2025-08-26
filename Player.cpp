@@ -91,7 +91,7 @@ bool Player::Input()
     return isInput;
 }
 
-void Player::Update()
+void Player::Update(float deltaTime)
 {
 	
 	
@@ -120,7 +120,7 @@ void Player::Update()
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
-	AnimUpdate();
+	AnimUpdate(deltaTime);
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
 	
@@ -166,7 +166,7 @@ void Player::SetInSpecialMove(bool inSpecialMove, VECTOR Taget)
 
 
 
-void Player::SpecialMove()
+void Player::SpecialMove(float deltaTime)
 { 
 	int ElapsedTime = LiveCount - StartLiveCount;
 	if (ElapsedTime <= 20)
@@ -196,7 +196,7 @@ void Player::SpecialMove()
 	{
 	 InSpecialMove = false;
 	}
-	AnimUpdate();
+	AnimUpdate(deltaTime);
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
 

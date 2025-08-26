@@ -52,9 +52,9 @@ public:
 	float   GetTotalAnimTime();
 	void    SetAnimSpeed(float Speed);
 	float   GetAnimSpeed();
-	void    AnimUpdate();
+	void    AnimUpdate(float deltaTime);
 	void    MoveUpdate(VECTOR move);
-    virtual	void   Update();
+    virtual	void   Update(float deltaTime);
  	void    Draw();
 	void    Turn(VECTOR Power);
 	Sphere_Collision GetCollison();

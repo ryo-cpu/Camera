@@ -88,22 +88,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	fps.Initialization(1.0 / 60.0);
 	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
 	
-	float StratTime=0;
-	float NowTime = 0;
+	
 	Camera *camera=new Camera(100.0f,10000.0f, VAdd(PlayerPos, VGet(0.0f, 200.0f, 1000.0f)),PlayerPos);
 	camera->GetAngle(PlayerPos);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f,0.3f));
 	ChangeLightTypeDir(VGet(0,-1,0));
 	Bar *playerHp= new Bar(player);
 	Bar *enemyHpBar=new Bar(enemy);
+	auto NowTime = std::chrono::high_resolution_clock::now();
+	auto LastTime = NowTime;
+	// 経過時間をミリ秒に変換して取得
+	std::chrono::duration<float, std::milli> duration_ms = NowTime - LastTime;
+	float deltaTime = duration_ms.count();
 
 	VECTOR BesePoint = VGet(0, 0, 0);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
+		NowTime= std::chrono::high_resolution_clock::now();
+		std::chrono::duration<float, std::milli> duration_ms = NowTime - LastTime;
+		deltaTime = duration_ms.count()/100000;
+		LastTime = NowTime;
+
+
 		SetUseLighting(true); // ライティングを有効にする
 
 		fps.Start();
-		++NowTime;
+	
 		ClearDrawScreen();
 /////入力およびその対応/////////////////////////////////////////////////////////////////////////////////////////////////////
 		if (!player->GetInSpecialMove())
@@ -253,12 +263,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 //////更新///////////////////////////////////////////////////////////////////////////////////////////////////////	
 		if (!player->GetInSpecialMove())
 		{
-			player->Update();
-			enemy->Update();
+			player->Update(deltaTime);
+			enemy->Update(deltaTime);
 		}
 		else
 		{
-			player->SpecialMove();
+			player->SpecialMove(deltaTime);
 		}
 		
 		camera->Update(player->GetPos());

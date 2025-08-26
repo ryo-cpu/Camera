@@ -20,14 +20,14 @@ public:
     Player();
     enum Motion { Stop, Ran, Down, Rolling, Kick, Hit };
     bool Input();
-    void Update() override;
+    void Update(float deltaTime) override;
     Sphere_Collision GetAttackCollison();
     void SetAttackCollison(VECTOR Pos, float size);
     void SetGrand(VECTOR grand);
     bool GetIsHit();
     void SetIsHit(bool ishit);
     bool GetInSpecialMove();
-    void SpecialMove();
+    void SpecialMove(float deltaTime);
     void SetInSpecialMove(bool inSpecialMove,VECTOR Taget);
   
 

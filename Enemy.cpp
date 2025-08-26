@@ -3,7 +3,7 @@ const float CollisonSize = 600.0f;
 Enemy::Enemy()
 {
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
-	MaxHp = 3000;
+	MaxHp = 300000;
 	Hp = MaxHp;
 	Attack = 10;
 
@@ -123,7 +123,7 @@ int Enemy::GetMoveType()
 }
 
 
-void Enemy::Update()
+void Enemy::Update(float deltaTime)
 {
 	
 
@@ -174,7 +174,7 @@ void Enemy::Update()
 	}
 	
 	
-	AnimUpdate();
+	AnimUpdate(deltaTime);
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
