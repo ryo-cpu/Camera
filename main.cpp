@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(1);
+	player->SetAnimSpeed(10);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
@@ -64,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseBackCulling(FALSE);
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(1);
+	enemy->SetAnimSpeed(10);
 	enemy->SetAnimType(enemy->Hit);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
@@ -284,7 +284,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		playerHp->Draw();
 		////エネミーの点滅
-		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.2f)) < 0.01f)
+		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f)
 		{
 			enemy->SetisDraw( !enemy->GetisDraw());
 			if (camera->GetisZoom())

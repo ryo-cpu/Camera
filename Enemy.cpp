@@ -25,7 +25,7 @@ VECTOR Enemy::SearchTarget()
 
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
-	const int EndTime=4*60;
+	const float EndTime=5;
 	if (!IsAnim && AnimType != Ran)
 	{
 		SetAnimType(Ran);
@@ -76,7 +76,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
-	const int EndTime = 4 * 60;
+	const float EndTime = 5;
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
@@ -87,7 +87,7 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 
 bool Enemy::Tink()
 {
-	const int EndTime = 4 * 60;
+	const float EndTime = 3;
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
@@ -100,7 +100,7 @@ bool Enemy::Hit_Stop()
 {
 	if (!IsAnim)
 	{
-		return false;
+	 return false;
 	}
 	Pos=VAdd(Pos, Move);
 
@@ -140,7 +140,7 @@ void Enemy::Update(float deltaTime)
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
 			SetAnimType(Junp);
-			SetSpeed(15);
+			SetSpeed(20);
 		}
 		else
 		{
@@ -178,6 +178,6 @@ void Enemy::Update(float deltaTime)
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
-	LiveTime++;
+	AddLiveTime(deltaTime);
 	
 }
