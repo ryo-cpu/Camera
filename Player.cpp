@@ -124,19 +124,10 @@ void Player::Update(float deltaTime)
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
 	
-	LiveCount++;
+	LiveTime+=deltaTime;
 }
 
-Sphere_Collision Player::GetAttackCollison()
-{
-	return AttackCollison;
-}
 
-void Player::SetAttackCollison(VECTOR Pos, float size)
-{
-	AttackCollison.SetPos(Pos);
-	AttackCollison.SetSphereSize(size);
-}
 
 void Player::SetGrand(VECTOR grand)
 {
@@ -158,49 +149,16 @@ bool Player::GetInSpecialMove()
 	return InSpecialMove;
 }
 
-void Player::SetInSpecialMove(bool inSpecialMove, VECTOR Taget)
+void Player::SetInSpecialMove(bool inSpecialMove)
 {
 	InSpecialMove = inSpecialMove;
-	SpecialTaget = Taget;
+	
 }
 
 
 
 void Player::SpecialMove(float deltaTime)
 { 
-	int ElapsedTime = LiveCount - StartLiveCount;
-	if (ElapsedTime <= 20)
-	{
-		///‹N‚±‚è
-
-	}
-	else if (ElapsedTime <= 120)
-    {
-		///’†
-		Move = VGet(0, 10, 0);
-	}
-	else if (ElapsedTime <= 220)
-	{
-		///I‚í‚è
-	}
-	else if (ElapsedTime <= 320)
-	{
-		///I‚í‚è
-		Move =VScale(VSub(SpecialTaget,Pos),0.1);
-		VECTOR AttackPos = VGet(0, 0, 0);
-		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
-		SetAttackCollison(VAdd(Pos, AttackPos), 100.f);
-		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
-	}
-	else
-	{
-	 InSpecialMove = false;
-	}
-	AnimUpdate(deltaTime);
-	MoveCollison(Move);
-	SetPos(VAdd(Pos, Move));
-
-	LiveCount++;
-
+	
 	
 }

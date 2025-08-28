@@ -4,6 +4,9 @@
 #include<cmath>
 
 
+const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
+const VECTOR SpecaleMoveCameraS = VGet(100, -200, -200);
+const VECTOR DefaultCamera = VGet(0, 200, 1000);
 class Camera
 {
     VECTOR Pos;

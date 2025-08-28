@@ -12,6 +12,7 @@ protected:
 	int Img;
 	float Scale;
 	Sphere_Collision Collison;
+	Sphere_Collision AttackCollison;
 	int Attack;
 	int Hp;
 	int AnimType;
@@ -20,10 +21,11 @@ protected:
 	float NowAnimTime;
 	float AnimSpeed;
 	bool IsAnim;
-	int LiveCount;
-	int StartLiveCount;
+	float LiveTime;
+	float StartLiveTime;
 	int MaxHp;
 	bool isDraw;
+	
 public:
 	Character();
 	int 	GetImg();
@@ -60,12 +62,15 @@ public:
 	Sphere_Collision GetCollison();
 	void SetCollison(VECTOR Pos, float size);
 	void MoveCollison(VECTOR move);
-	int GetLiveCount();
-	int GetStartLiveCount();
-	void SetStartLiveCount(int count);
+	float GetLiveTime();
+	void  AddLiveTime(float PassedTime);
+	int GetStartLiveTime();
+	void SetStartLiveTime(int time);
 	int GetMaxHp();
 	void SubHp(int Damge);
 	void SetisDraw(bool Flg);
 	bool GetisDraw();
+	Sphere_Collision GetAttackCollison();
+	void SetAttackCollison(VECTOR Pos, float size);
 };
 

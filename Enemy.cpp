@@ -25,7 +25,7 @@ VECTOR Enemy::SearchTarget()
 
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
-	const int EndCount=4*60;
+	const int EndTime=4*60;
 	if (!IsAnim && AnimType != Ran)
 	{
 		SetAnimType(Ran);
@@ -66,7 +66,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
 		SetDir(VGet(0, -targetAngle, 0));
 	}
-	if (LiveCount - StartLiveCount >= EndCount)
+	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
 	}
@@ -76,8 +76,8 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
-	const int EndCount = 4 * 60;
-	if (LiveCount - StartLiveCount >= EndCount)
+	const int EndTime = 4 * 60;
+	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
 	}
@@ -87,8 +87,8 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 
 bool Enemy::Tink()
 {
-	const int EndCount = 4 * 60;
-	if (LiveCount - StartLiveCount >= EndCount)
+	const int EndTime = 4 * 60;
+	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
 	}
@@ -147,7 +147,7 @@ void Enemy::Update(float deltaTime)
 			MotionType = DownArmSwing;
 	
 		}
-	StartLiveCount = LiveCount;
+	StartLiveTime = LiveTime;
 	IsMotion = true;
 	}
 	else
@@ -178,6 +178,6 @@ void Enemy::Update(float deltaTime)
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
-	LiveCount++;
+	LiveTime++;
 	
 }

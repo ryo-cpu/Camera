@@ -2,7 +2,7 @@
 #include"iostream"
 Character::Character()
 {
-    LiveCount = 0;
+    LiveTime = 0;
     isDraw = true;
 }
 int Character::GetImg()
@@ -196,6 +196,16 @@ void Character::Draw()
         MV1DrawModel(Img);
     }
 }
+Sphere_Collision Character::GetAttackCollison()
+{
+    return AttackCollison;
+}
+
+void Character::SetAttackCollison(VECTOR Pos, float size)
+{
+    AttackCollison.SetPos(Pos);
+    AttackCollison.SetSphereSize(size);
+}
 
 
 
@@ -223,19 +233,24 @@ void Character::MoveCollison(VECTOR move)
     Collison.SetPos(VAdd(Pos, move));
 }
 
-int Character::GetLiveCount()
+float Character::GetLiveTime()
 {
-    return LiveCount;
+    return LiveTime;
 }
 
-int Character::GetStartLiveCount()
+void Character::AddLiveTime(float PassedTime)
 {
-    return StartLiveCount;
+    LiveTime += PassedTime;
 }
 
-void Character::SetStartLiveCount(int count)
+int Character::GetStartLiveTime()
 {
-    StartLiveCount = count;
+    return StartLiveTime;
+}
+
+void Character::SetStartLiveTime(int Time)
+{
+    StartLiveTime = Time;
 }
 
 int Character::GetMaxHp()

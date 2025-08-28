@@ -8,12 +8,10 @@
 #include"Player.h"
 #include"Enemy.h"
 #include"Bsr.h"
+#include "SpecialMove.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
-const Camera InitialCamera = Camera(100.0f, 10000.0f, VAdd(StartPlayerPos, VGet(-150.0f, 250.0f, 200.0f)), StartPlayerPos);
-const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
-const VECTOR SpecaleMoveCameraS = VGet(100, -200, -200);
-const VECTOR DefaultCamera = VGet(0, 200, 1000);
+
 
 /// メイン関数
 /// </summary>
@@ -52,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isJunp = false;
 	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(0.00001);
+	player->SetAnimSpeed(1);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(),player->GetAnimType(),player->GetNowAnimTime());
@@ -66,7 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseBackCulling(FALSE);
 	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(0.00001);
+	enemy->SetAnimSpeed(1);
 	enemy->SetAnimType(enemy->Hit);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
@@ -95,6 +93,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ChangeLightTypeDir(VGet(0,-1,0));
 	Bar *playerHp= new Bar(player);
 	Bar *enemyHpBar=new Bar(enemy);
+	SpecialMove *SPMove= new SpecialMove(*camera, *player, *enemy);
 	auto NowTime = std::chrono::high_resolution_clock::now();
 	auto LastTime = NowTime;
 	// 経過時間をミリ秒に変換して取得
@@ -106,7 +105,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		NowTime= std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float, std::milli> duration_ms = NowTime - LastTime;
-		deltaTime = duration_ms.count()/100000;
+		deltaTime = duration_ms.count()/1000;
 		LastTime = NowTime;
 
 
@@ -141,8 +140,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		////////////////////必殺技スタート///////////////////////////////////////////////////////////
 		if (CheckHitKey(KEY_INPUT_G)&&!player->GetInSpecialMove())
 		{
-			player->SetStartLiveCount(player->GetLiveCount());
-			player->SetInSpecialMove(true,enemy->GetPos());
+			SPMove = new SpecialMove(*camera, *player, *enemy);
+			player->SetStartLiveTime(player->GetLiveTime());
+			player->SetInSpecialMove(true);
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////
 		if (CheckHitKey(KEY_INPUT_J))
@@ -186,56 +186,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			camera->ResetOffset(CPos,player->GetPos());
 			camera->Look(VAdd(player->GetPos(), VScale(Distans, 0.75)));
 		}
-		float Distance = VSize(Distans);
+		float Distance = VSize(Distans); 
 	
 		
 ////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//必殺技時のカメラの動き
 		if (player->GetInSpecialMove())
 		{
-			///必殺技の経過時間を出す
-			float MoveONTime = player->GetLiveCount() - player->GetStartLiveCount();
-			if (MoveONTime <= 20)
-			{
-				
-
-			}
-			else if (MoveONTime <= 120)
-			{
-				///中
-		     camera->StartPan();
-			 camera->EndMove();
-			 
-			 if (VSize(VSub(camera->GetOffset(),SpecaleMoveCamerafast))!=0)
-			 {
-				 camera->ResetOffset(SpecaleMoveCamerafast, player->GetPos());
-			 }
-				
-			}
-			else if (MoveONTime <= 200)
-			{
-		      ///終わり
-				camera->EndPan();
-				camera->EndChase();
-				camera->StartMove(VScale(VSub(player->GetPos(),camera->GetPos()),0.01));
-
-				if (VSize(VSub(camera->GetOffset(), SpecaleMoveCameraS)) != 0)
-				{
-					camera->ResetOffset(SpecaleMoveCameraS, player->GetPos());
-				}
-
-			}
-			else if (MoveONTime <= 300)
-			{
-				///終わり
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-
-			}
-			else
-			{
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-				enemy->SetisDraw(true);
-			}
+		 player->SetInSpecialMove(SPMove->Update(deltaTime));
 
 		}
 		///通常時
@@ -265,10 +223,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			player->Update(deltaTime);
 			enemy->Update(deltaTime);
-		}
-		else
-		{
-			player->SpecialMove(deltaTime);
 		}
 		
 		camera->Update(player->GetPos());
@@ -330,7 +284,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		playerHp->Draw();
 		////エネミーの点滅
-		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& player->GetLiveCount() % 7 == 0)
+		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.2f)) < 0.01f)
 		{
 			enemy->SetisDraw( !enemy->GetisDraw());
 			if (camera->GetisZoom())

@@ -7,7 +7,6 @@ class Enemy: public Character
     Character *Target;
     bool IsMotion;
     int MotionType;
-    Sphere_Collision AttackCollison;
 public:
     Enemy();
     enum Motion {Ran,Junp, Dance, ArmSwing,Dwon, bat, Hit };
