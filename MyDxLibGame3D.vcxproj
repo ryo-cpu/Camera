@@ -167,6 +167,7 @@
     <ClCompile Include="fps.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SpecialMove.cpp" />
     <ClCompile Include="Sphere_Collision.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="fps.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SpecialMove.h" />
     <ClInclude Include="Sphere_Collision.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
