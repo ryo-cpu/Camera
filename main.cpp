@@ -254,6 +254,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
 			player->SubHp(enemy->GetAttack());
+			/////必殺キャンセル
+			player->SetInSpecialMove(false);
 		}
 		
 	
