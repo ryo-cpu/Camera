@@ -17,6 +17,7 @@ bool SpecialMove::Update(float DeltaTime)
 		///‹N‚±‚è
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.EndMove();
+		
 	}
 	else if (ElapsedTime <= 2.0)
 	{
@@ -51,6 +52,8 @@ bool SpecialMove::Update(float DeltaTime)
 	}
 	else if (ElapsedTime <= 4.0)
 	{
+		///•KŽE‹Z–³“G
+		enemy.SetAttackCollison(enemy.GetPos(), 0);
 		///ˆÚ“®‚ÆUŒ‚
 	    player.SetCollison(player.GetPos(), 0);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
@@ -64,6 +67,13 @@ bool SpecialMove::Update(float DeltaTime)
 
 	else
 	{
+		VECTOR PushBack = VSub(enemy.GetPos(), player.GetPos());
+		PushBack.y = 0;
+		if (VSize(PushBack) == 0)
+		{
+			PushBack.x + 1;
+		}
+		player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), 600)));
 		player.SetCollison(player.GetPos(), 40);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		enemy.SetisDraw(true);

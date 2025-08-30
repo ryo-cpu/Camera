@@ -25,7 +25,6 @@ protected:
 	float StartLiveTime;
 	int MaxHp;
 	bool isDraw;
-	
 public:
 	Character();
 	int 	GetImg();

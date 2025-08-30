@@ -237,7 +237,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			Sphere_Collision PlayerCollison = player->GetCollison();
 			Sphere_Collision enemyCollison = enemy->GetCollison();
 
-			VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize()));
+			VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize()+1));
 
 			TakeDistance = VSub(TakeDistance, Distance);
 			player->SetMove(VAdd(player->GetMove(), TakeDistance));
