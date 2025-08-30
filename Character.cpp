@@ -159,8 +159,6 @@ float Character::GetAnimSpeed()
 void Character::AnimUpdate(float deltaTime)
 {
 
-   
-
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 
     if (AnimType >= 0)

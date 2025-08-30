@@ -34,7 +34,15 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 		///‹ó’†Zoom
 		camera.EndChase();
-		camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), 0.01));
+		if (VSize(VSub(camera.GetPos(), player.GetPos()))<=100.0f)
+		{
+			camera.EndMove();
+		}
+		else
+		{
+			camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), 0.01));
+		}
+		
 
 		if (VSize(VSub(camera.GetOffset(), SpecaleMoveCameraS)) != 0)
 		{
@@ -44,7 +52,7 @@ bool SpecialMove::Update(float DeltaTime)
 	else if (ElapsedTime <= 4.0)
 	{
 		///ˆÚ“®‚ÆUŒ‚
-	     player.SetCollison(player.GetPos(), 0);
+	    player.SetCollison(player.GetPos(), 0);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		////“–‚½‚è”»’è‚¬‚è‚¬‚è‚ÅŽ~‚Ü‚é
 		player.SetMove(VScale(VSub(HitPoint, player.GetPos()),0.5));
@@ -53,12 +61,7 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetAttackCollison(VAdd(player.GetPos(), AttackPos), 100.f);
 		DrawSphere3D(player.GetAttackCollison().GetPos(), player.GetAttackCollison().GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 	}
-	else if (ElapsedTime <= 5.0)
-	{
-	
-		////—]‰C‚ÌŽžŠÔ
-		player.SetMove(VSub(enemy.GetPos(), player.GetPos()));
-	}
+
 	else
 	{
 		player.SetCollison(player.GetPos(), 40);
