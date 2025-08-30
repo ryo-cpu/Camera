@@ -15,6 +15,8 @@ bool SpecialMove::Update(float DeltaTime)
 	if (ElapsedTime <= 1.5)
 	{
 		///‹N‚±‚è
+		///‚±‚ÌŽžŠÔ‚Í‘OŒ„‚«
+		enemy.Update(DeltaTime);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.EndMove();
 		
