@@ -205,6 +205,17 @@ void Character::SetAttackCollison(VECTOR Pos, float size)
     AttackCollison.SetSphereSize(size);
 }
 
+bool Character::GetIsUpdate()
+{
+    return isUpdate;
+}
+
+void Character::SetIsUpdate(bool isupdate)
+{
+    isUpdate = isupdate;
+}
+
+
 
 
 void Character::Turn(VECTOR Power)

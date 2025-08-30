@@ -25,6 +25,7 @@ protected:
 	float StartLiveTime;
 	int MaxHp;
 	bool isDraw;
+	bool isUpdate;
 public:
 	Character();
 	int 	GetImg();
@@ -71,5 +72,7 @@ public:
 	bool GetisDraw();
 	Sphere_Collision GetAttackCollison();
 	void SetAttackCollison(VECTOR Pos, float size);
+	bool GetIsUpdate();
+	void SetIsUpdate(bool isupdate);
 };
 
