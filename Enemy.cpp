@@ -140,7 +140,7 @@ void Enemy::Update(float deltaTime)
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
 			SetAnimType(Junp);
-			SetSpeed(20);
+			SetSpeed(50);
 		}
 		else
 		{
