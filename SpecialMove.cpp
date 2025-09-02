@@ -24,7 +24,7 @@ bool SpecialMove::Update(float DeltaTime)
 	else if (ElapsedTime <= 2.0)
 	{
 		///”ò‚Ñã‚ª‚è
-		player.SetMove(VGet(0, 10, 0));
+		player.SetMove(VGet(0, 1000*DeltaTime, 0));
 		camera.StartPan();
 		camera.EndMove();
 
@@ -43,7 +43,7 @@ bool SpecialMove::Update(float DeltaTime)
 		}
 		else
 		{
-			camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), 0.01));
+			camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), DeltaTime));
 		}
 		
 
@@ -51,8 +51,9 @@ bool SpecialMove::Update(float DeltaTime)
 		{
 			camera.ResetOffset(SpecaleMoveCameraS, player.GetPos());
 		}
+		MoveLength = VSub(HitPoint, player.GetPos());
 	}
-	else if (ElapsedTime <= 4.0)
+	else if (ElapsedTime <= 5.0)
 	{
 		///•KŽE‹Z–³“G
 		enemy.SetAttackCollison(enemy.GetPos(), 0);
@@ -60,11 +61,16 @@ bool SpecialMove::Update(float DeltaTime)
 	    player.SetCollison(player.GetPos(), 0);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		////“–‚½‚è”»’è‚¬‚è‚¬‚è‚ÅŽ~‚Ü‚é
-		player.SetMove(VScale(VSub(HitPoint, player.GetPos()),0.5));
+		player.SetMove(VScale(MoveLength,DeltaTime*2));
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
 		player.SetAttackCollison(VAdd(player.GetPos(), AttackPos), 100.f);
 		DrawSphere3D(player.GetAttackCollison().GetPos(), player.GetAttackCollison().GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		if (player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
+		{
+			player.SetMove(VScale(MoveLength, 0));
+
+		}
 	}
 
 	else
@@ -75,7 +81,7 @@ bool SpecialMove::Update(float DeltaTime)
 		{
 			PushBack.x + 1;
 		}
-		player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), 600)));
+		player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), -800)));
 		player.SetCollison(player.GetPos(), 40);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		enemy.SetisDraw(true);
