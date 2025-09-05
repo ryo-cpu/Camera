@@ -115,7 +115,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 		ClearDrawScreen();
 /////入力およびその対応///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		if (!player->GetInSpecialMove())
+		if (!player->GetInSpecialMove()&&player->GetAnimType()!=player->Hit)
 		{
 			////マウスの回転処理
 			int NowMouseX, NowMouseY;
@@ -133,6 +133,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->RotaionAxis(player->GetPos(), RotY);
 				player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1), 0));
 				camera->Look(player->GetPos());
+				
 			}
 		}
 		
@@ -164,7 +165,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		 player->SetMove(VAdd(player->GetMove(), G));
 
 		}
-		else
+		else if(!player->GetInSpecialMove())
 		{
 			isInput = player->Input();
 
@@ -225,7 +226,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->Update(deltaTime);
 		}
 		
-		camera->Update(player->GetPos());
+	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 		
@@ -250,6 +251,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison())&&player->GetAnimIndex()!=player->Hit)
 		{
 			player->SetMove(VAdd(VScale( enemy->GetMove(),3),VGet(0,30,0)));
+
 			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
 			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
@@ -272,6 +274,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->SetHp(player->GetAttack());
 			
 		}
+		camera->Update(player->GetPos());
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 		playerHp->Update(*camera);
