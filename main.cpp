@@ -265,13 +265,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison())&&enemy->GetMoveType()!=enemy->hit_stop)
 		{
 			
-			VECTOR Knockback =VScale( VNorm(VSub(enemy->GetPos(), player->GetPos())),player->GetAttackCollison().GetSphereSize());
+			VECTOR Knockback = VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime);
+			if (player->GetInSpecialMove())
+			{
+				Knockback=VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime*10);
+			}
 			Knockback.y = 0;
 			
 			enemy->SetMove((Knockback));
 			enemy->SetMoveType(enemy->hit_stop);
 			enemy->SetAnimType(enemy->Hit);
-			enemy->SetHp(player->GetAttack());
+			enemy->SubHp(player->GetAttack());
 			
 		}
 		camera->Update(player->GetPos());
