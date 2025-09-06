@@ -22,6 +22,8 @@ bool SpecialMove::Update(float DeltaTime)
 		enemy.Update(DeltaTime);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.EndMove();
+		camera.EndZoom();
+
 		
 	}
 	else if (ElapsedTime <= 2.0)
@@ -46,7 +48,7 @@ bool SpecialMove::Update(float DeltaTime)
 		}
 		else
 		{
-			camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), DeltaTime));
+			camera.StartMove(VScale(VSub(player.GetPos(), camera.GetPos()), DeltaTime*2));
 		}
 		
 
