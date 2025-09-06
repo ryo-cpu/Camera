@@ -283,11 +283,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		MV1SetPosition(player->GetImg(), player->GetPos());
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-		if(enemyHpBar->CheakIsDraw(*player,*camera))
+		if (!player->GetInSpecialMove())
 		{
-			enemyHpBar->Draw();
+			if (enemyHpBar->CheakIsDraw(*player, *camera))
+			{
+				enemyHpBar->Draw();
+			}
+			playerHp->Draw();
 		}
-		playerHp->Draw();
 		////エネミーの点滅
 		if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f)
 		{

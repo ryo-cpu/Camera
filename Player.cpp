@@ -120,6 +120,10 @@ void Player::Update(float deltaTime)
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
+	if (AnimType == Hit &&NowAnimTime <= AnimTotalTime)
+	{
+		SetAnimType(Stop);
+	}
 	AnimUpdate(deltaTime);
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
