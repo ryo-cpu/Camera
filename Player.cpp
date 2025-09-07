@@ -1,9 +1,10 @@
 #include "Player.h"
+#include<cmath>
 
 Player::Player()
 {
 	SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
-	MaxHp = 30;
+	MaxHp = 300;
 	Hp = MaxHp;
 	Attack = 10;
 	InSpecialMove = false;
@@ -120,14 +121,18 @@ void Player::Update(float deltaTime)
 		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
-	if (AnimType == Hit &&NowAnimTime <= AnimTotalTime)
+	if (AnimType == Hit &&NowAnimTime >= AnimTotalTime)
 	{
 		SetAnimType(Stop);
 	}
 	AnimUpdate(deltaTime);
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
+	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
+	{
 	
+		SetHp(GetHp() +5);
+	}
 	LiveTime+=deltaTime;
 }
 
@@ -157,6 +162,16 @@ void Player::SetInSpecialMove(bool inSpecialMove)
 {
 	InSpecialMove = inSpecialMove;
 	
+}
+
+void Player::SetLastDamageTime()
+{
+	LastDamageTime = GetLiveTime();
+}
+
+float Player::GetLastDamageTime()
+{
+	return LastDamageTime;
 }
 
 

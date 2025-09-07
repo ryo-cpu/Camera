@@ -15,6 +15,7 @@ class Player :public Character
     VECTOR Grand;
     VECTOR G = VGet(0, -10, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
+    float LastDamageTime;
    
 public:
     Player();
@@ -27,7 +28,8 @@ public:
     bool GetInSpecialMove();
     void SpecialMove(float deltaTime);
     void SetInSpecialMove(bool inSpecialMove);
-  
+    void SetLastDamageTime();
+    float GetLastDamageTime();
 
 
 

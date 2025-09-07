@@ -251,11 +251,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison())&&player->GetAnimIndex()!=player->Hit)
 		{
 			player->SetMove(VAdd(VScale( enemy->GetMove(),3),VGet(0,30,0)));
-
-			player->SetPos(VAdd(player->GetPos(), player->GetMove()));
 			player->SetAnimType(player->Hit);
 			player->SetIsHit(true);
 			player->SubHp(enemy->GetAttack());
+			player->SetLastDamageTime();
 			/////必殺キャンセル
 			player->SetInSpecialMove(false);
 		}
