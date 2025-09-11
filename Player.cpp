@@ -9,6 +9,8 @@ Player::Player()
 	Attack = 10;
 	InSpecialMove = false;
 	IsHit = false;
+	InRolling = false;
+	IsActiveInput = true;
 	Grand = VGet(0, 0, 0);
 }
 
@@ -69,6 +71,11 @@ bool Player::Input()
 
 		isInput = true;
 	}
+	if (CheckHitKey(KEY_INPUT_J))
+	{
+		InRolling = true;
+		SetAnimType(Roll);
+	}
 	if (isInput&&VSize(move)!=0) 
 	{
 		move = VNorm(move);         // ê≥ãKâªÅiï˚å¸ÇæÇØÇíäèoÅj
@@ -125,6 +132,10 @@ void Player::Update(float deltaTime)
 	{
 		SetAnimType(Stop);
 	}
+	if (InRolling)
+	{
+		InRolling = Rolling();
+	}
 	AnimUpdate(deltaTime);
 	MoveCollison(Move);
 	SetPos(VAdd(Pos, Move));
@@ -172,6 +183,21 @@ void Player::SetLastDamageTime()
 float Player::GetLastDamageTime()
 {
 	return LastDamageTime;
+}
+
+bool Player::Rolling()
+{
+	if (VSize(Move) == 0)
+	{
+		
+		Move = VTransformSR(VGet(0, 0, 1), MGetRotY(GetDir().y));
+	}
+	else
+	{
+		Move = VNorm(Move);
+		Move = VTransformSR(Move, MGetRotY(GetDir().y));
+	}
+	return IsAnim;
 }
 
 

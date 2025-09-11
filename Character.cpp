@@ -269,7 +269,8 @@ int Character::GetMaxHp()
 
 void Character::SubHp(int Damage)
 {
-    Hp = Hp - Damage;
+
+    Hp = Hp - Damage>=0? Hp - Damage:0;
 }
 
 void Character::SetisDraw(bool Flg)

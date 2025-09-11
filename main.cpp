@@ -146,7 +146,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			player->SetInSpecialMove(true);
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////
-		if (CheckHitKey(KEY_INPUT_J))
+		if (CheckHitKey(KEY_INPUT_M))
 		{
 			
 		    

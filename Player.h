@@ -9,6 +9,7 @@ class Player :public Character
 
     bool InJump;
     bool IsHit;
+    bool IsActiveInput;
     float Speed;
     bool InSpecialMove;
     VECTOR SpecialTaget;
@@ -16,10 +17,11 @@ class Player :public Character
     VECTOR G = VGet(0, -10, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
     float LastDamageTime;
+    bool InRolling;
    
 public:
     Player();
-    enum Motion { Stop, Ran, Down, Rolling, Kick, Hit };
+    enum Motion { Stop, Ran, Down, Roll, Kick, Hit };
     bool Input();
     void Update(float deltaTime) override;
     void SetGrand(VECTOR grand);
@@ -30,7 +32,7 @@ public:
     void SetInSpecialMove(bool inSpecialMove);
     void SetLastDamageTime();
     float GetLastDamageTime();
-
+    bool Rolling();
 
 
 };
