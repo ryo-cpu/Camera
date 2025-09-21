@@ -9,6 +9,8 @@ void fps::Initialization(double targetFrameTime)
 void fps::Start()
 {
     FrameStart = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<float, std::milli> duration_ms = FrameStart - LastTime;
+    DeltaTime = duration_ms.count() / 1000;
 }
 
 void fps::End()
@@ -21,4 +23,9 @@ void fps::End()
     {
      std::this_thread::sleep_for(std::chrono::duration<double>(sleepTime));
     }
+}
+
+float fps::GetDeltaTime()
+{
+    return DeltaTime;
 }

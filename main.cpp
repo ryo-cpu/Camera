@@ -329,7 +329,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			////回転量を算出
 			float Move = 40 * deltaTime;
 			MATRIX RotY = MGetRotY(ConversionRad(Move));
-			VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, -100));///モデルの位置とPosのずれ直し
+			VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
 			camera->RotaionAxis(Axis, RotY);
 			player->Turn(VGet(0, ConversionRad(Move), 0));
 			camera->Look(Axis);
