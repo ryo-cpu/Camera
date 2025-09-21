@@ -164,6 +164,7 @@ void Character::AnimUpdate(float deltaTime)
     if (AnimType >= 0)
     {  // アニメーションが設定されていれば
         NowAnimTime += deltaTime * AnimSpeed;
+        IsAnim = true;
     }
     if (NowAnimTime >= AnimTotalTime)
     {
@@ -213,6 +214,11 @@ bool Character::GetIsUpdate()
 void Character::SetIsUpdate(bool isupdate)
 {
     isUpdate = isupdate;
+}
+
+bool Character::GetIsAnim()
+{
+    return IsAnim;
 }
 
 

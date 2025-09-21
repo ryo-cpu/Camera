@@ -74,5 +74,6 @@ public:
 	void SetAttackCollison(VECTOR Pos, float size);
 	bool GetIsUpdate();
 	void SetIsUpdate(bool isupdate);
+	bool GetIsAnim();
 };
 
