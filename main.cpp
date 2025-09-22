@@ -118,11 +118,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float deltaTime = duration_ms.count();
 	float TotalTime = 0.0f;
 	///ゲームモード設定
-	int GameMode = Win;
+	int GameMode = Start;
 	bool isInput = false;
 	bool InModeCheng = false;
-	int FadeAlphe = 0;
-	VECTOR BesePoint = VGet(0, 0, 0);
+	int FadeAlpha = 0;
+	VECTOR BasePoint = VGet(0, 0, 0);
+	float FieldSize = 30000.0f;
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		NowTime= std::chrono::high_resolution_clock::now();
@@ -142,7 +143,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		switch (GameMode)
 		{
 		case Game:
-			
+		{
+			if (FadeAlpha > 0 && !InModeCheng)
+			{
+				FadeAlpha -= 255 / 2 * deltaTime;
+				if (FadeAlpha < 0)
+				{
+					FadeAlpha = 0;
+				}
+			}
 			/////入力およびその対応///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (!player->GetInSpecialMove() && player->GetAnimType() != player->Hit)
 			{
@@ -166,7 +175,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 			}
 
-			
+
 			if (player->GetIsHit())
 			{
 				player->SetMove(VAdd(player->GetMove(), G));
@@ -185,7 +194,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetIsHit(false);
 
 			}
-		
+
 			if (CheckHitKey(KEY_INPUT_G))
 			{
 				player->SetInSpecialMove(true);
@@ -193,7 +202,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			}
-		
+
 
 
 			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -212,11 +221,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
 					if (VSize(player->GetMove()) <= 0)
 					{
-						BesePoint = player->GetPos();
+						BasePoint = player->GetPos();
 
 					}
 				}
-				if (VSize(VSub(player->GetPos(), BesePoint)) >= 100.0f && isInput)
+				if (VSize(VSub(player->GetPos(), BasePoint)) >= 100.0f && isInput)
 				{
 					camera->StartMove(VScale(player->GetMove(), 1.0f));
 				}
@@ -312,15 +321,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->Draw();              // モデルの描画
 			// モデルの描画
 				   // モデルの描画
-
+		}
 			break;
 	    case Start:
-		if (FadeAlphe > 0)
+		if (FadeAlpha > 0&&!InModeCheng)
 		{
-		FadeAlphe -= 255 / 2 * deltaTime;
-		if (FadeAlphe < 0)
+		FadeAlpha -= 255 / 2 * deltaTime;
+		if (FadeAlpha < 0)
 		{
-			FadeAlphe = 0;
+			FadeAlpha = 0;
 		}
 	
 		}
@@ -331,7 +340,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MATRIX RotY = MGetRotY(ConversionRad(Move));
 			VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
 			camera->RotaionAxis(Axis, RotY);
-			player->Turn(VGet(0, ConversionRad(Move), 0));
 			camera->Look(Axis);
 			enemy->AnimUpdate(deltaTime);
 			if (!enemy->GetIsAnim())
@@ -340,11 +348,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			if (CheckHitKey(KEY_INPUT_SPACE))
 			{
-				GameMode = Game;
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-
+				InModeCheng = true;
+				
 
 			}
+			if (InModeCheng)
+			{
+				///画面を暗く
+				FadeAlpha += 255 / 2 * deltaTime;
+			}
+			else
+			{
+				///Modeチェンジが押されるまでの表現
+			}
+			if (FadeAlpha >= 255)///画面が真っ黒になったら
+			{
+				GameMode = Game;
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+				InModeCheng = false;
+
+			}
+			
 			
 		}
 		MV1DrawModel(BackModel);
@@ -362,13 +386,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (InModeCheng)
 			{
 				///画面を暗く
-				FadeAlphe += 255/2 * deltaTime;
+				FadeAlpha += 255/2 * deltaTime;
 			}
 			else
 			{
 				///Modeチェンジが押されるまでの表現
 			}
-			if (FadeAlphe>=255)///画面が真っ黒になったら
+			if (FadeAlpha>=255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
 				camera->ResetOffset(StartCamera, enemy->GetPos());
@@ -406,7 +430,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, FadeAlphe);
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, FadeAlpha);
 		DrawBox(0, 0, 1600, 900, GetColor(0, 0, 0), TRUE);
 		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 		
