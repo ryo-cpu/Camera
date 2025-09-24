@@ -8,6 +8,12 @@ const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
 const VECTOR SpecaleMoveCameraS = VGet(100, -300, -500);
 const VECTOR DefaultCamera = VGet(0, 200, 1000);
 const VECTOR StartCamera = VGet(0, 900, 2000);
+const VECTOR LoseCamera = VGet(0, 300, 500);
+const VECTOR WinCameraFast = VGet(500, 1000, 1000);
+const VECTOR WinCameraSecand = VGet(0, 1000, -1000);
+
+
+
 
 class Camera
 {

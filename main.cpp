@@ -147,7 +147,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (FadeAlpha > 0 && !InModeCheng)
 			{
 				FadeAlpha -= 255 / 2 * deltaTime;
-				if (FadeAlpha < 0)
+				if (FadeAlpha > 0)
 				{
 					FadeAlpha = 0;
 				}
@@ -197,6 +197,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			if (CheckHitKey(KEY_INPUT_G))
 			{
+				SPMove = new SpecialMove(*camera,* player, *enemy);
 				player->SetInSpecialMove(true);
 				player->SetStartLiveTime(player->GetLiveTime());
 
@@ -316,40 +317,126 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					camera->StartZoom(200.0f);
 				}
 			}
+			if (player->GetHp() <= 0)
+			{
+				GameMode = Lose;
+				MATRIX RotY = MGetRotY(enemy->GetDir().y);
+				VECTOR Offset = VTransformSR(LoseCamera, RotY);
+				camera->ResetOffset(Offset, player->GetPos());
+				player->SetAnimType(player->Down);
+			}
+			if (enemy->GetHp() <= 0&&!player->GetInSpecialMove())
+			{
+				GameMode = Win;
+				MATRIX RotY = MGetRotY(enemy->GetDir().y);
+				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
+				enemy->SetisDraw(true);
+				enemy->SetAnimType(enemy->Dwon);
+				camera->ResetOffset(Offset, enemy->GetPos());
+				enemy->SetStartLiveTime(enemy->GetLiveTime());
+
+			}
 			MV1DrawModel(BackModel);
 			player->Draw();
 			enemy->Draw();              // モデルの描画
 			// モデルの描画
 				   // モデルの描画
 		}
-			break;
-	    case Start:
-		if (FadeAlpha > 0&&!InModeCheng)
-		{
-		FadeAlpha -= 255 / 2 * deltaTime;
-		if (FadeAlpha < 0)
-		{
-			FadeAlpha = 0;
-		}
-	
-		}
-		else
-		{
-			////回転量を算出
-			float Move = 40 * deltaTime;
-			MATRIX RotY = MGetRotY(ConversionRad(Move));
-			VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
-			camera->RotaionAxis(Axis, RotY);
-			camera->Look(Axis);
-			enemy->AnimUpdate(deltaTime);
-			if (!enemy->GetIsAnim())
+		break;
+		case Start:
+			if (FadeAlpha > 0 && !InModeCheng)
 			{
-				enemy->SetNowAnimTime(0.0f);
+			
+				FadeAlpha -= 255 / 2 * deltaTime;
+				if (FadeAlpha < 0)
+				{
+					FadeAlpha = 0;
+				}
+
 			}
+			else
+			{
+				////回転量を算出
+				float Move = 40 * deltaTime;
+				MATRIX RotY = MGetRotY(ConversionRad(Move));
+				VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
+				camera->RotaionAxis(Axis, RotY);
+				camera->Look(Axis);
+				enemy->AnimUpdate(deltaTime);
+				if (!enemy->GetIsAnim())
+				{
+					enemy->SetNowAnimTime(0.0f);
+				}
+				if (CheckHitKey(KEY_INPUT_SPACE))
+				{
+					InModeCheng = true;
+
+
+				}
+				if (InModeCheng)
+				{
+					///画面を暗く
+					FadeAlpha += 255 / 2 * deltaTime;
+				}
+				else
+				{
+					///Modeチェンジが押されるまでの表現
+				}
+				if (FadeAlpha >= 255)///画面が真っ黒になったら
+				{
+					GameMode = Game;
+					camera->ResetOffset(DefaultCamera, player->GetPos());
+					InModeCheng = false;
+					player = new Player();
+					player->SetPos(StartPlayerPos);
+					bool isJunp = false;
+					player->SetImg(MV1LoadModel("data/player.mv1"));
+					player->SetDir(VGet(0, 0, 0));
+					player->SetAnimSpeed(10);
+					player->SetAnimType(player->Stop);
+					player->SetNowAnimTime(0);
+					MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
+					MV1SetPosition(player->GetImg(), player->GetPos());
+					player->SetScale(1.0f);// 試しに10倍
+					
+					///enemy初期化
+					enemy = new Enemy();
+					enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+					MV1SetPosition(enemy->GetImg(), enemy->GetPos());
+					enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
+					enemy->SetDir(VGet(0, ConversionRad(180), 0));
+					enemy->SetAnimSpeed(10);
+					enemy->SetAnimType(enemy->Dance);
+					enemy->SetNowAnimTime(0);
+					enemy->SetTarget(*player);
+					enemy->SetScale(5.0f);  // 試しに10倍
+
+					playerHp = new Bar(player);
+					enemyHpBar = new Bar(enemy);
+
+
+					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
+
+					
+				}
+				SetFontSize(256);
+				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
+				SetFontSize(64);
+				DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+
+
+			}
+			MV1DrawModel(BackModel);
+
+			enemy->Draw();
+			break;
+		case  Win:
+			MV1DrawModel(BackModel);
+			{
+
 			if (CheckHitKey(KEY_INPUT_SPACE))
 			{
 				InModeCheng = true;
-				
 
 			}
 			if (InModeCheng)
@@ -361,47 +448,48 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				///Modeチェンジが押されるまでの表現
 			}
+			
+			float Time = enemy->GetLiveTime() - enemy->GetStartLiveTime();
+			if (Time <= 2)
+			{
+
+			}
+			else if (Time <= 4)
+			{
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+			}
+			else
+			{
+				MATRIX RotY = MGetRotY(enemy->GetDir().y);
+				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
+				camera->ResetOffset(Offset, enemy->GetPos());
+				if (!enemy->GetIsAnim())
+				{
+					SetFontSize(128);
+					DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
+					SetFontSize(64);
+					DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+
+				}
+				
+
+			}
+		}
+			enemy->AddLiveTime(deltaTime);
+			enemy->AnimUpdate(deltaTime);
+			player -> Draw();
+			enemy->Draw();
+
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
-				GameMode = Game;
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-				InModeCheng = false;
-
-			}
-			
-			
-		}
-		MV1DrawModel(BackModel);
-
-		enemy->Draw();
-			break;
-		case  Win:
-			MV1DrawModel(BackModel);
-
-			if (CheckHitKey(KEY_INPUT_SPACE))
-			{
-				InModeCheng = true;
-
-			}
-			if (InModeCheng)
-			{
-				///画面を暗く
-				FadeAlpha += 255/2 * deltaTime;
-			}
-			else
-			{
-				///Modeチェンジが押されるまでの表現
-			}
-			if (FadeAlpha>=255)///画面が真っ黒になったら
-			{
 				GameMode = Start;
 				camera->ResetOffset(StartCamera, enemy->GetPos());
+				enemy->SetAnimType(enemy->Dance);
 				InModeCheng = false;
-
 			}
-
 			break;
 		case Lose:
+			MV1DrawModel(BackModel);
 			if (CheckHitKey(KEY_INPUT_SPACE))
 			{
 				InModeCheng = true;
@@ -410,19 +498,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (InModeCheng)
 			{
 				///画面を暗く
+				///画面を暗く
+				FadeAlpha += 255 / 2 * deltaTime;
 			}
 			else
 			{
 				///Modeチェンジが押されるまでの表現
 			}
-			if (true)///画面が真っ黒になったら
+			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
 				camera->ResetOffset(StartCamera, enemy->GetPos());
 				InModeCheng = false;
 
 			}
+			if (!player->GetIsAnim())
+			{
+				SetFontSize(128);
+				DrawString(500, 350, "YOU LOSE", GetColor(244, 229, 17));
+				SetFontSize(64);
+				DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+			}
+			player->AddLiveTime(deltaTime);
+			player->AnimUpdate(deltaTime);
+			player->Draw();
+		
 
+			// アルファ値（透明度）の設定（0〜255）
+			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);  // ← 透明度80（調整可能）
+			DrawBox(0, 0, 1600, 1200, GetColor(255, 0, 0), TRUE);
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 			break;
 	

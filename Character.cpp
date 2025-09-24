@@ -263,7 +263,7 @@ int Character::GetStartLiveTime()
     return StartLiveTime;
 }
 
-void Character::SetStartLiveTime(int Time)
+void Character::SetStartLiveTime(float Time)
 {
     StartLiveTime = Time;
 }

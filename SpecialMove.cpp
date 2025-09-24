@@ -32,7 +32,7 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetMove(VGet(0, 1000*DeltaTime, 0));
 		camera.StartPan();
 		camera.EndMove();
-
+		player.SetAttack(1000);
 		if (VSize(VSub(camera.GetOffset(), SpecaleMoveCamerafast)) != 0)
 		{
 			camera.ResetOffset(SpecaleMoveCamerafast, player.GetPos());
@@ -81,6 +81,8 @@ bool SpecialMove::Update(float DeltaTime)
 			player.SetMove(VGet(0,0,0));
 
 		}
+		player.SetAttack(10);
+
 	}
 
 	else

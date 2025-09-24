@@ -65,7 +65,7 @@ public:
 	float GetLiveTime();
 	void  AddLiveTime(float PassedTime);
 	int GetStartLiveTime();
-	void SetStartLiveTime(int time);
+	void SetStartLiveTime(float time);
 	int GetMaxHp();
 	void SubHp(int Damge);
 	void SetisDraw(bool Flg);
