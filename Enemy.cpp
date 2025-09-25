@@ -3,7 +3,7 @@ const float CollisonSize = 600.0f;
 Enemy::Enemy()
 {
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
-	MaxHp = 3;
+	MaxHp = 3000;
 	Hp = MaxHp;
 	Attack = 10;
 

@@ -1,5 +1,4 @@
 #pragma once
-#include"DxLib.h"
 #include"Camera.h"
 #include"Character.h"
 const int screenW = 1600;

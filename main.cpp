@@ -18,7 +18,7 @@ enum GameModeType{Start,Win,Lose,Game};
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 
-
+	
 	// ＤＸライブラリ初期化処理
 	if (DxLib_Init() == -1)
 	{
@@ -152,28 +152,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					FadeAlpha = 0;
 				}
 			}
-			/////入力およびその対応///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (!player->GetInSpecialMove() && player->GetAnimType() != player->Hit)
-			{
-				////マウスの回転処理
-				int NowMouseX, NowMouseY;
-				GetMousePoint(&NowMouseX, &NowMouseY);
-				///移動量を出す
-				int MoveMouseX = MouseX - NowMouseX;
-				int MoveMouseY = MouseY - NowMouseY;
-				if (MoveMouseX != 0 || MoveMouseY != 0)
-				{
-					///マウスの位置を更新
-					MouseX = NowMouseX;
-					MouseY = NowMouseY;
-					////回転量を算出
-					MATRIX RotY = MGetRotY(ConversionRad(MoveMouseX * 0.1));
-					camera->RotaionAxis(player->GetPos(), RotY);
-					player->Turn(VGet(0, ConversionRad(MoveMouseX * 0.1), 0));
-					camera->Look(player->GetPos());
-
-				}
-			}
 
 
 			if (player->GetIsHit())
@@ -192,18 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
 				JumpPower = VGet(0, 30, 0);
 				player->SetIsHit(false);
-
 			}
-
-			if (CheckHitKey(KEY_INPUT_G))
-			{
-				SPMove = new SpecialMove(*camera,* player, *enemy);
-				player->SetInSpecialMove(true);
-				player->SetStartLiveTime(player->GetLiveTime());
-
-
-			}
-
 
 
 			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -431,7 +398,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
 
-					
+					SPMove = new SpecialMove(*camera, *player, *enemy);
 				}
 				SetFontSize(256);
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));

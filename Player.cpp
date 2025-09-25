@@ -1,5 +1,9 @@
 #include "Player.h"
+#include<DxLib.h>
+
 #include<cmath>
+
+
 
 Player::Player()
 {
@@ -19,60 +23,37 @@ bool Player::Input(Camera& camera)
     bool isInput = false;
 	VECTOR move=VGet(0,0,0);
 	float targetAngle =0.0f; // ラジアン角
-
-	if (CheckHitKey(KEY_INPUT_D))
+	XINPUT_STATE* InputState=new XINPUT_STATE;
+	int* XBuf=new int;
+	int* YBuf=new int;
+	SetJoypadDeadZone(DX_INPUT_PAD1, 0.35f);
+	if (GetJoypadNum() == 0)
 	{
-
-		VECTOR R = VGet(-1, 0, 0);
-		R = VTransformSR(R, MGetRotY(GetDir().y));
-		if (AnimType!=Ran||!IsAnim)
-		{
-			SetAnimType(Ran);
-		}
-		move = VAdd(R, move);
-		isInput = true;
-
-	}// 画面をクリア
-	if (CheckHitKey(KEY_INPUT_A))
-	{
-		VECTOR L = VGet(1, 0, 0);
-		L = VTransformSR(L, MGetRotY(GetDir().y));
-		move = VAdd(L, move);
-		if (AnimType != Ran || !IsAnim)
-		{
-			SetAnimType(Ran);
-		}
-
-		isInput = true;
-
+		return false;////PADが繋がってないとダメだ
 	}
-	if (CheckHitKey(KEY_INPUT_W))
+	if (GetJoypadXInputState(DX_INPUT_PAD1,InputState))
 	{
-		VECTOR F = VGet(0, 0, -1);
-		F = VTransformSR(F, MGetRotY(GetDir().y));
-		move = VAdd(F, move);
-		if (AnimType != Ran || !IsAnim)
+		return false;
+	}
+	MATRIX RotY = MGetRotY((InputState->ThumbRX) * 0.00001f);
+	camera.RotaionAxis(GetPos(), RotY);
+	Turn(VGet(0, (InputState->ThumbRX) * 0.00001f, 0));
+	camera.Look(GetPos());
+	VECTOR Dir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
+	Dir = VTransformSR(Dir, MGetRotY(GetDir().y));
+	if (VSize(Dir) >=100)
+	{
+		isInput = true;
+		if (!IsAnim||AnimType==Stop)
 		{
 			SetAnimType(Ran);
 		}
-
-		isInput = true;
-
+		move = VScale(Dir, 0.01f);
 	}
-	if (CheckHitKey(KEY_INPUT_S))
+	
+	if ((InputState->Buttons[XINPUT_BUTTON_RIGHT_SHOULDER]) != 0)
 	{
-		VECTOR D = VGet(0, 0, 1);
-		D = VTransformSR(D, MGetRotY(GetDir().y));
-		move = VAdd(D, move);
-		if (AnimType != Ran || !IsAnim)
-		{
-			SetAnimType(Ran);
-		}
 
-		isInput = true;
-	}
-	if (CheckHitKey(KEY_INPUT_J))
-	{
 		InRolling = true;
 		SetAnimType(Roll);
 	}
@@ -80,21 +61,26 @@ bool Player::Input(Camera& camera)
 	{
 		move = VNorm(move);         // 正規化（方向だけを抽出）
 		move = VScale(move,10);     // スピードを乗算
-		float targetAngle = atan2f(move.x, -move.z); // ラジアン角
-		MV1SetRotationXYZ(Img, VGet(0, -targetAngle, 0));
+		float targetAngle = atan2f(-move.x, -move.z); // ラジアン角
+		MV1SetRotationXYZ(Img, VGet(0, targetAngle, 0));
 		
 	}
 	else
 	{
-		MV1SetRotationXYZ(Img, VGet(0, Dir.y, 0));
+		MV1SetRotationXYZ(Img, VGet(0, GetDir().y, 0));
 
 	}
-    if ((GetMouseInput() & MOUSE_INPUT_LEFT) != 0)
+    if ((InputState->Buttons[XINPUT_BUTTON_B])!=0)
     {
         SetAnimType(Kick);
     }
-	
+	if (InputState->Buttons[XINPUT_BUTTON_X] != 0)
+	{
+		InSpecialMove = true;
+		StartLiveTime = LiveTime;
+	}
 	SetMove(move);
+	
 	
     return isInput;
 }
