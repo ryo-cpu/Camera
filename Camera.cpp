@@ -177,6 +177,11 @@ VECTOR Camera::GetPos()
     return Pos;
 }
 
+void Camera::SetPos(VECTOR pos)
+{
+    Pos = pos;
+}
+
 VECTOR Camera::GetOffset()
 {
     return Offset;

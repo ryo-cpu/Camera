@@ -14,7 +14,7 @@ Player::Player()
 	Grand = VGet(0, 0, 0);
 }
 
-bool Player::Input()
+bool Player::Input(Camera& camera)
 {
     bool isInput = false;
 	VECTOR move=VGet(0,0,0);

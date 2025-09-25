@@ -56,6 +56,7 @@ public:
     void EndMove();
     VECTOR GetDir();
     VECTOR GetPos();
+    void SetPos(VECTOR pos);
     VECTOR GetOffset();
     void Move();
     /// <summary>

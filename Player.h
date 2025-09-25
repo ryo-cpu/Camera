@@ -1,5 +1,6 @@
 #pragma once
 #include"Character.h"
+#include"Camera.h"
 
 
 
@@ -22,7 +23,7 @@ class Player :public Character
 public:
     Player();
     enum Motion { Stop, Ran, Down, Roll, Kick, Hit };
-    bool Input();
+    bool Input(Camera &camera);
     void Update(float deltaTime) override;
     void SetGrand(VECTOR grand);
     bool GetIsHit();

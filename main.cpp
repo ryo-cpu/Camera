@@ -123,7 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool InModeCheng = false;
 	int FadeAlpha = 0;
 	VECTOR BasePoint = VGet(0, 0, 0);
-	float FieldSize = 30000.0f;
+	float FieldSize = 4000.0f;
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		NowTime= std::chrono::high_resolution_clock::now();
@@ -183,7 +183,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			else if (!player->GetInSpecialMove())
 			{
-				isInput = player->Input();
+				isInput = player->Input(*camera);
 
 			}
 			if (player->GetPos().y <= BaseY)
@@ -214,7 +214,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 			///通常時
-			else
+			else if(VSize(VSub(camera->GetPos(),player->GetPos()))>=VSize(DefaultCamera)/2)
 			{
 				if (!isInput)
 				{
@@ -226,11 +226,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 					}
 				}
-				if (VSize(VSub(player->GetPos(), BasePoint)) >= 100.0f && isInput)
+				else if (VSize(VSub(player->GetPos(), BasePoint)) >= 100.0f)
 				{
 					camera->StartMove(VScale(player->GetMove(), 1.0f));
 				}
 			}
+			
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Sphere_Collision PlayerCollison = player->GetCollison();
 			PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
@@ -311,12 +312,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (camera->GetisZoom())
 				{
 					camera->EndZoom();
-				}
+				} 
 				else
 				{
 					camera->StartZoom(200.0f);
 				}
 			}
+			if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
+			{
+				camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
+			}
+			if (VSize(player->GetPos()) > FieldSize)
+			{
+				player->SetPos(VScale(VNorm(player->GetPos()), FieldSize));
+			}
+			if (VSize(enemy->GetPos()) > FieldSize)
+			{
+				enemy->SetPos(VScale(VNorm(enemy->GetPos()), FieldSize));
+			}
+			//////勝ち判定
 			if (player->GetHp() <= 0)
 			{
 				GameMode = Lose;
