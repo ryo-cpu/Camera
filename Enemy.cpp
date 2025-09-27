@@ -68,6 +68,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 	}
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
+		AttackCollison = {};
 		return false;
 	}
 

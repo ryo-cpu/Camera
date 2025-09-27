@@ -444,6 +444,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				MATRIX RotY = MGetRotY(enemy->GetDir().y);
 				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
 				camera->ResetOffset(Offset, enemy->GetPos());
+				enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+
 				if (!enemy->GetIsAnim())
 				{
 					SetFontSize(128);
@@ -489,6 +491,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
+				enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+				MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 				camera->ResetOffset(StartCamera, enemy->GetPos());
 				InModeCheng = false;
 

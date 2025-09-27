@@ -175,7 +175,6 @@ bool Player::Rolling()
 {
 	if (VSize(Move) == 0)
 	{
-		
 		Move = VTransformSR(VGet(0, 0, 1), MGetRotY(GetDir().y));
 	}
 	else
