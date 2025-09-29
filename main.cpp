@@ -348,7 +348,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					enemy->SetNowAnimTime(0.0f);
 				}
-				if (CheckHitKey(KEY_INPUT_SPACE))
+				if (CheckHitKey(KEY_INPUT_SPACE)&&!GetJoypadNum() == 0)
 				{
 					InModeCheng = true;
 

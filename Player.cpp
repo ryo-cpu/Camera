@@ -29,10 +29,12 @@ bool Player::Input(Camera& camera)
 	SetJoypadDeadZone(DX_INPUT_PAD1, 0.35f);
 	if (GetJoypadNum() == 0)
 	{
+		SetMove(move);
 		return false;////PAD‚ªŒq‚ª‚Á‚Ä‚È‚¢‚Æƒ_ƒ‚¾
 	}
 	if (GetJoypadXInputState(DX_INPUT_PAD1,InputState))
 	{
+		SetMove(move);
 		return false;
 	}
 	MATRIX RotY = MGetRotY((InputState->ThumbRX) * 0.00001f);
