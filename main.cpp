@@ -122,6 +122,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool isInput = false;
 	bool InModeCheng = false;
 	int FadeAlpha = 0;
+	bool OnWall = false;
+	
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -181,7 +183,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 			///通常時
-			else if(VSize(VSub(camera->GetPos(),player->GetPos()))>=VSize(DefaultCamera)/2)
+			else if(!OnWall)
 			{
 				if (!isInput)
 				{
@@ -198,7 +200,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					camera->StartMove(VScale(player->GetMove(), 1.0f));
 				}
 			}
-			
+			/////カメラが壁に触れているときは動きと同じ大きさの壁ー＞中心のベクトルを足したものをカメラにつける
+			else
+			{
+				VECTOR Move = player->GetMove();
+				////////0からかめらまで
+				VECTOR Line = camera->GetPos();
+				////カメラに近づく力を求める
+				VECTOR  Proj = VScale(Line, VDot(Move, Line) / VSize(Line));
+				///マイナス側かの判断
+				if (VSize(VSub(VNorm(Line), VNorm(Proj))) <= 0)
+				{
+					camera->StartMove(player->GetMove());
+				}
+				else
+				{
+					Move = VSub(Move, Proj);
+					camera->StartMove(Move);
+					camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
+
+				}
+			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Sphere_Collision PlayerCollison = player->GetCollison();
 			PlayerCollison.SetPos(VAdd(PlayerCollison.GetPos(), player->GetMove()));
@@ -288,7 +310,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
 			{
 				camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
+				OnWall = true;
 			}
+			else
+			{
+				OnWall = false;
+			}
+			
 			if (VSize(player->GetPos()) > FieldSize)
 			{
 				player->SetPos(VScale(VNorm(player->GetPos()), FieldSize));
