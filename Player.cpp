@@ -74,6 +74,7 @@ bool Player::Input(Camera& camera)
 			StartLiveTime = LiveTime;
 			InRolling = true;
 			SetAnimType(Roll);
+			Collison = {};
 		}
 		if (isInput && VSize(move) != 0)
 		{
@@ -207,8 +208,11 @@ bool Player::Rolling()
 	
 	if (!IsAnim)
 	{
-		float move = 500;
-		SetPos(VAdd(Pos, VScale(Move,move)));		
+		float move = 300;
+		Move = VNorm(Move);
+		SetPos(VAdd(Pos, VScale(Move,move)));	
+		SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+
 	
 	}
 	return IsAnim;
