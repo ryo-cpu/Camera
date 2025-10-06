@@ -123,7 +123,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool InModeCheng = false;
 	int FadeAlpha = 0;
 	bool OnWall = false;
-	
+	XINPUT_STATE* InputState=new XINPUT_STATE;
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -208,7 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				VECTOR Line = camera->GetPos();
 				////カメラに近づく力を求める
 				VECTOR  Proj = VScale(Line, VDot(Move, Line) / VSize(Line));
-				///マイナス側かの判断
+				///壁から離れるとき
 				if (VSize(VSub(VNorm(Line), VNorm(Proj))) <= 0)
 				{
 					camera->StartMove(player->GetMove());
@@ -257,6 +257,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetLastDamageTime();
 				/////必殺キャンセル
 				player->SetInSpecialMove(false);
+				camera->ResetOffset(DefaultCamera, player->GetPos());
 			}
 
 

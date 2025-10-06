@@ -91,6 +91,7 @@ bool Player::Input(Camera& camera)
 		}
 		if ((InputState->Buttons[XINPUT_BUTTON_B]) != 0)
 		{
+
 			SetAnimType(Kick);
 		}
 		if (InputState->Buttons[XINPUT_BUTTON_X] != 0)
@@ -119,16 +120,25 @@ void Player::Update(float deltaTime)
 		Pos.y = Pos.y < 0 ? 0 : Pos.y;
 	 }
 
-	if (AnimType == Kick && (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime))
+	if (AnimType == Kick)
 	{
-		VECTOR AttackPos = VGet(0, 100, -200);
-		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
-		SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
-		
+		if (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime)
+		{
+			VECTOR AttackPos = VGet(0, 100, -200);
+			AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
+			SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
+		}
+		else
+		{
+			AttackCollison = {};
+		}
+		SetAnimSpeed(30.0f);
 	}
 	else
 	{
 		AttackCollison = {};
+		SetAnimSpeed(10.0f);
+
 	}
 	if (Collison.GetSphereSize() == 0)
 	{
