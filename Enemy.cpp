@@ -136,7 +136,7 @@ void Enemy::Update(float deltaTime)
 			MotionType = tink;
 			SetAnimType(Dance);
 		}
-		else if (VSize(distance) >= 300)
+		else if (VSize(distance) >= 1000)
 		{
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
@@ -146,6 +146,7 @@ void Enemy::Update(float deltaTime)
 		else
 		{
 			MotionType = DownArmSwing;
+			SetAnimType(ArmSwing);
 	
 		}
 	StartLiveTime = LiveTime;
