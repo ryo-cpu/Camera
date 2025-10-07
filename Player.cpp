@@ -151,6 +151,7 @@ void Player::Update(float deltaTime)
 	}
 	if (InRolling)
 	{
+		SetAnimSpeed(20.0);
 		InRolling = Rolling();
 		if (!InRolling)
 		{
@@ -159,8 +160,9 @@ void Player::Update(float deltaTime)
 	}
 	else
 	{
+		SetAnimSpeed(10.0);
 		MoveCollison(Move);
-	   SetPos(VAdd(Pos, Move));
+	    SetPos(VAdd(Pos, Move));
 
 	}
 	AnimUpdate(deltaTime);

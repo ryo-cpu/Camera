@@ -78,6 +78,18 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
 	const float EndTime = 5;
+	if (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime)
+	{
+		VECTOR AttackPos = VGet(0, 50, -400);
+		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
+		SetAttackCollison(VAdd(Pos, AttackPos), 300.f);
+		DrawSphere3D(GetPos(), 200, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+
+	}
+	else
+	{
+		AttackCollison = {};
+	}
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;

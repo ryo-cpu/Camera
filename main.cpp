@@ -248,9 +248,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			///enemy攻撃
 
-			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()) && player->GetAnimIndex() != player->Hit)
+			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
 			{
-				player->SetMove(VAdd(VScale(enemy->GetMove(), 3), VGet(0, 30, 0)));
+				VECTOR Move = VGet(0, 1, -1);
+				Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
+				Move = VScale(Move, enemy->GetAttackCollison().GetSphereSize());
+				player->SetMove(Move);
 				player->SetAnimType(player->Hit);
 				player->SetIsHit(true);
 				player->SubHp(enemy->GetAttack());

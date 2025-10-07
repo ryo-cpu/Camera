@@ -87,7 +87,7 @@ bool SpecialMove::Update(float DeltaTime)
 		///PlayerƒJƒ‰enemy‚Ì’¼üó‚ÉƒJƒƒ‰
 		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
 
-		camera.ResetOffset(VScale(Offset,0.25), player.GetPos());
+		camera.ResetOffset(VScale(Offset,1.25), player.GetPos());
 		player.SetMove(VScale(VNorm(VSub(enemy.GetPos(),player.GetPos())),VSize(SPInitPos)*DeltaTime));
 		///UŒ‚‚Ì”»’è‚ğì¬
 		VECTOR AttackPos = VGet(0, 0, 0);
