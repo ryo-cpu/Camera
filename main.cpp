@@ -175,7 +175,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 
+
 			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
+			{
+				OnWall = true;
+			}
+			else
+			{
+				OnWall = false;
+			}
+			
 					//必殺技時のカメラの動き
 			if (player->GetInSpecialMove())
 			{
@@ -206,21 +216,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				VECTOR Move = player->GetMove();
 				////////0からかめらまで
 				VECTOR Line = camera->GetPos();
+				Line.y = 0;
 				////カメラに近づく力を求める
-				VECTOR  Proj = VScale(Line, VDot(Move, Line) / VSize(Line));
+				VECTOR  Proj = VScale(Line,( VDot(Move, Line) / VDot(Line,Line)));
 				///壁から離れるときかつ一定距離離れたとき
-				if (VSize(VSub(VNorm(Line), VNorm(Proj))) <= 0)
+				if (VSize(DefaultCamera)>VSize(camera->GetOffset()))
 				{
 					camera->StartMove(player->GetMove());
 				}
 				else
 				{
-					///壁からの横移動
-					Move = VSub(Move, Proj);
-					///回転移動　軸を中心にして
-					camera->StartMove(Move);
-					///もし超えていたら戻すよう
-					camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
+					
+					VECTOR PassingPoint = VAdd(player->GetPos(), Move);
+					VECTOR SetPoint = VNorm(PassingPoint);
+					SetPoint = VScale(SetPoint, FieldSize);
+					SetPoint.y = 200;
+					camera->SetPos(SetPoint);
+					camera->Look(player->GetPos());
+
+				
+					
+					/////壁からの横移動
+					//Move = VSub(Move, Proj);
+					/////回転移動　軸を中心にして
+					//camera->StartMove(Move);
+					/////もし超えていたら戻すよう
+					///*camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));*/
 
 				}
 			}
