@@ -208,15 +208,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				VECTOR Line = camera->GetPos();
 				////カメラに近づく力を求める
 				VECTOR  Proj = VScale(Line, VDot(Move, Line) / VSize(Line));
-				///壁から離れるとき
+				///壁から離れるときかつ一定距離離れたとき
 				if (VSize(VSub(VNorm(Line), VNorm(Proj))) <= 0)
 				{
 					camera->StartMove(player->GetMove());
 				}
 				else
 				{
+					///壁からの横移動
 					Move = VSub(Move, Proj);
+					///回転移動　軸を中心にして
 					camera->StartMove(Move);
+					///もし超えていたら戻すよう
 					camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
 
 				}
@@ -311,6 +314,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					camera->StartZoom(200.0f);
 				}
 			}
+			else
+			{
+				camera->EndZoom();
+				enemy->SetisDraw(true);
+			}
 			if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
 			{
 				camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
@@ -380,7 +388,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					enemy->SetNowAnimTime(0.0f);
 				}
-				if (CheckHitKey(KEY_INPUT_SPACE)&&!GetJoypadNum() == 0)
+				if (CheckHitKey(KEY_INPUT_SPACE)&&GetJoypadNum() != 0)
 				{
 					InModeCheng = true;
 
