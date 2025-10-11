@@ -223,7 +223,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				////カメラに近づく力を求める
 				VECTOR  Proj = VScale(Line,( VDot(Move, Line) / VDot(Line,Line)));
 				///壁から離れるときかつ一定距離離れたとき
-				if (VSize(DefaultCamera)>VSize(camera->GetOffset()))
+				if (VSize(DefaultCamera)<VSize(camera->GetOffset()))
 				{
 					camera->StartMove(player->GetMove());
 				}
@@ -287,7 +287,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetLastDamageTime();
 				/////必殺キャンセル
 				player->SetInSpecialMove(false);
-				camera->ResetOffset(DefaultCamera, player->GetPos());
+				/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
 			}
 
 

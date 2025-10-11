@@ -44,6 +44,9 @@ bool Player::Input(Camera& camera)
 			MATRIX RotY = MGetRotY((InputState->ThumbRX) * 0.00001f);
 			camera.RotaionAxis(GetPos(), RotY);
 			Turn(VGet(0, (InputState->ThumbRX) * 0.00001f, 0));
+			///ˆê’è‹——£‚É•Û‚Â
+			VECTOR Offset =VScale(VNorm(VSub(Pos, camera.GetPos())),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
+			camera.ResetOffset(Offset, Pos);
 			camera.Look(GetPos());
 			
 
@@ -69,7 +72,6 @@ bool Player::Input(Camera& camera)
 			else
 			{
 				move = VNorm(move);
-				move = VTransformSR(move, MGetRotY(GetDir().y));
 			}
 			StartLiveTime = LiveTime;
 			InRolling = true;
