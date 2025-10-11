@@ -84,8 +84,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	///背景
 	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
+	int  TileModel = MV1LoadModel("data/Tile.mv1");
 	MV1SetPosition(BackModel, VGet(0, 0, 0));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
+	MV1SetScale(TileModel, VGet(5, 1, 5));
+
 
 
 
@@ -379,6 +382,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 			MV1DrawModel(BackModel);
+			MV1DrawModel(TileModel);
 			player->Draw();
 			enemy->Draw();              // モデルの描画
 			// モデルの描画
@@ -469,6 +473,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			}
 			MV1DrawModel(BackModel);
+			MV1DrawModel(TileModel);
+
 
 			enemy->Draw();
 			break;
@@ -523,7 +529,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			enemy->AnimUpdate(deltaTime);
 			player -> Draw();
 			enemy->Draw();
-
+			MV1DrawModel(TileModel);
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
@@ -568,7 +574,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);
 			player->Draw();
-		
+			MV1DrawModel(TileModel);
 
 			// アルファ値（透明度）の設定（0〜255）
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);  // ← 透明度80（調整可能）
