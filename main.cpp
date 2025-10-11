@@ -208,7 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 					}
 				}
-				else if (VSize(VSub(player->GetPos(), BasePoint)) >= 100.0f)
+				else 
 				{
 					camera->StartMove(VScale(player->GetMove(), 1.0f));
 				}
@@ -233,7 +233,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					VECTOR PassingPoint = VAdd(player->GetPos(), Move);
 					VECTOR SetPoint = VNorm(PassingPoint);
 					SetPoint = VScale(SetPoint, FieldSize);
-					SetPoint.y = 200;
 					camera->SetPos(SetPoint);
 					camera->Look(player->GetPos());
 
@@ -244,7 +243,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					/////回転移動　軸を中心にして
 					//camera->StartMove(Move);
 					/////もし超えていたら戻すよう
-					///*camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));*/
+					camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
 
 				}
 			}

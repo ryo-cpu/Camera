@@ -19,8 +19,9 @@ class Camera
 {
     VECTOR Pos;
     VECTOR Offset;
-    VECTOR Angle;
+    VECTOR Angle;////Ž©•ª‚ÌŒü‚«
     VECTOR Dir;
+    VECTOR TagetAngle;////‘ŠŽè‚©‚ç‚ÌŽ©•ª‚ÌŒü‚«
     bool isMove, isPan, isChase,isZoom;
     float zoomDistance;///‚»‚Ì‹——£•ª‹ß‚¸‚­
 
@@ -102,6 +103,13 @@ public:
     /// </summary>
     VECTOR RotFreeAxis(VECTOR & V1, const  VECTOR & Axis, const MATRIX & Power);
     void GetAngle(VECTOR Target);
+    void SetAngle(VECTOR angle);
+    void AddAngle(VECTOR addangle);
+    void GetTAngle(VECTOR Target);
+    void SetTAngle(VECTOR angle);
+    void AddTAngle(VECTOR addangle);
+    VECTOR GetTagetAngle();
+
 
 }
 

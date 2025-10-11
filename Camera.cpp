@@ -356,5 +356,48 @@ void Camera::GetAngle(VECTOR Target)
 
 }
 
+void Camera::SetAngle(VECTOR angle)
+{
+    Angle = angle;
+}
+
+void Camera::AddAngle(VECTOR addangle)
+{
+    Angle = VAdd(Angle, addangle);
+}
+
+void Camera::GetTAngle(VECTOR Target)
+{
+    // 方向ベクトル
+    VECTOR dir;
+    dir.x = Pos.x-Target.x ;
+    dir.y = Pos.y- Target.y;
+    dir.z = Pos.z-Target.z ;
+
+    // カメラの角度を算出（ラジアン）
+    float yaw = atan2f(dir.x, dir.z); // Y軸回転（左右）
+    float pitch = -atan2f(dir.y, sqrtf(dir.x * dir.x + dir.z * dir.z)); // X軸回転（上下）
+    float roll = 0.0f; // Z軸回転は通常0（使っていなければ）
+
+    TagetAngle.x = pitch;
+    TagetAngle.y = yaw;
+    TagetAngle.z = roll;
+}
+
+void Camera::SetTAngle(VECTOR angle)
+{
+    TagetAngle = angle;
+}
+
+void Camera::AddTAngle(VECTOR addangle)
+{
+    TagetAngle = VAdd(addangle,TagetAngle);
+}
+
+VECTOR Camera::GetTagetAngle()
+{
+    return TagetAngle;
+}
+
 
 

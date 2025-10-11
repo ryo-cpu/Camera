@@ -41,14 +41,39 @@ bool Player::Input(Camera& camera)
 	{
 		if (InputState->ThumbRX >= 100 || InputState->ThumbRX <= -100)
 		{
-			MATRIX RotY = MGetRotY((InputState->ThumbRX) * 0.00001f);
-			camera.RotaionAxis(GetPos(), RotY);
-			Turn(VGet(0, (InputState->ThumbRX) * 0.00001f, 0));
-			///ˆê’è‹——£‚É•Û‚Â
-			VECTOR Offset =VScale(VNorm(VSub(Pos, camera.GetPos())),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
-			camera.ResetOffset(Offset, Pos);
-			camera.Look(GetPos());
+
+			float Rot= (InputState->ThumbRX) * 0.00001f;
+			Turn(VGet(0, Rot, 0));
+			VECTOR F = VScale(VGet(0, 0, 1),VSize(DefaultCamera));
+			camera.GetTAngle(Pos);
+			camera.AddTAngle(VGet(0, Rot, 0));
+			VECTOR RotP = camera.GetTagetAngle();
+			MATRIX RotX = MGetRotX(RotP.x);
+			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
+			MATRIX RotAll = MMult(RotY,RotX);
+			camera.ResetOffset( VTransformSR(F, RotAll),Pos);
+			camera.Look(Pos);
+
+		}
+		if (InputState->ThumbRY >= 100 || InputState->ThumbRY <= -100)
+		{
+		
+			/*float Rot = (InputState->ThumbRY) * 0.00001f;
+			VECTOR F = VScale(VGet(0, 0, 1), VSize(DefaultCamera));
+			camera.GetTAngle(Pos);
+			VECTOR RotP = camera.GetTagetAngle();
 			
+			camera.AddTAngle(VGet(Rot, 0, 0));
+			if (RotP.x > 0&&RotP.x<1.75)
+			{
+				RotP = camera.GetTagetAngle();
+			}
+			
+			MATRIX RotX = MGetRotX(RotP.x);
+			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
+			MATRIX RotAll = MMult(RotX, RotY);
+			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
+			camera.Look(Pos);*/
 
 		}
 		VECTOR Dir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
