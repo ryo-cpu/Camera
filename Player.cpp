@@ -45,12 +45,11 @@ bool Player::Input(Camera& camera)
 			float Rot= (InputState->ThumbRX) * 0.00001f;
 			Turn(VGet(0, Rot, 0));
 			VECTOR F = VScale(VGet(0, 0, 1),VSize(DefaultCamera));
-			camera.GetTAngle(Pos);
 			camera.AddTAngle(VGet(0, Rot, 0));
 			VECTOR RotP = camera.GetTagetAngle();
 			MATRIX RotX = MGetRotX(RotP.x);
 			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
-			MATRIX RotAll = MMult(RotY,RotX);
+			MATRIX RotAll = MMult(RotX,RotY);
 			camera.ResetOffset( VTransformSR(F, RotAll),Pos);
 			camera.Look(Pos);
 

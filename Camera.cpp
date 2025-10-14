@@ -139,13 +139,14 @@ void Camera::Chase(VECTOR TPos)
     SetCameraPositionAndTarget_UpVecY(VAdd(TPos,Offset), TPos);
     
     Pos = VAdd(TPos, Offset);
-    GetAngle(TPos);
+    CalculateAngle(TPos);
 }
 
 void Camera::Look(VECTOR TPos)
 {
     SetCameraPositionAndTarget_UpVecY(VAdd(TPos, Offset), TPos);
-    GetAngle(TPos);
+    CalculateAngle(TPos);
+
 }
 
 void Camera::StartMove(VECTOR dir)
@@ -221,7 +222,8 @@ void Camera::ResetOffset(VECTOR offset, VECTOR TPos)
     Offset = offset;
     Pos = VAdd(TPos, Offset);
     SetCameraPositionAndTarget_UpVecY(VAdd(TPos, Offset), TPos);
-    GetAngle(TPos);
+    CalculateAngle(TPos);
+
 
 }
 
@@ -286,7 +288,7 @@ void Camera::Zoom(VECTOR TPos)
 void Camera::Pan(VECTOR TPos)
 {
    
-    GetAngle(TPos);
+    CalculateAngle(TPos);
     SetCameraPositionAndTarget_UpVecY(Pos, TPos);
    
 
@@ -336,7 +338,7 @@ VECTOR Camera::RotFreeAxis(VECTOR& V1, const VECTOR& Axis, const MATRIX& Power)
     return V1;
 }
 
-void Camera::GetAngle(VECTOR Target)
+void Camera::CalculateAngle(VECTOR Target)
 {
     // 方向ベクトル
     VECTOR dir;
@@ -352,9 +354,10 @@ void Camera::GetAngle(VECTOR Target)
     Angle.x = pitch;
     Angle.y = yaw;
     Angle.z = roll;
-    
 
 }
+
+
 
 void Camera::SetAngle(VECTOR angle)
 {
@@ -366,13 +369,13 @@ void Camera::AddAngle(VECTOR addangle)
     Angle = VAdd(Angle, addangle);
 }
 
-void Camera::GetTAngle(VECTOR Target)
+void Camera::CalculateTargetAngle(VECTOR Target)
 {
     // 方向ベクトル
     VECTOR dir;
-    dir.x = Pos.x-Target.x ;
-    dir.y = Pos.y- Target.y;
-    dir.z = Pos.z-Target.z ;
+    dir.x = Pos.x - Target.x;
+    dir.y = Pos.y - Target.y;
+    dir.z = Pos.z - Target.z;
 
     // カメラの角度を算出（ラジアン）
     float yaw = atan2f(dir.x, dir.z); // Y軸回転（左右）
@@ -383,6 +386,8 @@ void Camera::GetTAngle(VECTOR Target)
     TagetAngle.y = yaw;
     TagetAngle.z = roll;
 }
+
+
 
 void Camera::SetTAngle(VECTOR angle)
 {

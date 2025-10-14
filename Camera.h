@@ -102,10 +102,10 @@ public:
     /// デストロイア
     /// </summary>
     VECTOR RotFreeAxis(VECTOR & V1, const  VECTOR & Axis, const MATRIX & Power);
-    void GetAngle(VECTOR Target);
+    void CalculateAngle(VECTOR Target);
     void SetAngle(VECTOR angle);
     void AddAngle(VECTOR addangle);
-    void GetTAngle(VECTOR Target);
+    void CalculateTargetAngle(VECTOR Target);
     void SetTAngle(VECTOR angle);
     void AddTAngle(VECTOR addangle);
     VECTOR GetTagetAngle();

@@ -96,7 +96,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetCameraPositionAndTarget_UpVecY(VGet(0, 0, 0), player->GetPos());
 	////スタート時のカメラ
 	Camera* camera = new Camera(100.0f, 10000.0f, VAdd(enemy->GetPos(),StartCamera), enemy->GetPos());
-	camera->GetAngle(PlayerPos);
+	camera->CalculateAngle(PlayerPos);
+	camera->CalculateTargetAngle(player->GetPos());
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f, 0.3f));
 	ChangeLightTypeDir(VGet(0, -1, 0));
 
@@ -169,6 +170,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				isInput = player->Input(*camera);
 
 			}
+			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
+			{
+				OnWall = true;
+				VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
+				VECTOR SetPoint = VNorm(PassingPoint);
+				SetPoint = VScale(SetPoint, FieldSize);
+				SetPoint.y = camera->GetPos().y;
+				camera->SetPos(SetPoint);
+				camera->Look(player->GetPos());
+			}
+			else
+			{
+				OnWall = false;
+			}
+			if (VSize(player->GetPos()) > FieldSize)
+			{
+				player->SetMove(VGet(0, 0, 0));
+				player->SetPos(VScale(VNorm(player->GetPos()), FieldSize));
+			}
 			if (player->GetPos().y <= BaseY)
 			{
 				isJunp = false;
@@ -180,14 +200,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
-			{
-				OnWall = true;
-			}
-			else
-			{
-				OnWall = false;
-			}
+			
 			
 					//必殺技時のカメラの動き
 			if (player->GetInSpecialMove())
@@ -200,8 +213,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				if (!isInput)
 				{
-					/*	player->SetMove(VScale(player->GetMove(), 0.5f));*/
+					
+				
 					camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
+					
 					if (VSize(player->GetMove()) <= 0)
 					{
 						BasePoint = player->GetPos();
@@ -233,6 +248,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					VECTOR PassingPoint = VAdd(player->GetPos(), Move);
 					VECTOR SetPoint = VNorm(PassingPoint);
 					SetPoint = VScale(SetPoint, FieldSize);
+					SetPoint.y = camera->GetPos().y;
 					camera->SetPos(SetPoint);
 					camera->Look(player->GetPos());
 
@@ -243,9 +259,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					/////回転移動　軸を中心にして
 					//camera->StartMove(Move);
 					/////もし超えていたら戻すよう
-					camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
 
 				}
+				camera->Look(player->GetPos());
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Sphere_Collision PlayerCollison = player->GetCollison();
@@ -254,7 +270,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (!player->GetInSpecialMove())
 			{
 				player->Update(deltaTime);
-				enemy->Update(deltaTime);
+				/*enemy->Update(deltaTime);*/
 			}
 			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
@@ -307,6 +323,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->SubHp(player->GetAttack());
 
 			}
+			//////カメラの押し戻し
 			camera->Update(player->GetPos());
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -352,10 +369,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				OnWall = false;
 			}
 			
-			if (VSize(player->GetPos()) > FieldSize)
-			{
-				player->SetPos(VScale(VNorm(player->GetPos()), FieldSize));
-			}
+		
 			if (VSize(enemy->GetPos()) > FieldSize)
 			{
 				enemy->SetPos(VScale(VNorm(enemy->GetPos()), FieldSize));
