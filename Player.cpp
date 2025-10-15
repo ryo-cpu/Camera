@@ -44,7 +44,7 @@ bool Player::Input(Camera& camera)
 
 			float Rot= (InputState->ThumbRX) * 0.00001f;
 			Turn(VGet(0, Rot, 0));
-			VECTOR F = VScale(VGet(0, 0, 1),VSize(DefaultCamera));
+			VECTOR F = VScale(VGet(0, 0, 1),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
 			camera.AddTAngle(VGet(0, Rot, 0));
 			VECTOR RotP = camera.GetTagetAngle();
 			MATRIX RotX = MGetRotX(RotP.x);

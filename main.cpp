@@ -170,24 +170,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				isInput = player->Input(*camera);
 
 			}
+			////入力された移動を調整
 			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
 			{
 				OnWall = true;
-				VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
-				VECTOR SetPoint = VNorm(PassingPoint);
-				SetPoint = VScale(SetPoint, FieldSize);
-				SetPoint.y = camera->GetPos().y;
-				camera->SetPos(SetPoint);
-				camera->Look(player->GetPos());
 			}
 			else
 			{
 				OnWall = false;
 			}
-			if (VSize(player->GetPos()) > FieldSize)
+			if (VSize(VAdd(player->GetPos(),player->GetMove())) > FieldSize)
 			{
-				player->SetMove(VGet(0, 0, 0));
-				player->SetPos(VScale(VNorm(player->GetPos()), FieldSize));
+				VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
+				VECTOR SetPoint = VNorm(PassingPoint);
+				SetPoint = VScale(SetPoint, FieldSize);
+				player->SetMove(VSub(SetPoint,player->GetPos()));
 			}
 			if (player->GetPos().y <= BaseY)
 			{
@@ -196,7 +193,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				JumpPower = VGet(0, 30, 0);
 				player->SetIsHit(false);
 			}
-
 
 
 			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +233,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Line.y = 0;
 				////カメラに近づく力を求める
 				VECTOR  Proj = VScale(Line,( VDot(Move, Line) / VDot(Line,Line)));
-				///壁から離れるときかつ一定距離離れたとき
+				VECTOR PassingPoint = VAdd(player->GetPos(), Move);
+				VECTOR SetPoint = VNorm(PassingPoint);
+				SetPoint = VScale(SetPoint, FieldSize);
+				float Rate = VSize(SetPoint) / VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z));///Yの高さは比率でとる
+				SetPoint.y = camera->GetPos().y * Rate;
+				VECTOR Offset = VSub(SetPoint, player->GetPos());
+				camera->ResetOffset(Offset, player->GetPos());
+				camera->Look(player->GetPos());
+
+				/////ちかちかする理由
 				if (VSize(DefaultCamera)<VSize(camera->GetOffset()))
 				{
 					camera->StartMove(player->GetMove());
@@ -245,16 +250,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				else
 				{
 					
-					VECTOR PassingPoint = VAdd(player->GetPos(), Move);
-					VECTOR SetPoint = VNorm(PassingPoint);
-					SetPoint = VScale(SetPoint, FieldSize);
-					SetPoint.y = camera->GetPos().y;
-					camera->SetPos(SetPoint);
-					camera->Look(player->GetPos());
-
+					
 				
 					
-					/////壁からの横移動
+					/////壁からの横移動.
 					//Move = VSub(Move, Proj);
 					/////回転移動　軸を中心にして
 					//camera->StartMove(Move);
@@ -359,7 +358,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->EndZoom();
 				enemy->SetisDraw(true);
 			}
-			if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
+			/*if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
 			{
 				camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
 				OnWall = true;
@@ -368,7 +367,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				OnWall = false;
 			}
-			
+			*/
 		
 			if (VSize(enemy->GetPos()) > FieldSize)
 			{
