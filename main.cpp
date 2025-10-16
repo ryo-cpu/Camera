@@ -130,6 +130,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	XINPUT_STATE* InputState=new XINPUT_STATE;
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
+	///光源
+	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		NowTime= std::chrono::high_resolution_clock::now();
@@ -219,7 +221,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 					}
 				}
-				else 
+				else if(VSize(VSub(player->GetPos(), BasePoint)) >= 500)
 				{
 					camera->StartMove(VScale(player->GetMove(), 1.0f));
 				}

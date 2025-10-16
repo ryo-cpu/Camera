@@ -37,7 +37,7 @@ bool Player::Input(Camera& camera)
 		SetMove(move);
 		return false;
 	}
-	if (!InRolling)
+	if (!InRolling&&AnimType!=Kick)
 	{
 		if (InputState->ThumbRX >= 100 || InputState->ThumbRX <= -100)
 		{
@@ -75,16 +75,16 @@ bool Player::Input(Camera& camera)
 			camera.Look(Pos);*/
 
 		}
-		VECTOR Dir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
-		Dir = VTransformSR(Dir, MGetRotY(GetDir().y));
-		if (VSize(Dir) >= 100)
+		VECTOR MoveDir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
+		MoveDir = VTransformSR(MoveDir, MGetRotY(GetDir().y));
+		if (VSize(MoveDir) >= 100)
 		{
 			isInput = true;
 			if (!IsAnim || AnimType == Stop)
 			{
 				SetAnimType(Ran);
 			}
-			move = VScale(Dir, 0.01f);
+			move = VScale(MoveDir, 0.01f);
 		}
 
 		if ((InputState->Buttons[XINPUT_BUTTON_RIGHT_SHOULDER]) != 0)
@@ -117,7 +117,11 @@ bool Player::Input(Camera& camera)
 		}
 		if ((InputState->Buttons[XINPUT_BUTTON_B]) != 0)
 		{
-
+			if (VSize(move) <= 0)move = VGet(0, 0, -1);
+			else move = VNorm(VScale( move,1));
+			VECTOR Front =VTransformSR(move,MGetRotY(Dir.y));
+			move =VScale(Front,AnimSpeed);
+			SetAnimSpeed(50.0f);
 			SetAnimType(Kick);
 		}
 		if (InputState->Buttons[XINPUT_BUTTON_X] != 0)
@@ -158,7 +162,11 @@ void Player::Update(float deltaTime)
 		{
 			AttackCollison = {};
 		}
-		SetAnimSpeed(30.0f);
+		
+		if (!IsAnim)
+		{
+			SetAnimType(Stop);
+		}
 	}
 	else
 	{
@@ -181,12 +189,13 @@ void Player::Update(float deltaTime)
 		InRolling = Rolling();
 		if (!InRolling)
 		{
+			SetAnimSpeed(10.0);
 			SetAnimType(Stop);
 		}
 	}
 	else
 	{
-		SetAnimSpeed(10.0);
+		
 		MoveCollison(Move);
 	    SetPos(VAdd(Pos, Move));
 
