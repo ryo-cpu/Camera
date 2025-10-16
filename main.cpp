@@ -2,8 +2,7 @@
 #include<vector>
 #include "DxLib.h"
 #include"Arithmetic.h"
-
-
+#include"Effect.h"
 #include "fps.h"
 #include"Player.h"
 #include"Enemy.h"
@@ -36,6 +35,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetWriteZBufferFlag(TRUE);		// Ｚバッファへの書き込みを行う
 	SetUseBackCulling(TRUE);		// バックカリングを行う
 
+	if(Effekseer_Init(8000) == -1)
+	{
+		DxLib_End();
+		return -1;
+	}
+	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
 	////マウス系の初期化　宣言
 	int MouseX, MouseY;
 	GetMousePoint(&MouseX, &MouseY);
