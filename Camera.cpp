@@ -156,7 +156,7 @@ void Camera::StartMove(VECTOR dir)
     isMove = true;
     Dir = dir;
 
-}
+    }
 
 void Camera::ChangeMove(VECTOR dir)
 {

@@ -624,7 +624,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete(Collision_Measurement);
 	
 
-
+	Effkseer_End();
 
 	// ＤＸライブラリの後始末
 	DxLib_End();
