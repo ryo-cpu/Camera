@@ -13,6 +13,7 @@ public:
    Effect();
    Effect(VECTOR StartPos,EffectImg Img);
    void  Update(float deltaTime);
+   int GetPlayHandle();
    
 
 };

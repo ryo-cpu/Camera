@@ -16,10 +16,18 @@ void Effect::Update(float deltaTime)
 		Pos = VAdd(Pos, VScale(Move, deltaTime));
 		// 再生中のエフェクトを移動する。
 		SetPosPlayingEffekseer3DEffect(PlayHandle, Pos.x, Pos.y, Pos.z);
-		// Effekseerにより再生中のエフェクトを更新する。
-		UpdateEffekseer3D();
+	
 	}
 	
+}
+
+int Effect::GetPlayHandle()
+{
+	if (PlayHandle >= 0) {
+
+		return PlayHandle;
+	}
+	return -1;
 }
 
 
