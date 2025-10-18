@@ -17,6 +17,12 @@ void EffectM::Update(float detalTime)
 void EffectM::Add(EffectImg origin)
 {
 	///’Ç‰Á‹@”\‚ÍŒã‚Å
+	if (Pool[0] != nullptr)
+	{
+		delete Pool[0];
+		Pool[0] = nullptr;
+
+	}
 	Pool[0] =new Effect(VGet(0, 0, 0),origin);
 }
 

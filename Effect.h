@@ -1,17 +1,19 @@
 #pragma once
 #include<iostream>
-#include "EffekseerForDXLib.h"
+#include"EffectImg.h"
 class Effect
 {
-    int Model;
+    
     int PlayHandle;
     VECTOR Move;
     VECTOR Pos;
+   
 public:
-   Effect(std::string Link);
-   void Play(VECTOR StratPos);
+  
+   Effect();
+   Effect(VECTOR StartPos,EffectImg Img);
    void  Update(float deltaTime);
-   void  Draw();
+   
 
 };
 

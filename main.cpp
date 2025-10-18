@@ -8,6 +8,7 @@
 #include"Enemy.h"
 #include"Bsr.h"
 #include "SpecialMove.h"
+#include "EffectM.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -34,6 +35,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseZBufferFlag(TRUE);		// Ｚバッファを使用する
 	SetWriteZBufferFlag(TRUE);		// Ｚバッファへの書き込みを行う
 	SetUseBackCulling(TRUE);		// バックカリングを行う
+	SetWriteZBuffer3D(TRUE);
 
 	if(Effekseer_Init(8000) == -1)
 	{
@@ -135,7 +137,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	XINPUT_STATE* InputState=new XINPUT_STATE;
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
-	///光源
+	///Effet
+	EffectImg *ImpactE=new EffectImg("data/Laser01.efkefc",100);
+	EffectM effectM;
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -144,7 +148,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		deltaTime = duration_ms.count()/1000;
 		LastTime = NowTime; 
 		isInput = false;
-
+		Effekseer_Sync3DSetting();
 
 
 		SetUseLighting(true); // ライティングを有効にする
@@ -428,6 +432,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->RotaionAxis(Axis, RotY);
 				camera->Look(Axis);
 				enemy->AnimUpdate(deltaTime);
+				if (CheckHitKey(KEY_INPUT_W))
+				{
+			
+					effectM.Add(*ImpactE,VGet(0,600,0));
+				}
 				if (!enemy->GetIsAnim())
 				{
 					enemy->SetNowAnimTime(0.0f);
@@ -493,8 +502,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
-
-
+			effectM.Update(deltaTime);
+			effectM.Draw();
 			enemy->Draw();
 			break;
 		case  Win:
