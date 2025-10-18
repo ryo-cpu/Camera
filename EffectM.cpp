@@ -4,6 +4,7 @@
 
 
 Effect* EffectM::Pool[MaxEffect] = { nullptr };
+int Observer[MaxEffect] = { NULL };
 
 void EffectM::Update(float detalTime)
 {
