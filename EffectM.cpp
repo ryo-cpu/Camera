@@ -4,7 +4,7 @@
 
 
 Effect* EffectM::Pool[MaxEffect] = { nullptr };
-int Observer[MaxEffect] = { NULL };
+int EffectM::Observer[MaxEffect] = { 0 };
 
 void EffectM::Update(float detalTime)
 {
@@ -16,6 +16,27 @@ void EffectM::Update(float detalTime)
 			Pool[i]->Update(detalTime);
 			if (IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle())!=0)
 			{
+				for (int j = 0; j < MaxEffect; j++)
+				{
+					if (Observer[j] == i+1)
+					{
+						Observer[j] = 0;
+						///for分を抜けたい
+						///オブザーバーを詰める
+						
+						break;
+					}
+
+				}
+				for (int j = 1; j < MaxEffect; j++)
+				{
+					if (Observer[j - 1] == 0)
+					{
+						Observer[j - 1] = Observer[j];
+						Observer[j] = 0;
+					}
+
+				}
 				delete Pool[i];
 				Pool[i] = nullptr;
 			}
@@ -33,16 +54,41 @@ void EffectM::Add(EffectImg origin)
 		if (Pool[i] == nullptr)
 		{
 			Pool[i] = new Effect(VGet(0, 0, 0), origin);
+			for (int j = 0; j < MaxEffect; j++)
+			{
+				if (Observer[j] == 0)
+				{
+					Observer[j] = i+1;
+
+					break;
+				}
+
+			}
 			return ;
+			
 
 		}
 	}
-	/*if (Pool[0] != nullptr)
+	///もっとも古いものと取り替える
+	delete Pool[Observer[0] - 1];
+	Pool[Observer[0] - 1] = nullptr;
+	Pool[Observer[0]-1]= new Effect(VGet(0, 0, 0), origin);
+	///最古の場所を最新に変える
+	///いったん保持
+	int TNP = Observer[0];
+	Observer[0] = 0;
+	///０にして詰める
+	for (int j = 1; j < MaxEffect; j++)
 	{
-		delete Pool[0];
-		Pool[0] = nullptr;
+		if (Observer[j - 1] == 0)
+		{
+			Observer[j - 1] = Observer[j];
+			Observer[j] = 0;
+		}
 
-	}*/
+	}
+	Observer[MaxEffect - 1] = TNP;
+
 }
 
 void EffectM::Add(EffectImg origin, VECTOR StartPos)
@@ -53,7 +99,17 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos)
 		if (Pool[i] == nullptr)
 		{
 			Pool[i] = new Effect(StartPos, origin);
+			for (int j = 0; j < MaxEffect; j++)
+			{
+				if (Observer[j] == 0)
+				{
+					Observer[j] = i+1;
+					exit;
+				}
+
+			}
 			return;
+			
 
 		}
 	}

@@ -1,7 +1,7 @@
 #pragma once
 #include<iostream>
 #include "Effect.h"
-const int MaxEffect = 20;
+const int MaxEffect = 10;
 class EffectM 
 {
 	static Effect* Pool[MaxEffect];
