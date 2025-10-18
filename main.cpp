@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float FieldSize = 4000.0f;
 	///Effet
 	EffectImg *ImpactE=new EffectImg("data/Laser01.efkefc",100);
-	EffectM effectM;
+	
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -434,8 +434,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->AnimUpdate(deltaTime);
 				if (CheckHitKey(KEY_INPUT_W))
 				{
-			
-					effectM.Add(*ImpactE,VGet(0,600,0));
+			     
+					EffectM::Add(*ImpactE);
 				}
 				if (!enemy->GetIsAnim())
 				{
@@ -502,8 +502,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
-			effectM.Update(deltaTime);
-			effectM.Draw();
+			EffectM::Update(deltaTime);
+			EffectM::Draw();
 			enemy->Draw();
 			break;
 		case  Win:

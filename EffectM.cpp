@@ -3,7 +3,7 @@
 
 
 
-	
+Effect* EffectM::Pool[MaxEffect] = { nullptr };
 
 void EffectM::Update(float detalTime)
 {
