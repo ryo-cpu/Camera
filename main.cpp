@@ -138,7 +138,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
 	///Effet
-	EffectImg *ImpactE=new EffectImg("data/Laser01.efkefc",100);
+	EffectImg *ImpactE=new EffectImg("data/Shock.efkefc",100);
 	
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
