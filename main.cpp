@@ -138,9 +138,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
 	///Effet
-	EffectImg *ImpactE=new EffectImg("data/Shock.efkefc",100);
-	EffectImg* LightnigE = new EffectImg("data/Lightnig.efkefc", 100);
-	EffectImg* SpE = new EffectImg("data/KickWave.efkefc", 100);
+	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
+	EffectImg* LightnigE = new EffectImg("data/Lightning.efkefc", 100);
+	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100);
+	EffectM::Add(*RingE);
+
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -281,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (!player->GetInSpecialMove())
 			{
 				player->Update(deltaTime);
-				/*enemy->Update(deltaTime);*/
+				enemy->Update(deltaTime);
 			}
 			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
 			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
@@ -327,6 +329,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					Knockback = VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime * 10);
 				}
 				Knockback.y = 0;
+				EffectM::Add(*ImpactE, player->GetAttackCollison().GetPos());
 
 				enemy->SetMove((Knockback));
 				enemy->SetMoveType(enemy->hit_stop);
@@ -407,6 +410,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
+			EffectM::Update(deltaTime);
+			EffectM::Draw();
 			player->Draw();
 			enemy->Draw();              // モデルの描画
 			// モデルの描画
@@ -436,7 +441,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (CheckHitKey(KEY_INPUT_W))
 				{
 			     
-					EffectM::Add(*ImpactE);
+					/*EffectM::Add(*ImpactE);*/
+					EffectM::Add(*RingE);
+
 				}
 				if (!enemy->GetIsAnim())
 				{

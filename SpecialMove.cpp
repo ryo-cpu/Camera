@@ -1,5 +1,5 @@
 #include "SpecialMove.h"
-
+#include"EffectM.h"
 
 SpecialMove::SpecialMove(Camera& Camera, Character& Player, Character& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {
@@ -15,7 +15,7 @@ bool SpecialMove::Update(float DeltaTime)
 	float ElapsedTime = player.GetLiveTime() -player.GetStartLiveTime();
 	VECTOR Front =VScale(VNorm( VSub(player.GetPos(),enemy.GetPos())),player.GetAttackCollison().GetSphereSize());
 	VECTOR HitPoint = VAdd(VGet(Front.x,400,Front.z), enemy.GetPos());
-
+	EffectImg* SpE = new EffectImg("data/KickWave.efkefc", 100);
 
 	if (ElapsedTime <= 1.5)
 	{
@@ -56,7 +56,7 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetPos(VAdd(enemy.GetPos(), InitPos));
 		///ƒJƒ‚ç
 		camera.ResetOffset(VScale(VNorm(VSub(enemy.GetPos(), player.GetPos())), 1000), player.GetPos());
-
+		EffectM::Add(*SpE,player.GetPos());
 		NowMode = Zoom;
 	}
 	

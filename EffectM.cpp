@@ -14,6 +14,7 @@ void EffectM::Update(float detalTime)
 		{
 			///Œã‚Å‚·‚×‚Ä‚É‚·‚é
 			Pool[i]->Update(detalTime);
+			int Test = IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle());
 			if (IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle())!=0)
 			{
 				for (int j = 0; j < MaxEffect; j++)
@@ -37,8 +38,8 @@ void EffectM::Update(float detalTime)
 					}
 
 				}
-				delete Pool[i];
-				Pool[i] = nullptr;
+			delete Pool[i];
+			Pool[i] = nullptr;
 			}
 		}
 	}

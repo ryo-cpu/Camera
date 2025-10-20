@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include"EffectImg.h"
+
 class Effect
 {
     
