@@ -10,6 +10,8 @@ public:
 	static void Update(float detalTime);
 	static	void Add(EffectImg origin);
 	static	void Add(EffectImg origin,VECTOR StartPos);
+	static	void Add(EffectImg origin, VECTOR StartPos,VECTOR StartRot);
+	static	void Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot,VECTOR move);
 
 	static	void Draw();
    EffectM();

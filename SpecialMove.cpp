@@ -56,7 +56,9 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetPos(VAdd(enemy.GetPos(), InitPos));
 		///ƒJƒ‚ç
 		camera.ResetOffset(VScale(VNorm(VSub(enemy.GetPos(), player.GetPos())), 1000), player.GetPos());
-		EffectM::Add(*SpE,player.GetPos());
+		////“G‚Æ©•ª‚ÌŠp“x‚ğ‹‚ß‚é
+		float rat = atan2(EnemyDir.z,EnemyDir.x);
+		EffectM::Add(*SpE,player.GetPos(), VGet(0, rat, 0));
 		NowMode = Zoom;
 	}
 	

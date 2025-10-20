@@ -136,6 +136,94 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos)
 	Observer[MaxEffect - 1] = TNP;
 }
 
+void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot)
+{
+	///’Ç‰Á‹@”\‚ÍŒã‚Å
+	for (int i = 0; i < MaxEffect; i++)
+	{
+		if (Pool[i] == nullptr)
+		{
+			Pool[i] = new Effect(StartPos, origin,StartRot);
+			for (int j = 0; j < MaxEffect; j++)
+			{
+				if (Observer[j] == 0)
+				{
+					Observer[j] = i + 1;
+					exit;
+				}
+
+			}
+			return;
+
+
+		}
+	}
+
+	///‚à‚Á‚Æ‚àŒÃ‚¢‚à‚Ì‚ÆŽæ‚è‘Ö‚¦‚é
+	delete Pool[Observer[0] - 1];
+	Pool[Observer[0] - 1] = nullptr;
+	Pool[Observer[0] - 1] = new Effect(VGet(0, 0, 0), origin);
+	///ÅŒÃ‚ÌêŠ‚ðÅV‚É•Ï‚¦‚é
+	///‚¢‚Á‚½‚ñ•ÛŽ
+	int TNP = Observer[0];
+	Observer[0] = 0;
+	///‚O‚É‚µ‚Ä‹l‚ß‚é
+	for (int j = 1; j < MaxEffect; j++)
+	{
+		if (Observer[j - 1] == 0)
+		{
+			Observer[j - 1] = Observer[j];
+			Observer[j] = 0;
+		}
+
+	}
+	Observer[MaxEffect - 1] = TNP;
+}
+
+void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR move)
+{
+	///’Ç‰Á‹@”\‚ÍŒã‚Å
+	for (int i = 0; i < MaxEffect; i++)
+	{
+		if (Pool[i] == nullptr)
+		{
+			Pool[i] = new Effect(StartPos, origin, StartRot,move);
+			for (int j = 0; j < MaxEffect; j++)
+			{
+				if (Observer[j] == 0)
+				{
+					Observer[j] = i + 1;
+					exit;
+				}
+
+			}
+			return;
+
+
+		}
+	}
+
+	///‚à‚Á‚Æ‚àŒÃ‚¢‚à‚Ì‚ÆŽæ‚è‘Ö‚¦‚é
+	delete Pool[Observer[0] - 1];
+	Pool[Observer[0] - 1] = nullptr;
+	Pool[Observer[0] - 1] = new Effect(VGet(0, 0, 0), origin);
+	///ÅŒÃ‚ÌêŠ‚ðÅV‚É•Ï‚¦‚é
+	///‚¢‚Á‚½‚ñ•ÛŽ
+	int TNP = Observer[0];
+	Observer[0] = 0;
+	///‚O‚É‚µ‚Ä‹l‚ß‚é
+	for (int j = 1; j < MaxEffect; j++)
+	{
+		if (Observer[j - 1] == 0)
+		{
+			Observer[j - 1] = Observer[j];
+			Observer[j] = 0;
+		}
+
+	}
+	Observer[MaxEffect - 1] = TNP;
+}
+
 void EffectM::Draw()
 {
 	DrawEffekseer3D();
