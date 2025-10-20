@@ -139,7 +139,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float FieldSize = 4000.0f;
 	///Effet
 	EffectImg *ImpactE=new EffectImg("data/Shock.efkefc",100);
-	
+	EffectImg* LightnigE = new EffectImg("data/Lightnig.efkefc", 100);
+	EffectImg* SpE = new EffectImg("data/KickWave.efkefc", 100);
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{

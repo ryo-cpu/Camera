@@ -5,9 +5,25 @@
 Effect::Effect(VECTOR StartPos, EffectImg Img)
 {
 	Move = VGet(0, 0, 0);
+	Rot = VGet(0, 0, 0);
 	Pos = StartPos;
 	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
 }
+
+Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot)
+{
+	Move = VGet(0, 0, 0);
+	Rot = VGet(0, 0, 0);
+	Pos = StartPos;
+	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
+
+}
+
+Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move)
+{
+}
+
+
 
 void Effect::Update(float deltaTime)
 {
