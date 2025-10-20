@@ -32,6 +32,7 @@ void Effect::Update(float deltaTime)
 		Pos = VAdd(Pos, VScale(Move, deltaTime));
 		// 再生中のエフェクトを移動する。
 		SetPosPlayingEffekseer3DEffect(PlayHandle, Pos.x, Pos.y, Pos.z);
+		
 	
 	}
 	

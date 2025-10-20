@@ -114,7 +114,26 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos)
 
 		}
 	}
-	//¡‚Í‹ó‚«‚ª‚È‚¢‚ÆÄ¶‚µ‚È‚¢
+	
+	///‚à‚Á‚Æ‚àŒÃ‚¢‚à‚Ì‚Ææ‚è‘Ö‚¦‚é
+	delete Pool[Observer[0] - 1];
+	Pool[Observer[0] - 1] = nullptr;
+	Pool[Observer[0] - 1] = new Effect(VGet(0, 0, 0), origin);
+	///ÅŒÃ‚ÌêŠ‚ğÅV‚É•Ï‚¦‚é
+	///‚¢‚Á‚½‚ñ•Û
+	int TNP = Observer[0];
+	Observer[0] = 0;
+	///‚O‚É‚µ‚Ä‹l‚ß‚é
+	for (int j = 1; j < MaxEffect; j++)
+	{
+		if (Observer[j - 1] == 0)
+		{
+			Observer[j - 1] = Observer[j];
+			Observer[j] = 0;
+		}
+
+	}
+	Observer[MaxEffect - 1] = TNP;
 }
 
 void EffectM::Draw()
