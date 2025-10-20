@@ -116,6 +116,8 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), -800)));
 		player.SetCollison(player.GetPos(), 40);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
+		camera.CalculateAngle(player.GetPos());
+		camera.CalculateTargetAngle(player.GetPos());
 		enemy.SetisDraw(true);
 		return false;
 	}

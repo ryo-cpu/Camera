@@ -298,6 +298,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				TakeDistance = VSub(TakeDistance, Distance);
 				player->SetMove(VAdd(player->GetMove(), TakeDistance));
 				player->SetPos(VAdd(player->GetPos(), player->GetMove()));
+				player->SetDir(VGet(0, 0, 0));
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+				camera->CalculateAngle(player->GetPos());
+				camera->CalculateTargetAngle(player->GetPos());
 			}
 
 
@@ -315,6 +319,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetLastDamageTime();
 				/////必殺キャンセル
 				player->SetInSpecialMove(false);
+				player->SetDir(VGet(0, 0, 0));
+				camera->ResetOffset(DefaultCamera, player->GetPos());
+				camera->CalculateAngle(player->GetPos());
+				camera->CalculateTargetAngle(player->GetPos());
 				/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
 			}
 
