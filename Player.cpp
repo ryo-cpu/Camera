@@ -57,22 +57,23 @@ bool Player::Input(Camera& camera)
 		if (InputState->ThumbRY >= 100 || InputState->ThumbRY <= -100)
 		{
 		
-			/*float Rot = (InputState->ThumbRY) * 0.00001f;
+			float Rot = (InputState->ThumbRY) * 0.00001f;
 			VECTOR F = VScale(VGet(0, 0, 1), VSize(DefaultCamera));
-			camera.GetTAngle(Pos);
 			VECTOR RotP = camera.GetTagetAngle();
 			
-			camera.AddTAngle(VGet(Rot, 0, 0));
-			if (RotP.x > 0&&RotP.x<1.75)
+			if (RotP.x + Rot<=0&&RotP.x+Rot>=-0.7)
 			{
-				RotP = camera.GetTagetAngle();
+				camera.AddTAngle(VGet(Rot, 0, 0));
 			}
 			
-			MATRIX RotX = MGetRotX(RotP.x);
-			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
+
+			
+			MATRIX RotX = MGetRotX(camera.GetTagetAngle().x);
+			MATRIX RotY = MGetRotY(camera.GetTagetAngle().y);///Z‚Í‰ñ“]‚µ‚È‚¢
 			MATRIX RotAll = MMult(RotX, RotY);
 			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
-			camera.Look(Pos);*/
+			
+			camera.Look(Pos);
 
 		}
 		VECTOR MoveDir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));

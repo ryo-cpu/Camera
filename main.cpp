@@ -286,7 +286,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->Update(deltaTime);
 			}
 			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
+		/*	if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
 			{
 				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
 
@@ -302,7 +302,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->ResetOffset(DefaultCamera, player->GetPos());
 				camera->CalculateAngle(player->GetPos());
 				camera->CalculateTargetAngle(player->GetPos());
-			}
+			}*/
 
 
 			///enemy攻撃
@@ -364,7 +364,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				playerHp->Draw();
 			}
 			////エネミーの点滅
-			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove() && fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f)
+			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f&&player->GetAttackCollison().GetSphereSize()>0)
 			{
 				enemy->SetisDraw(!enemy->GetisDraw());
 				if (camera->GetisZoom())
