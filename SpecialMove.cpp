@@ -88,7 +88,14 @@ bool SpecialMove::Update(float DeltaTime)
 	    player.SetCollison(player.GetPos(), 0);
 		///Playerカラenemyの直線状にカメラ
 		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
-		if(fabs(fmod(ElapsedTime, 0.5f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
+		if (ElapsedTime >= 3.5)
+		{
+			////Offsetを回転させたもの
+			MATRIX RotY = MGetRotY(DX_PI_F / 2);
+			Offset = VAdd(Offset, VTransformSR(Offset, RotY));
+		}
+		
+		if(fabs(fmod(ElapsedTime, 0.05f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
 		{ 
 			////新しい残像を作る
 			        AfterImage NewAfterImage;
