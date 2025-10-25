@@ -88,16 +88,17 @@ bool SpecialMove::Update(float DeltaTime)
 	    player.SetCollison(player.GetPos(), 0);
 		///Playerカラenemyの直線状にカメラ
 		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
-		if(fabs(fmod(player.GetLiveTime(), 0.1f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
+		if(fabs(fmod(ElapsedTime, 0.5f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
 		{ 
 			////新しい残像を作る
 			        AfterImage NewAfterImage;
-			
 					NewAfterImage.handle = MV1DuplicateModel(player.GetImg());
 					NewAfterImage.pos = MV1GetPosition(player.GetImg());
 					NewAfterImage.rot = MV1GetRotationXYZ(player.GetImg());
-					NewAfterImage.alpha = 10;
-					NewAfterImage.valid = MV1GetSemiTransState(NewAfterImage.handle);;
+					NewAfterImage.alpha = 100;
+					NewAfterImage.valid = MV1GetSemiTransState(NewAfterImage.handle);
+			
+
 				
 					int frameNum = MV1GetFrameNum(player.GetImg());
 					for (int i = 0; i < frameNum; i++)
@@ -112,8 +113,10 @@ bool SpecialMove::Update(float DeltaTime)
 
 			
 		}
+		
 		for (int i = 0; i < Afterimages.size(); i++)
 		{
+			
 			MV1SetPosition(Afterimages[i].handle,Afterimages[i].pos);
 			MV1SetRotationXYZ(Afterimages[i].handle,Afterimages[i].rot);
 			MV1SetOpacityRate(Afterimages[i].handle,Afterimages[i].alpha / 255.0f);
@@ -133,7 +136,7 @@ bool SpecialMove::Update(float DeltaTime)
 			player.SetMove(VGet(0,0,0));
 
 		}
-		player.SetAttack(10);
+		player.SetAttack(200);
 	}
 	else if (ElapsedTime <= 6.0)
 	{
