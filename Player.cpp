@@ -129,6 +129,8 @@ bool Player::Input(Camera& camera)
 		{
 			InSpecialMove = true;
 			StartLiveTime = LiveTime;
+			
+
 		}
 		SetMove(move);
 	}

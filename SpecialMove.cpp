@@ -36,6 +36,8 @@ bool SpecialMove::Update(float DeltaTime)
 		camera.StartPan();
 		camera.EndMove();
 		player.SetAttack(1000);
+		StartJoypadVibration(DX_INPUT_PAD1, 500, 100, 1);
+
 		if (VSize(VSub(camera.GetOffset(), SpecaleMoveCamerafast)) != 0)
 		{
 			camera.ResetOffset(SpecaleMoveCamerafast, player.GetPos());
@@ -82,6 +84,7 @@ bool SpecialMove::Update(float DeltaTime)
 	}
 	else if (ElapsedTime <= 5.0)
 	{
+
 		///•KŽE‹Z–³“G
 		enemy.SetAttackCollison(enemy.GetPos(), 0);
 		///ˆÚ“®‚ÆUŒ‚
@@ -139,6 +142,8 @@ bool SpecialMove::Update(float DeltaTime)
 		
 		if (player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
 		{
+			StartJoypadVibration(DX_INPUT_PAD1, 100, 300, 0);
+			StartJoypadVibration(DX_INPUT_PAD1, 1000, 50, 1);
 			///’âŽ~
 			player.SetMove(VGet(0,0,0));
 
