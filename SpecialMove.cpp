@@ -26,10 +26,7 @@ bool SpecialMove::Update(float DeltaTime)
 		camera.EndMove();
 		camera.EndZoom();
 		NowMode = Jump;
-		for (int i = 0; i < 10; i++)
-		{
-			Anafrerimage[i].valid = false;
-		}
+		Afterimages.clear();
 		
 	}
 	else if (ElapsedTime<=2.0)
@@ -93,47 +90,34 @@ bool SpecialMove::Update(float DeltaTime)
 		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
 		if(fabs(fmod(player.GetLiveTime(), 0.1f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
 		{ 
-			for (int i = 0; i < 10; i++)
-			{
-				if (Anafrerimage[i].valid == false)
-				{
-					Anafrerimage[i].handle = MV1DuplicateModel(player.GetImg());
-					Anafrerimage[i].pos = MV1GetPosition(player.GetImg());
-					Anafrerimage[i].rot = MV1GetRotationXYZ(player.GetImg());
-					Anafrerimage[i].alpha = 10;
-					Anafrerimage[i].valid = true;
+			////V‚µ‚¢Žc‘œ‚ðì‚é
+			        AfterImage NewAfterImage;
+			
+					NewAfterImage.handle = MV1DuplicateModel(player.GetImg());
+					NewAfterImage.pos = MV1GetPosition(player.GetImg());
+					NewAfterImage.rot = MV1GetRotationXYZ(player.GetImg());
+					NewAfterImage.alpha = 10;
+					NewAfterImage.valid = MV1GetSemiTransState(NewAfterImage.handle);;
+				
 					int frameNum = MV1GetFrameNum(player.GetImg());
-					for (int j = 0; j < frameNum; j++)
+					for (int i = 0; i < frameNum; i++)
 					{
-						MATRIX m = MV1GetFrameLocalMatrix(player.GetImg(), j);
-						MV1SetFrameUserLocalMatrix(Anafrerimage[i].handle, j, m);
+						MATRIX m = MV1GetFrameLocalMatrix(player.GetImg(), i);
+						MV1SetFrameUserLocalMatrix(NewAfterImage.handle, i, m);
 					}
-					break;
-				}
-				for (int j = 1; j < 10; j++)
-				{
-					Anafrerimage[j - 1] = Anafrerimage[j];
-				}
-				Anafrerimage[9].handle = MV1DuplicateModel(player.GetImg());
-				Anafrerimage[9].pos = MV1GetPosition(player.GetImg());
-				Anafrerimage[9].rot = MV1GetRotationXYZ(player.GetImg());
-				Anafrerimage[9].alpha = 100;
-				Anafrerimage[9].valid = true;
-				int frameNum = MV1GetFrameNum(player.GetImg());
-				for (int i = 0; i < frameNum; i++)
-				{
-					MATRIX m = MV1GetFrameLocalMatrix(player.GetImg(), i);
-					MV1SetFrameUserLocalMatrix(Anafrerimage[9].handle, i, m);
-				}
+					Afterimages.push_back(NewAfterImage);
+		
+				
+				
 
-			}
+			
 		}
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < Afterimages.size(); i++)
 		{
-			MV1SetPosition(Anafrerimage[i].handle, Anafrerimage[i].pos);
-			MV1SetRotationXYZ(Anafrerimage[i].handle, Anafrerimage[i].rot);
-			MV1SetOpacityRate(Anafrerimage[i].handle, Anafrerimage[i].alpha / 255.0f);
-			MV1DrawModel(Anafrerimage[i].handle);
+			MV1SetPosition(Afterimages[i].handle,Afterimages[i].pos);
+			MV1SetRotationXYZ(Afterimages[i].handle,Afterimages[i].rot);
+			MV1SetOpacityRate(Afterimages[i].handle,Afterimages[i].alpha / 255.0f);
+			MV1DrawModel(Afterimages[i].handle);
 
 		}
 		camera.ResetOffset(VScale(Offset,1.25), player.GetPos());

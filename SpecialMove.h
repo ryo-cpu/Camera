@@ -2,6 +2,7 @@
 #include"DxLib.h"
 #include"Camera.h"
 #include"Character.h"
+#include<vector>
 const VECTOR SPInitPos = VGet(0, 1000, -2000);
 struct AfterImage 
 {
@@ -23,7 +24,7 @@ Character& player;
 Character& enemy;
 
 int NowMode;
-AfterImage Anafrerimage[10];
+std::vector< AfterImage> Afterimages;
 public:
 	bool Update(float DeltaTime);
 	
