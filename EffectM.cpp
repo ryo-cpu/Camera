@@ -224,6 +224,19 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 	Observer[MaxEffect - 1] = TNP;
 }
 
+Effect* EffectM::Search(int id)
+{
+	for (int i = 0; i < MaxEffect; i++)
+	{
+		int ID = Pool[i]->GetId();
+		if (ID==id)
+		{
+			return Pool[i];
+		}
+	}
+	return nullptr;
+}
+
 void EffectM::Draw()
 {
 	DrawEffekseer3D();

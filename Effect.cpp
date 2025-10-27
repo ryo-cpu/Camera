@@ -8,6 +8,7 @@ Effect::Effect(VECTOR StartPos, EffectImg Img)
 	Rot = VGet(0, 0, 0);
 	Pos = StartPos;
 	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
+	Id = 0;
 }
 
 Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot)
@@ -16,11 +17,29 @@ Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot)
 	Rot = StartRot;
 	Pos = StartPos;
 	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
+	Id = 0;
+
 
 }
 
 Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move)
 {
+	Move = move;
+	Rot = StartRot;
+	Pos = StartPos;
+	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
+	Id = 0;
+
+}
+
+Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move, int id)
+{
+	Move = move;
+	Rot = StartRot;
+	Pos = StartPos;
+	PlayHandle = PlayEffekseer3DEffect(Img.GetImg());
+	
+	Id = id;
 }
 
 
@@ -45,6 +64,23 @@ int Effect::GetPlayHandle()
 		return PlayHandle;
 	}
 	return -1;
+}
+
+void Effect::Stop()
+{
+	////Ž~‚ß‚½‚¢
+	StopEffekseer3DEffect(PlayHandle);
+}
+
+int Effect::GetId()
+{
+	return Id;
+}
+
+
+Effect* Effect::GetPtr()
+{
+	return this;
 }
 
 
