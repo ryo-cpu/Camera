@@ -12,6 +12,8 @@ public:
 	static	void Add(EffectImg origin,VECTOR StartPos);
 	static	void Add(EffectImg origin, VECTOR StartPos,VECTOR StartRot);
 	static	void Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot,VECTOR move);
+	static	void Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR move,int id);
+
 
 	static  Effect* Search(int id);
 	static	void Draw();
