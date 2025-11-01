@@ -2,6 +2,7 @@
 #include<iostream>
 #include "Effect.h"
 const int MaxEffect = 10;
+const int PlayerAuraID = 111;
 class EffectM 
 {
 	static Effect* Pool[MaxEffect];

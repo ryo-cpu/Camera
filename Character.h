@@ -2,6 +2,8 @@
 #include"DxLib.h"
 #include"Sphere_Collision.h"
 #include<cmath>
+#include"EffectM.h"
+
 class Character
 {
 protected:

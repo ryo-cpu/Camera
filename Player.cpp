@@ -137,7 +137,6 @@ bool Player::Input(Camera& camera)
 	
 	
 	
-	
     return isInput;
 }
 
@@ -211,7 +210,37 @@ void Player::Update(float deltaTime)
 		SetHp(GetHp() +5);
 	}
 	DrawSphere3D(GetPos(), 20, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+	Effect* PlayerEffect = nullptr;
+	if (SpGauge >= MaxSpGauge)
+	{
+		
+		PlayerEffect = EffectM::Search(PlayerAuraID);
+		/////ないとヌルポが帰ります
+		if (PlayerEffect == nullptr)
+		{
+			EffectImg* AuraE = new EffectImg("data/Shock.efkefc", 100);
+			EffectM::Add(*AuraE, Pos, VGet(0, 0, 0), VGet(0, 0, 0), PlayerAuraID);
+		}
+		else
+		{
+			PlayerEffect->SetMove(Move);
+		}
+		////エフェクトと切り離す
+		PlayerEffect = nullptr;
+		
+	}
+	else
+	{
+		PlayerEffect = EffectM::Search(PlayerAuraID);
+		/////ないとヌルポが帰ります
+		if (PlayerEffect != nullptr)
+		{
+			PlayerEffect->Stop();
+		}
 
+	}
+
+	delete PlayerEffect;
 	LiveTime+=deltaTime;
 }
 

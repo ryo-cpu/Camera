@@ -1,5 +1,4 @@
 #include "SpecialMove.h"
-#include"EffectM.h"
 
 SpecialMove::SpecialMove(Camera& Camera, Character& Player, Character& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {

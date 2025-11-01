@@ -2,7 +2,7 @@
 #include"Character.h"
 #include"Camera.h"
 
-
+const int MaxSpGauge = 100;
 
 class Player :public Character
 {
@@ -19,7 +19,7 @@ class Player :public Character
     VECTOR JumpPower = VGet(0, 30, 0);
     float LastDamageTime;
     bool InRolling;
-    int SpGauge = 0;
+    int SpGauge = 100;
    
 public:
     Player();

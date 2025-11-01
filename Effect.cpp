@@ -66,6 +66,16 @@ int Effect::GetPlayHandle()
 	return -1;
 }
 
+void Effect::SetMove(VECTOR move)
+{
+	Move = move;
+}
+
+void Effect::SetRot(VECTOR rot)
+{
+	Rot = rot;
+}
+
 void Effect::Stop()
 {
 	////Ž~‚ß‚½‚¢

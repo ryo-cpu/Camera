@@ -289,8 +289,5 @@ void EffectM::Draw()
 
 EffectM::EffectM()
 {
-	for (int i = 0; i < MaxEffect; i++)
-	{
-		Pool[i] = nullptr;
-	}
+	
 }
