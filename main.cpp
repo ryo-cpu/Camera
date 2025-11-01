@@ -140,7 +140,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float FieldSize = 4000.0f;
 	///Effet
 	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
-	EffectImg* LightnigE = new EffectImg("data/Lightning.efkefc", 100);
 	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100);
 	EffectM::Add(*RingE);
 
@@ -159,7 +158,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		fps.Start();
 	
-		ClearDrawScreen();
+ 		ClearDrawScreen();
 
 		switch (GameMode)
 		{

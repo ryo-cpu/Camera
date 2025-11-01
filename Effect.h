@@ -24,6 +24,8 @@ public:
    void  Update(float deltaTime);
    int GetPlayHandle();
    void SetMove(VECTOR move);
+   void SetPos(VECTOR pos);
+
    void SetRot(VECTOR rot);
    void Stop();
    int GetId();

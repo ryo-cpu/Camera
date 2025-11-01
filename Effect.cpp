@@ -48,7 +48,7 @@ void Effect::Update(float deltaTime)
 {
 	if (PlayHandle >= 0) {
 		
-		Pos = VAdd(Pos, VScale(Move, deltaTime));
+		Pos = VAdd(Pos, Move);
 		// 再生中のエフェクトを移動する。
 		SetPosPlayingEffekseer3DEffect(PlayHandle, Pos.x, Pos.y, Pos.z);
 		SetRotationPlayingEffekseer3DEffect(PlayHandle, Rot.x, Rot.y, Rot.z);
@@ -92,5 +92,8 @@ Effect* Effect::GetPtr()
 {
 	return this;
 }
-
+void Effect::SetPos(VECTOR pos)
+{
+	Pos = pos;
+}
 

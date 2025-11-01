@@ -14,7 +14,6 @@ void EffectM::Update(float detalTime)
 		{
 			///Œã‚Å‚·‚×‚Ä‚É‚·‚é
 			Pool[i]->Update(detalTime);
-			int Test = IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle());
 			if (IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle())!=0)
 			{
 				for (int j = 0; j < MaxEffect; j++)
@@ -105,7 +104,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos)
 				if (Observer[j] == 0)
 				{
 					Observer[j] = i+1;
-					exit;
+					return;
 				}
 
 			}
@@ -149,7 +148,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot)
 				if (Observer[j] == 0)
 				{
 					Observer[j] = i + 1;
-					exit;
+					return;
 				}
 
 			}
@@ -193,7 +192,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 				if (Observer[j] == 0)
 				{
 					Observer[j] = i + 1;
-					exit;
+					return;
 				}
 
 			}
@@ -237,7 +236,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 				if (Observer[j] == 0)
 				{
 					Observer[j] = i + 1;
-					exit;
+					return;
 				}
 
 			}
@@ -273,11 +272,15 @@ Effect* EffectM::Search(int id)
 {
 	for (int i = 0; i < MaxEffect; i++)
 	{
-		int ID = Pool[i]->GetId();
-		if (ID==id)
+		if (Pool[i] != nullptr)
 		{
-			return Pool[i];
+			int ID = Pool[i]->GetId();
+			if (ID == id)
+			{
+				return Pool[i];
+			}
 		}
+		
 	}
 	return nullptr;
 }

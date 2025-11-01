@@ -19,7 +19,7 @@ class Player :public Character
     VECTOR JumpPower = VGet(0, 30, 0);
     float LastDamageTime;
     bool InRolling;
-    int SpGauge = 100;
+    int SpGauge = 0;
    
 public:
     Player();
@@ -35,7 +35,7 @@ public:
     void SetLastDamageTime();
     float GetLastDamageTime();
     bool Rolling();
-
+    void AddSpGauge(int add);
 
 };
 

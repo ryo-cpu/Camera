@@ -207,7 +207,7 @@ void Player::Update(float deltaTime)
 	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
 	{
 	
-		SetHp(GetHp() +5);
+		SetHp(GetHp() +1);
 	}
 	DrawSphere3D(GetPos(), 20, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 	Effect* PlayerEffect = nullptr;
@@ -218,12 +218,12 @@ void Player::Update(float deltaTime)
 		/////ないとヌルポが帰ります
 		if (PlayerEffect == nullptr)
 		{
-			EffectImg* AuraE = new EffectImg("data/Shock.efkefc", 100);
+			EffectImg* AuraE = new EffectImg("data/Lightning.efkefc", 10);
 			EffectM::Add(*AuraE, Pos, VGet(0, 0, 0), VGet(0, 0, 0), PlayerAuraID);
 		}
 		else
 		{
-			PlayerEffect->SetMove(Move);
+			PlayerEffect->SetPos(Pos);
 		}
 		////エフェクトと切り離す
 		PlayerEffect = nullptr;
@@ -236,11 +236,12 @@ void Player::Update(float deltaTime)
 		if (PlayerEffect != nullptr)
 		{
 			PlayerEffect->Stop();
+			PlayerEffect = nullptr;
 		}
 
 	}
-
-	delete PlayerEffect;
+	AddSpGauge(1);
+	
 	LiveTime+=deltaTime;
 }
 
@@ -295,6 +296,24 @@ bool Player::Rolling()
 	
 	}
 	return IsAnim;
+}
+
+void Player::AddSpGauge(int add)
+{
+	///Maxを超えたときのみ振動を鳴らしたいため元の数値がMaxいかか確認
+	if (SpGauge < MaxSpGauge)
+	{
+		SpGauge += add;
+		///値がMaxを超えたとき鳴らしとならす
+		if (SpGauge >= MaxSpGauge)
+		{
+			SpGauge = MaxSpGauge;
+			StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, 1);
+
+		}
+	}
+	
+
 }
 
 
