@@ -125,10 +125,11 @@ bool Player::Input(Camera& camera)
 			SetAnimSpeed(50.0f);
 			SetAnimType(Kick);
 		}
-		if (InputState->Buttons[XINPUT_BUTTON_X] != 0)
+		if (InputState->Buttons[XINPUT_BUTTON_X] != 0&&SpGauge>=MaxSpGauge)
 		{
 			InSpecialMove = true;
 			StartLiveTime = LiveTime;
+			SpGauge = 0;
 			
 
 		}
