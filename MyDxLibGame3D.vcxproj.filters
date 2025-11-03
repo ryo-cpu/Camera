@@ -35,6 +35,9 @@
     <Filter Include="ソース ファイル\Effect">
       <UniqueIdentifier>{ff89f150-6c8b-49db-974f-2e291926a959}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Sound">
+      <UniqueIdentifier>{7d85aea6-718a-4a34-8a4c-9e83bdf4f867}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -73,6 +76,9 @@
     <ClCompile Include="EffectImg.cpp">
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -107,6 +113,9 @@
     </ClInclude>
     <ClInclude Include="EffectImg.h">
       <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>ソース ファイル\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

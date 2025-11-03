@@ -9,6 +9,7 @@
 #include"Bsr.h"
 #include "SpecialMove.h"
 #include "EffectM.h"
+#include "Sound.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -142,7 +143,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
 	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100);
 	EffectM::Add(*RingE);
-
+	////音
+	SetCreate3DSoundFlag(TRUE);
+	Set3DSoundOneMetre(200);
+	Sound* HitSound = new Sound("data/Hit.wav");
+	
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -338,7 +343,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 				Knockback.y = 0;
 				EffectM::Add(*ImpactE, player->GetAttackCollison().GetPos());
-
+				
 				enemy->SetMove((Knockback));
 				enemy->SetMoveType(enemy->hit_stop);
 				enemy->SetAnimType(enemy->Hit);
@@ -448,7 +453,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->AnimUpdate(deltaTime);
 				if (CheckHitKey(KEY_INPUT_W))
 				{
-			     
+					HitSound->Play(VGet(0,0,0),VGet(6000,0,0),VGet(1,0,0),VGet(0,1,0),VGet(0,0,1));
 					/*EffectM::Add(*ImpactE);*/
 					EffectM::Add(*RingE);
 
