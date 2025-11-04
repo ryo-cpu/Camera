@@ -78,7 +78,7 @@ void Sound::Stop()
 void Sound::Loop()
 {
 	///‰¹‚ÌÄ¶‚ªd‚È‚ç‚È‚¢‚æ‚¤‚É
-	if (CheckSoundMem(Source))
+	if (!CheckSoundMem(Source))
 	{
 		PlaySoundMem(Source, DX_PLAYTYPE_BACK);
 	}

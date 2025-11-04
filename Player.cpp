@@ -208,7 +208,7 @@ void Player::Update(float deltaTime)
 	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
 	{
 	
-		SetHp(GetHp() +1);
+		AddSpGauge(1);
 	}
 	DrawSphere3D(GetPos(), 20, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 	Effect* PlayerEffect = nullptr;
@@ -241,7 +241,7 @@ void Player::Update(float deltaTime)
 		}
 
 	}
-	AddSpGauge(1);
+
 	
 	LiveTime+=deltaTime;
 }

@@ -147,6 +147,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetCreate3DSoundFlag(TRUE);
 	Set3DSoundOneMetre(200);
 	Sound* HitSound = new Sound("data/Hit.wav");
+	Sound* AttackSound = new Sound("data/Attack.wav");
+	Sound* SpSound = new Sound("data/SpAttack.wav");
+	Sound* BGM = new Sound("data/Thunderstorm.wav");
+
 	
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -169,6 +173,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 		case Game:
 		{
+			
 			if (FadeAlpha > 0 && !InModeCheng)
 			{
 				FadeAlpha -= 255 / 2 * deltaTime;
@@ -287,27 +292,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			//////更新///////////////////////////////////////////////////////////////////////////////////////////////////////	
 			if (!player->GetInSpecialMove())
 			{
+				BGM->Loop();
 				player->Update(deltaTime);
 				enemy->Update(deltaTime);
 			}
-			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-		/*	if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
+			else
 			{
-				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
-
-				Sphere_Collision PlayerCollison = player->GetCollison();
-				Sphere_Collision enemyCollison = enemy->GetCollison();
-
-				VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize() + 1));
-
-				TakeDistance = VSub(TakeDistance, Distance);
-				player->SetMove(VAdd(player->GetMove(), TakeDistance));
-				player->SetPos(VAdd(player->GetPos(), player->GetMove()));
-				player->SetDir(VGet(0, 0, 0));
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-				camera->CalculateAngle(player->GetPos());
-				camera->CalculateTargetAngle(player->GetPos());
-			}*/
+				BGM->Stop();
+			}
+			
 
 
 			///enemy攻撃
@@ -329,9 +322,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				camera->CalculateAngle(player->GetPos());
 				camera->CalculateTargetAngle(player->GetPos());
 				/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 			}
 
+			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
+			else if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
+			{
+				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
 
+				Sphere_Collision PlayerCollison = player->GetCollison();
+				Sphere_Collision enemyCollison = enemy->GetCollison();
+
+				VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize() + 1));
+
+				TakeDistance = VSub(TakeDistance, Distance);
+				player->SetPos(VAdd(player->GetPos(), TakeDistance));
+
+			}
 			////player攻撃
 			if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison()) && enemy->GetMoveType() != enemy->hit_stop)
 			{
@@ -343,11 +350,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 				Knockback.y = 0;
 				EffectM::Add(*ImpactE, player->GetAttackCollison().GetPos());
-				
+				AttackSound->Play();
+				player->AddSpGauge(20);
 				enemy->SetMove((Knockback));
 				enemy->SetMoveType(enemy->hit_stop);
 				enemy->SetAnimType(enemy->Hit);
 				enemy->SubHp(player->GetAttack());
+				StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+
 
 			}
 			//////カメラの押し戻し
@@ -402,13 +412,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->SetPos(VScale(VNorm(enemy->GetPos()), FieldSize));
 			}
 			//////勝ち判定
-			if (player->GetHp() <= 0)
+			if (player->GetHp() <= 0&&player->GetAnimType()!=player->Hit)
 			{
 				GameMode = Lose;
+				player->SetAnimSpeed(10);
 				MATRIX RotY = MGetRotY(enemy->GetDir().y);
 				VECTOR Offset = VTransformSR(LoseCamera, RotY);
 				camera->ResetOffset(Offset, player->GetPos());
 				player->SetAnimType(player->Down);
+				BGM->Stop();
 			}
 			if (enemy->GetHp() <= 0&&!player->GetInSpecialMove())
 			{
@@ -419,6 +431,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->SetAnimType(enemy->Dwon);
 				camera->ResetOffset(Offset, enemy->GetPos());
 				enemy->SetStartLiveTime(enemy->GetLiveTime());
+				BGM->Stop();
+			
 
 			}
 			MV1DrawModel(BackModel);
@@ -561,7 +575,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
 				camera->ResetOffset(Offset, enemy->GetPos());
 				enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
-
+				
 				if (!enemy->GetIsAnim())
 				{
 					SetFontSize(128);
