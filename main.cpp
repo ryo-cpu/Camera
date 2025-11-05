@@ -107,12 +107,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Camera* camera = new Camera(100.0f, 10000.0f, VAdd(enemy->GetPos(),StartCamera), enemy->GetPos());
 	camera->CalculateAngle(PlayerPos);
 	camera->CalculateTargetAngle(player->GetPos());
+	SetUseLighting(TRUE);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f, 0.3f));
 	ChangeLightTypeDir(VGet(0, -1, 0));
+	SetLightDirection(VGet(0.5f, 1, 0));
 
 	
 
-	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,		0.0f);
+	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,0.0f);
 	fps fps;
 	fps.Initialization(1.0 / 60.0);
 
