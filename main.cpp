@@ -151,6 +151,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound* SpSound = new Sound("data/SpAttack.wav");
 	Sound* BGM = new Sound("data/Thunderstorm.wav");
 
+	XINPUT_STATE* Input = new XINPUT_STATE;
+
 	
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -168,6 +170,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		fps.Start();
 	
  		ClearDrawScreen();
+
+		GetJoypadXInputState(DX_INPUT_PAD1, Input);
 
 		switch (GameMode)
 		{
@@ -307,7 +311,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
 			{
-				VECTOR Move = VGet(0, 1, -1);
+				VECTOR Move = VGet(0, 0.1f, -1);
 				Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
 				Move = VScale(Move, enemy->GetAttackCollison().GetSphereSize());
 				player->SetMove(Move);
@@ -342,7 +346,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			////player攻撃
 			if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison()) && enemy->GetMoveType() != enemy->hit_stop)
 			{
-
+				////敵の方向
+				VECTOR EnemyDir = VNorm(VSub(enemy->GetPos(),player->GetPos()));
+				float Angle = atan2f(EnemyDir.x, EnemyDir.z); 
+				enemy->SetDir(VGet(0,Angle,0));
 				VECTOR Knockback = VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime);
 				if (player->GetInSpecialMove())
 				{
@@ -476,7 +483,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					enemy->SetNowAnimTime(0.0f);
 				}
-				if (CheckHitKey(KEY_INPUT_SPACE)&&GetJoypadNum() != 0)
+				if (Input->Buttons[XINPUT_BUTTON_START]!=0 && GetJoypadNum() != 0)
 				{
 					InModeCheng = true;
 
@@ -531,7 +538,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				SetFontSize(256);
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+				DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
 
 
 			}
@@ -545,7 +552,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MV1DrawModel(BackModel);
 			{
 
-			if (CheckHitKey(KEY_INPUT_SPACE))
+			if (Input->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InModeCheng = true;
 
@@ -581,7 +588,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					SetFontSize(128);
 					DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
 					SetFontSize(64);
-					DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+					DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
 
 				}
 				
@@ -603,7 +610,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			break;
 		case Lose:
 			MV1DrawModel(BackModel);
-			if (CheckHitKey(KEY_INPUT_SPACE))
+			if (Input->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InModeCheng = true;
 
@@ -632,7 +639,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				SetFontSize(128);
 				DrawString(500, 350, "YOU LOSE", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT SPECE", GetColor(244, 229, 17));
+				DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
 			}
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);

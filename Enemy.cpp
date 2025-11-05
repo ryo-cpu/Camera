@@ -57,7 +57,11 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		Move = move;
 		Pos = VAdd(Pos, move);
 		AttackCollison.SetPos(Pos);
-		
+		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
+		if (AttackCollison.Collison(AttackCollison, Target->GetCollison()))
+		{
+			return false;
+		}
 
 		if (!IsAnim)
 		{
@@ -78,7 +82,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
 	const float EndTime = 5;
-	if (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime)
+	if (NowAnimTime >= 30.0f && NowAnimTime <= 40.0f)
 	{
 		VECTOR AttackPos = VGet(0, 50, -400);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
@@ -153,10 +157,13 @@ void Enemy::Update(float deltaTime)
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
 			SetAnimType(Junp);
-			SetSpeed(10);
+			SetSpeed(20);
 		}
 		else
 		{
+			VECTOR EnemyDir = VNorm(VSub(GetPos(), Target->GetPos()));
+			float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+			SetDir(VGet(0, Angle, 0));
 			MotionType = DownArmSwing;
 			SetAnimType(ArmSwing);
 	
