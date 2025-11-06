@@ -23,6 +23,9 @@ VECTOR Enemy::SearchTarget()
 	return VGet(0,0,0);
 }
 
+
+
+
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=5;

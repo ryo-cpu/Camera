@@ -198,7 +198,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else if (!player->GetInSpecialMove())
 			{
 				isInput = player->Input(*camera);
-
 			}
 			////入力された移動を調整
 			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
@@ -222,6 +221,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
 				JumpPower = VGet(0, 30, 0);
 				player->SetIsHit(false);
+			}
+
+			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
+			else if (VSize(VSub(player->GetPos(),enemy->GetPos()))<=1000)
+			{
+				
+				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
+
+				Sphere_Collision PlayerCollison = player->GetCollison();
+				Sphere_Collision enemyCollison = enemy->GetCollison();
+
+				VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize() + 1));
+
+				TakeDistance = VSub(TakeDistance, Distance);
+				player->SetPos(VAdd(player->GetPos(), TakeDistance));
+
 			}
 
 
@@ -331,20 +346,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 			}
 
-			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-			else if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetCollison()))
-			{
-				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
-
-				Sphere_Collision PlayerCollison = player->GetCollison();
-				Sphere_Collision enemyCollison = enemy->GetCollison();
-
-				VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize() + 1));
-
-				TakeDistance = VSub(TakeDistance, Distance);
-				player->SetPos(VAdd(player->GetPos(), TakeDistance));
-
-			}
+		
 			////player攻撃
 			if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison()) && enemy->GetMoveType() != enemy->hit_stop)
 			{
