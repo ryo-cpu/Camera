@@ -58,8 +58,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		}
 		move = VScale(move, GetSpeed());
 		Move = move;
-		Pos = VAdd(Pos, move);
-		AttackCollison.SetPos(Pos);
+		
 		///Ç‘Ç¬Ç©Ç¡ÇΩÇÁé~Ç‹ÇÈ
 		if (AttackCollison.Collison(AttackCollison, Target->GetCollison()))
 		{
@@ -150,6 +149,7 @@ void Enemy::Update(float deltaTime)
 	VECTOR distance = VSub(SearchTarget(), Pos);
 	if (!IsMotion&&!IsAnim)///ìÆÇ´ÇÃêÿÇËë÷Ç¶
 	{
+		Move = VGet(0, 0, 0);
 		if (MotionType == Tackle || MotionType == DownArmSwing)
 		{
 			MotionType = tink;
@@ -197,7 +197,8 @@ void Enemy::Update(float deltaTime)
 		
 	}
 	
-	
+    Pos = VAdd(Pos, Move);
+	AttackCollison.SetPos(Pos);
 	AnimUpdate(deltaTime);
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
