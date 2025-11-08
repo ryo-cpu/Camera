@@ -96,7 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int  TileModel = MV1LoadModel("data/Tile.mv1");
 	MV1SetPosition(BackModel, VGet(0, 0, 0));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
-	MV1SetScale(TileModel, VGet(5, 1, 5));
+	MV1SetScale(TileModel, VGet(5, 0.01f, 5));
 
 
 
@@ -198,7 +198,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else if (!player->GetInSpecialMove())
 			{
 				isInput = player->Input(*camera);
+				enemy->SelectMove();
 			}
+
 			////入力された移動を調整
 			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
 			{
@@ -246,7 +248,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					//必殺技時のカメラの動き
 			if (player->GetInSpecialMove())
 			{
-				player->SetInSpecialMove(SPMove->Update(deltaTime));
+			 player->SetInSpecialMove(SPMove->Update(deltaTime));
 
 			}
 			///通常時

@@ -42,7 +42,7 @@ bool Player::Input(Camera& camera)
 		if (InputState->ThumbRX >= 100 || InputState->ThumbRX <= -100)
 		{
 
-			float Rot= (InputState->ThumbRX) * 0.00001f;
+			float Rot= (InputState->ThumbRX) * 0.000001f;
 			Turn(VGet(0, Rot, 0));
 			VECTOR F = VScale(VGet(0, 0, 1),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
 			camera.AddTAngle(VGet(0, Rot, 0));
@@ -57,13 +57,13 @@ bool Player::Input(Camera& camera)
 		if (InputState->ThumbRY >= 100 || InputState->ThumbRY <= -100)
 		{
 		
-			float Rot = (InputState->ThumbRY) * 0.00001f;
+			float Rot = (InputState->ThumbRY) * 0.000001f;
 			VECTOR F = VScale(VGet(0, 0, 1), VSize(DefaultCamera));
 			VECTOR RotP = camera.GetTagetAngle();
 			
-			if (RotP.x + Rot<=0&&RotP.x+Rot>=-0.7)
+			if (RotP.x+ Rot>=-0.7&&RotP.x+Rot<=-0.2)
 			{
-				camera.AddTAngle(VGet(Rot, 0, 0));
+			  camera.AddTAngle(VGet(Rot, 0, 0));
 			}
 			
 
@@ -118,8 +118,9 @@ bool Player::Input(Camera& camera)
 		}
 		if ((InputState->Buttons[XINPUT_BUTTON_B]) != 0)
 		{
-			if (VSize(move) <= 0)move = VGet(0, 0, -1);
-			else move = VNorm(VScale( move,1));
+		
+			if (VSize(move) == 0)move = VGet(0, 0, -1);
+			else move = VScale(VNorm(move),1);
 			VECTOR Front =VTransformSR(move,MGetRotY(Dir.y));
 			move =VScale(Front,AnimSpeed);
 			SetAnimSpeed(50.0f);
@@ -136,7 +137,7 @@ bool Player::Input(Camera& camera)
 		SetMove(move);
 	}
 	
-	
+
 	
     return isInput;
 }
@@ -169,12 +170,13 @@ void Player::Update(float deltaTime)
 		if (!IsAnim)
 		{
 			SetAnimType(Stop);
+			SetAnimSpeed(10.0f);
 		}
 	}
 	else
 	{
 		AttackCollison = {};
-		SetAnimSpeed(10.0f);
+		
 
 	}
 	if (Collison.GetSphereSize() == 0)

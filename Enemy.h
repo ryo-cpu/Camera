@@ -17,7 +17,7 @@ public:
     void SetMoveType(int movetype);
     int GetMoveType();
     ///‚±‚¤‚Ç‚¤////
-    
+    void SelectMove();
     bool TackleAttack(VECTOR targetPos);
     bool ArmSwingDown(VECTOR targetPos);
     bool Tink();

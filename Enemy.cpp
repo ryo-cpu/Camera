@@ -26,6 +26,62 @@ VECTOR Enemy::SearchTarget()
 
 
 
+void Enemy::SelectMove()
+{
+	VECTOR distance = VSub(SearchTarget(), Pos);
+	if (!IsMotion && !IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
+	{
+		Move = VGet(0, 0, 0);
+		if (MotionType == Tackle || MotionType == DownArmSwing)
+		{
+			MotionType = tink;
+			SetAnimType(Dance);
+		}
+		else if (VSize(distance) >= 1000)
+		{
+			MotionType = Tackle;
+			AttackCollison = GetCollison();
+			SetAnimType(Junp);
+			SetSpeed(20);
+		}
+		else
+		{
+			VECTOR EnemyDir = VNorm(VSub(GetPos(), Target->GetPos()));
+			float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+			SetDir(VGet(0, Angle, 0));
+			MotionType = DownArmSwing;
+			SetAnimType(ArmSwing);
+
+		}
+		StartLiveTime = LiveTime;
+		IsMotion = true;
+	}
+	else
+	{
+		switch (MotionType)
+		{
+		case Tackle:
+			IsMotion = TackleAttack(distance);
+			break;
+		case DownArmSwing:
+			IsMotion = ArmSwingDown(distance);
+			break;
+		case tink:
+			IsMotion = Tink();
+			break;
+		case hit_stop:
+			IsMotion = Hit_Stop();
+			break;
+		default:
+			IsMotion = false;
+			break;
+		}
+
+	}
+
+
+}
+
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=5;
@@ -121,8 +177,6 @@ bool Enemy::Hit_Stop()
 	{
 	 return false;
 	}
-	Pos=VAdd(Pos, Move);
-
 	return true;
 }
 
@@ -144,59 +198,6 @@ int Enemy::GetMoveType()
 
 void Enemy::Update(float deltaTime)
 {
-	
-
-	VECTOR distance = VSub(SearchTarget(), Pos);
-	if (!IsMotion&&!IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
-	{
-		Move = VGet(0, 0, 0);
-		if (MotionType == Tackle || MotionType == DownArmSwing)
-		{
-			MotionType = tink;
-			SetAnimType(Dance);
-		}
-		else if (VSize(distance) >= 1000)
-		{
-			MotionType = Tackle;
-			AttackCollison = GetCollison();
-			SetAnimType(Junp);
-			SetSpeed(20);
-		}
-		else
-		{
-			VECTOR EnemyDir = VNorm(VSub(GetPos(), Target->GetPos()));
-			float Angle = atan2f(EnemyDir.x, EnemyDir.z);
-			SetDir(VGet(0, Angle, 0));
-			MotionType = DownArmSwing;
-			SetAnimType(ArmSwing);
-	
-		}
-	StartLiveTime = LiveTime;
-	IsMotion = true;
-	}
-	else
-	{
-		switch (MotionType)
-		{
-		case Tackle:
-			IsMotion = TackleAttack(distance);
-			break;
-		case DownArmSwing:
-			IsMotion = ArmSwingDown(distance);
-			break;
-		case tink:
-			IsMotion = Tink();
-			break;
-		case hit_stop:
-			IsMotion = Hit_Stop();
-			break;
-		default:
-			IsMotion = false;
-			break;
-		}
-		
-	}
-	
     Pos = VAdd(Pos, Move);
 	AttackCollison.SetPos(Pos);
 	AnimUpdate(deltaTime);
