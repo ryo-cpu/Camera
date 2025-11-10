@@ -3,6 +3,7 @@
 #include"Camera.h"
 
 const int MaxSpGauge = 100;
+const float MaxSpeed =10.0f;
 
 class Player :public Character
 {
@@ -19,6 +20,7 @@ class Player :public Character
     VECTOR JumpPower = VGet(0, 30, 0);
     float LastDamageTime;
     bool InRolling;
+    bool isTurn;
     int SpGauge = 0;
    
 public:

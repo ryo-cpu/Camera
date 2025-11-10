@@ -109,7 +109,7 @@ public:
     void SetTAngle(VECTOR angle);
     void AddTAngle(VECTOR addangle);
     VECTOR GetTagetAngle();
-
+    VECTOR WorldToCamera(VECTOR Pos);
 
 
 }

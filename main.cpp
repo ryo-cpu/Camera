@@ -72,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseBackCulling(FALSE);
 	MV1SetPosition(player->GetImg(), player->GetPos());
 	player->SetScale(1.0f);// 試しに10倍
-
+	
 
 	///enemy初期化
 	Enemy* enemy = new Enemy();
@@ -179,109 +179,112 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 		case Game:
 		{
-			
-			if (FadeAlpha > 0 && !InModeCheng)
-			{
-				FadeAlpha -= 255 / 2 * deltaTime;
-				if (FadeAlpha > 0)
-				{
-					FadeAlpha = 0;
-				}
-			}
+
+if (FadeAlpha > 0 && !InModeCheng)
+{
+	FadeAlpha -= 255 / 2 * deltaTime;
+	if (FadeAlpha > 0)
+	{
+		FadeAlpha = 0;
+	}
+}
 
 
-			if (player->GetIsHit())
-			{
-				player->SetMove(VAdd(player->GetMove(), G));
+if (player->GetIsHit())
+{
+	player->SetMove(VAdd(player->GetMove(), G));
 
-			}
-			else if (!player->GetInSpecialMove())
-			{
-				isInput = player->Input(*camera);
-				enemy->SelectMove();
-			}
+}
+else if (!player->GetInSpecialMove())
+{
+	isInput = player->Input(*camera);
+	enemy->SelectMove();
+}
 
-			////入力された移動を調整
-			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
-			{
-				OnWall = true;
-			}
-			else
-			{
-				OnWall = false;
-			}
-			if (VSize(VAdd(player->GetPos(),player->GetMove())) > FieldSize)
-			{
-				VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
-				VECTOR SetPoint = VNorm(PassingPoint);
-				SetPoint = VScale(SetPoint, FieldSize);
-				player->SetMove(VSub(SetPoint,player->GetPos()));
-			}
-			if (player->GetPos().y <= BaseY)
-			{
-				isJunp = false;
-				player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
-				JumpPower = VGet(0, 30, 0);
-				player->SetIsHit(false);
-			}
+////入力された移動を調整
+if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
+{
+	OnWall = true;
+}
+else
+{
+	OnWall = false;
+}
+if (VSize(VAdd(player->GetPos(), player->GetMove())) > FieldSize)
+{
+	VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
+	VECTOR SetPoint = VNorm(PassingPoint);
+	SetPoint = VScale(SetPoint, FieldSize);
+	player->SetMove(VSub(SetPoint, player->GetPos()));
+}
+if (player->GetPos().y <= BaseY)
+{
+	isJunp = false;
+	player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
+	JumpPower = VGet(0, 30, 0);
+	player->SetIsHit(false);
+}
 
-			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-			if (VSize(VSub(player->GetPos(),enemy->GetPos()))<=2000)
-			{
+////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
+if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
+{
 
-				///１F後のコリジョンを作る
-				Sphere_Collision NextPlayer;
-				NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
-				NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
+	///１F後のコリジョンを作る
+	Sphere_Collision NextPlayer;
+	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 
-				Sphere_Collision NextEnemy;
-				NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
-				NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
-				///衝突検査（ここでするとSphereを持ち越さない）
-				if (Collision_Measurement->Collison(NextEnemy, NextPlayer))
-				{
-					VECTOR Distance = VSub(NextPlayer.GetPos(), NextEnemy.GetPos());
-					
-					VECTOR TakeDistance = VScale(VNorm(Distance), (NextEnemy.GetSphereSize() + NextPlayer.GetSphereSize() + 1));
+	Sphere_Collision NextEnemy;
+	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
+	///衝突検査（ここでするとSphereを持ち越さない）
+	if (Collision_Measurement->Collison(NextEnemy, NextPlayer))
+	{
+		VECTOR Distance = VSub(NextPlayer.GetPos(), NextEnemy.GetPos());
 
-					TakeDistance = VSub(TakeDistance, Distance);
-					player->SetMove(VAdd(player->GetMove(), TakeDistance));
+		VECTOR TakeDistance = VScale(VNorm(Distance), (NextEnemy.GetSphereSize() + NextPlayer.GetSphereSize() + 1));
 
-				}
-			
-			
+		TakeDistance = VSub(TakeDistance, Distance);
+		player->SetMove(VAdd(player->GetMove(), TakeDistance));
 
-			}
+	}
 
 
-			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-			
-			
-					//必殺技時のカメラの動き
-			if (player->GetInSpecialMove())
-			{
-			 player->SetInSpecialMove(SPMove->Update(deltaTime));
 
-			}
-			///通常時
-			else if(!OnWall)
-			{
-				if (!isInput)
-				{
-					
-				
-					camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
-					
-					if (VSize(player->GetMove()) <= 0)
-					{
-						BasePoint = player->GetPos();
+}
 
-					}
-				}
-				else if(VSize(VSub(player->GetPos(), BasePoint)) >= 500)
-				{
-					camera->StartMove(VScale(player->GetMove(), 1.0f));
-				}
+
+////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+		//必殺技時のカメラの動き
+if (player->GetInSpecialMove())
+{
+	player->SetInSpecialMove(SPMove->Update(deltaTime));
+
+}
+///通常時
+else if (!OnWall)
+{
+
+	if (!isInput)
+	{
+		camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
+
+		if (VSize(player->GetMove()) <= 0)
+		{
+			BasePoint = player->GetPos();
+
+		}
+	}
+	else if (VSize(VSub(player->GetPos(), BasePoint)) >= 200)
+	{
+		if (VSize(player->GetMove()) <= 9)
+		{
+			BasePoint = player->GetPos();
+		}
+		 camera->StartMove(VScale(player->GetMove(), 1.0f));
+	}
 			}
 			/////カメラが壁に触れているときは動きと同じ大きさの壁ー＞中心のベクトルを足したものをカメラにつける
 			else

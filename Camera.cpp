@@ -404,5 +404,10 @@ VECTOR Camera::GetTagetAngle()
     return TagetAngle;
 }
 
+VECTOR Camera::WorldToCamera(VECTOR Pos)
+{
+  return  ConvWorldPosToScreenPos(Pos);
+}
+
 
 

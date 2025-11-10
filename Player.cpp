@@ -16,11 +16,13 @@ Player::Player()
 	InRolling = false;
 	IsActiveInput = true;
 	Grand = VGet(0, 0, 0);
+	Move = VGet(0, 0, 0);
 }
 
 bool Player::Input(Camera& camera)
 {
     bool isInput = false;
+    isTurn = false;
 	VECTOR move=VGet(0,0,0);
 	float targetAngle =0.0f; // ƒ‰ƒWƒAƒ“Šp
 	XINPUT_STATE* InputState=new XINPUT_STATE;
@@ -131,10 +133,26 @@ bool Player::Input(Camera& camera)
 			InSpecialMove = true;
 			StartLiveTime = LiveTime;
 			SpGauge = 0;
-			
 
 		}
-		SetMove(move);
+		if (VSize(move) == 0)
+		{
+			SetMove(VScale(Move,0.1f));
+			isInput = false;
+		}
+		else
+		{
+			VECTOR Add = VAdd(Move, move);
+			if (VSize(Add) < VSize(Move))
+			{
+				isTurn = true;
+			}
+			SetMove(Add);
+		}
+		if (VSize(Move) >= MaxSpeed)
+		{
+			Move = VScale(VNorm(Move), MaxSpeed);
+		}
 	}
 	
 
