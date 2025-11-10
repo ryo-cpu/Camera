@@ -226,18 +226,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-			else if (VSize(VSub(player->GetPos(),enemy->GetPos()))<=1000)
+			if (VSize(VSub(player->GetPos(),enemy->GetPos()))<=2000)
 			{
-				
-				VECTOR Distance = VSub(player->GetPos(), enemy->GetPos());
 
-				Sphere_Collision PlayerCollison = player->GetCollison();
-				Sphere_Collision enemyCollison = enemy->GetCollison();
+				///１F後のコリジョンを作る
+				Sphere_Collision NextPlayer;
+				NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+				NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 
-				VECTOR TakeDistance = VScale(VNorm(Distance), (enemyCollison.GetSphereSize() + PlayerCollison.GetSphereSize() + 1));
+				Sphere_Collision NextEnemy;
+				NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+				NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
+				///衝突検査（ここでするとSphereを持ち越さない）
+				if (Collision_Measurement->Collison(NextEnemy, NextPlayer))
+				{
+					VECTOR Distance = VSub(NextPlayer.GetPos(), NextEnemy.GetPos());
+					
+					VECTOR TakeDistance = VScale(VNorm(Distance), (NextEnemy.GetSphereSize() + NextPlayer.GetSphereSize() + 1));
 
-				TakeDistance = VSub(TakeDistance, Distance);
-				player->SetPos(VAdd(player->GetPos(), TakeDistance));
+					TakeDistance = VSub(TakeDistance, Distance);
+					player->SetMove(VAdd(player->GetMove(), TakeDistance));
+
+				}
+			
+			
 
 			}
 
