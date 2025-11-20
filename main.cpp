@@ -141,6 +141,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	XINPUT_STATE* InputState=new XINPUT_STATE;
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
+	Sphere_Collision Field;
+	Sphere_Collision NextPlayer;
+	Sphere_Collision NextEnemy;
+	Field.SetPos(VGet(0, 0, 0));
+	Field.SetSphereSize(FieldSize);
 	///Effet
 	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
 	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100);
@@ -226,15 +231,70 @@ if (player->GetPos().y <= BaseY)
 }
 
 ////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
+///次の動きの判定
+NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
+NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
+///かべとplayer
+if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollison().GetSphereSize()/2)
+{
+	
+
+	////1中心から
+	VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
+
+	///fieldの半径
+	AddMove = VScale(VNorm(AddMove),(Field.GetSphereSize()-NextPlayer.GetSphereSize()/2));
+	AddMove = VSub(AddMove,NextPlayer.GetPos());
+	player->SetMove(VAdd(player->GetMove(), AddMove));
+	///再更新　ほかの判定でも使うので
+	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
+}
+///かべとenemy
+if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
+{
+	
+	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
+	AddMove = VScale(VNorm(AddMove),Field.GetSphereSize()-enemy->GetCollison().GetSphereSize() / 2);
+	AddMove = VSub(AddMove,NextEnemy.GetPos());
+	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
+	///再更新　ほかの判定でも使うので
+	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
+}
+///enemy攻撃
+
+if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
+{
+	VECTOR Move = VGet(0, 0.1f, -1);
+	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
+	Move = VScale(Move, enemy->GetAttackCollison().GetSphereSize());
+	player->SetMove(Move);
+	player->SetAnimType(player->Hit);
+	player->SetIsHit(true);
+	player->SubHp(enemy->GetAttack());
+	player->SetLastDamageTime();
+	/////必殺キャンセル
+	player->SetInSpecialMove(false);
+	player->SetDir(VGet(0, 0, 0));
+	camera->ResetOffset(DefaultCamera, player->GetPos());
+	camera->CalculateAngle(player->GetPos());
+	camera->CalculateTargetAngle(player->GetPos());
+	/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
+	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+}
+
+ else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
 {
 
 	///１F後のコリジョンを作る
-	Sphere_Collision NextPlayer;
+	
 	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 
-	Sphere_Collision NextEnemy;
+	
 	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
 	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
 	///衝突検査（ここでするとSphereを持ち越さない）
@@ -341,28 +401,7 @@ else if (!OnWall)
 			
 
 
-			///enemy攻撃
-
-			if (Collision_Measurement->Collison(player->GetCollison(), enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
-			{
-				VECTOR Move = VGet(0, 0.1f, -1);
-				Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-				Move = VScale(Move, enemy->GetAttackCollison().GetSphereSize());
-				player->SetMove(Move);
-				player->SetAnimType(player->Hit);
-				player->SetIsHit(true);
-				player->SubHp(enemy->GetAttack());
-				player->SetLastDamageTime();
-				/////必殺キャンセル
-				player->SetInSpecialMove(false);
-				player->SetDir(VGet(0, 0, 0));
-				camera->ResetOffset(DefaultCamera, player->GetPos());
-				camera->CalculateAngle(player->GetPos());
-				camera->CalculateTargetAngle(player->GetPos());
-				/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
-				StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
-			}
-
+		
 		
 			////player攻撃
 			if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison()) && enemy->GetMoveType() != enemy->hit_stop)
