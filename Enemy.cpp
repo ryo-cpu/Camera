@@ -35,12 +35,14 @@ void Enemy::SelectMove()
 		if (MotionType == Tackle || MotionType == DownArmSwing)
 		{
 			MotionType = tink;
+			SetStartLiveTime(LiveTime);
 			SetAnimType(Dance);
 		}
 		else if (VSize(distance) >= 1000)
 		{
 			MotionType = Tackle;
 			AttackCollison = GetCollison();
+			SetStartLiveTime(LiveTime);
 			SetAnimType(Junp);
 			SetSpeed(20);
 		}
@@ -97,6 +99,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
 		rag = acosf(rag);
 		float crossY = Front.x * move.z - Front.z * move.x;
+	
 
 		if (rag >= MaxTurn * DX_PI / 180.0f)
 		{
@@ -114,7 +117,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		}
 		move = VScale(move, GetSpeed());
 		Move = move;
-		
+		AttackCollison.SetPos(VAdd(Pos,move));
 		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
 		if (AttackCollison.Collison(AttackCollison, Target->GetCollison()))
 		{
@@ -199,7 +202,7 @@ int Enemy::GetMoveType()
 void Enemy::Update(float deltaTime)
 {
     Pos = VAdd(Pos, Move);
-	AttackCollison.SetPos(Pos);
+	
 	AnimUpdate(deltaTime);
 	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
