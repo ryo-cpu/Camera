@@ -10,6 +10,7 @@
 #include "SpecialMove.h"
 #include "EffectM.h"
 #include "Sound.h"
+#include "ModelCheckers.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -595,6 +596,8 @@ else if (!OnWall)
 
 					SPMove = new SpecialMove(*camera, *player, *enemy);
 				}
+				
+			
 				SetFontSize(256);
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
