@@ -214,6 +214,7 @@ void Player::Update(float deltaTime)
 		{
 			SetAnimSpeed(10.0);
 			SetAnimType(Stop);
+			VECTOR test=MV1GetPosition(Img);
 		}
 	}
 	else
@@ -221,7 +222,7 @@ void Player::Update(float deltaTime)
 		
 		MoveCollison(Move);
 	    SetPos(VAdd(Pos, Move));
-
+		
 	}
 	AnimUpdate(deltaTime);
 	

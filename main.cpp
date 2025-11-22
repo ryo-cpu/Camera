@@ -271,7 +271,7 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
 {
 	VECTOR Move = VGet(0, 0.1f, -1);
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-	Move = VScale(Move, enemy->GetAttackCollison().GetSphereSize());
+	Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize()/4);
 	player->SetMove(Move);
 	player->SetAnimType(player->Hit);
 	player->SetIsHit(true);

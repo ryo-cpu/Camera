@@ -9,3 +9,4 @@ void ModelCheckers::ShowTextureName(int Model)
        DrawFormatString(0, i*10, GetColor(255, 255, 255), "Name                  %s", MV1GetTextureName(Model, i));
    }
 }
+
