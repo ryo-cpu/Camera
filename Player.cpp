@@ -212,9 +212,18 @@ void Player::Update(float deltaTime)
 		InRolling = Rolling();
 		if (!InRolling)
 		{
+			const char* HipName = "mixamorig:Hips";
+			VECTOR test = MV1GetPosition(Img);
+			int hipsIndex = MV1SearchFrame(Img, HipName);
+			if (hipsIndex >= 0)
+			{
+				VECTOR RollingPos = MV1GetFramePosition(Img, hipsIndex);
+				RollingPos.y = 0;
+				SetPos(RollingPos);
+			}
 			SetAnimSpeed(10.0);
 			SetAnimType(Stop);
-			VECTOR test=MV1GetPosition(Img);
+			
 		}
 	}
 	else

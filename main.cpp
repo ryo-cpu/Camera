@@ -280,7 +280,9 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
 	/////必殺キャンセル
 	player->SetInSpecialMove(false);
 	player->SetDir(VGet(0, 0, 0));
-	camera->ResetOffset(DefaultCamera, player->GetPos());
+	///playerの正面に移動
+	
+	camera->ResetOffset(VTransformSR(DefaultCamera, MGetRotY(player->GetDir().y)), player->GetPos());
 	camera->CalculateAngle(player->GetPos());
 	camera->CalculateTargetAngle(player->GetPos());
 	/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
@@ -602,7 +604,8 @@ else if (!OnWall)
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
 				DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
-
+				ModelCheckers test;
+				test.ShowFrameName(player->GetImg());
 
 			}
 			MV1DrawModel(BackModel);

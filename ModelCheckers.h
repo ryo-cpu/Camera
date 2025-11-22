@@ -4,5 +4,6 @@
 {
 public:
    void ShowTextureName(int Model);
+   void ShowFrameName(int Model);
 };
 
