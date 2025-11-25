@@ -121,9 +121,18 @@ bool Player::Input(Camera& camera)
 		if ((InputState->Buttons[XINPUT_BUTTON_B]) != 0)
 		{
 		
-			if (VSize(move) == 0)move = VGet(0, 0, -1);
-			else move = VScale(VNorm(move),1);
-			VECTOR Front =VTransformSR(move,MGetRotY(Dir.y));
+			VECTOR Front; 
+			if (VSize(move) == 0)
+			{
+				move = VGet(0, 0, -1);
+			    Front=VTransformSR(move, MGetRotY(Dir.y));
+			}
+			else
+			{
+			    move = VScale(VNorm(move), 1);
+				Front = move;
+			}
+			
 			move =VScale(Front,AnimSpeed);
 			SetAnimSpeed(50.0f);
 			SetAnimType(Kick);
