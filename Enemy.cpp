@@ -178,6 +178,22 @@ bool Enemy::Hit_Stop()
 {
 	if (!IsAnim)
 	{
+		const char* HipName = "mixamorig:Hips";
+
+		int HipIndex = MV1SearchFrame(Img, HipName);
+		if (HipIndex >= 0)
+		{
+			VECTOR CPos = MV1GetFramePosition(Img, HipIndex);
+			SetCollison(CPos, CollisonSize);
+			CPos.y = 0;
+			Pos = CPos;
+		}
+		else
+		{
+
+			SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+
+		}
 	 return false;
 	}
 	return true;
@@ -204,7 +220,22 @@ void Enemy::Update(float deltaTime)
     Pos = VAdd(Pos, Move);
 	
 	AnimUpdate(deltaTime);
-	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+	
+	const char* HipName = "mixamorig:Hips";
+
+	int HipIndex = MV1SearchFrame(Img, HipName);
+	if (HipIndex >= 0)
+	{
+		VECTOR CPos = MV1GetFramePosition(Img, HipIndex);
+		SetCollison(CPos, CollisonSize);
+		DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+	}
+	else
+	{
+	 
+		SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+
+	}
 	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	AddLiveTime(deltaTime);

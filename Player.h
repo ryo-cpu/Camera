@@ -38,6 +38,6 @@ public:
     float GetLastDamageTime();
     bool Rolling();
     void AddSpGauge(int add);
-
+    bool GetTurn();
 };
 

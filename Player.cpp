@@ -356,6 +356,11 @@ void Player::AddSpGauge(int add)
 
 }
 
+bool Player::GetTurn()
+{
+	return isTurn;
+}
+
 
 
 void Player::SpecialMove(float deltaTime)

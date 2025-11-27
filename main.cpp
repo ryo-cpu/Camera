@@ -235,7 +235,7 @@ if (player->GetPos().y <= BaseY)
 ///次の動きの判定
 NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
-NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+NextEnemy.SetPos(VAdd(enemy->GetCollison().GetPos(), enemy->GetMove()));
 NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
 ///かべとplayer
 if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollison().GetSphereSize()/2)
@@ -292,14 +292,7 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
  else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
 {
 
-	///１F後のコリジョンを作る
 	
-	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
-	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
-
-	
-	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
-	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
 	///衝突検査（ここでするとSphereを持ち越さない）
 	if (Collision_Measurement->Collison(NextEnemy, NextPlayer))
 	{
@@ -342,7 +335,8 @@ else if (!OnWall)
 	}
 	else if (VSize(VSub(player->GetPos(), BasePoint)) >= 200)
 	{
-		if (VSize(player->GetMove()) <= 9)
+		/////切り替えし。ターンの処理
+		if (player->GetTurn())
 		{
 			BasePoint = player->GetPos();
 		}
