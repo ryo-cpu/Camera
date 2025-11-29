@@ -199,6 +199,16 @@ if (FadeAlpha > 0 && !InModeCheng)
 if (player->GetIsHit())
 {
 	player->SetMove(VAdd(player->GetMove(), G));
+	
+	/////
+	if (player->GetTotalAnimTime() <= player->GetNowAnimTime() + deltaTime)
+	{
+
+		camera->ResetOffset(VTransformSR(DefaultCamera,MGetRotY(player->GetDir().y)), player->GetPos());
+		camera->CalculateAngle(player->GetPos());
+		camera->CalculateTargetAngle(player->GetPos());
+		player->SetIsHit(false);
+	}
 
 }
 else if (!player->GetInSpecialMove())
@@ -228,7 +238,7 @@ if (player->GetPos().y <= BaseY)
 	isJunp = false;
 	player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
 	JumpPower = VGet(0, 30, 0);
-	player->SetIsHit(false);
+
 }
 
 ////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,9 +279,9 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 
 if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
 {
-	VECTOR Move = VGet(0, 0.1f, -1);
+	VECTOR Move = VGet(0, 0, 0);
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-	Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize()/4);
+	/*Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize()/4);*/
 	player->SetMove(Move);
 	player->SetAnimType(player->Hit);
 	player->SetIsHit(true);
@@ -279,12 +289,14 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
 	player->SetLastDamageTime();
 	/////必殺キャンセル
 	player->SetInSpecialMove(false);
-	player->SetDir(VGet(0, 0, 0));
-	///playerの正面に移動
 	
-	camera->ResetOffset(VTransformSR(DefaultCamera, MGetRotY(player->GetDir().y)), player->GetPos());
+	///playerの正面に移動
+	VECTOR FRONT = VGet(0, 100, -1000);
+	FRONT = VTransformSR(FRONT, MGetRotY(player->GetDir().y));
+	camera->ResetOffset(FRONT, player->GetPos());
 	camera->CalculateAngle(player->GetPos());
 	camera->CalculateTargetAngle(player->GetPos());
+
 	/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
 	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 }

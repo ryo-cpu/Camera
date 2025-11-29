@@ -169,6 +169,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="fps.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelCheckers.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SpecialMove.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="EffectM.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="fps.h" />
+    <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SpecialMove.h" />

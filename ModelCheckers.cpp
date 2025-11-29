@@ -77,6 +77,12 @@ bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VEC
         {
             ///法線ベクトル
             VECTOR N = VCross(VSub(T1, T2), VSub(T1, T3));
+            float nlen = VSize(N);
+            if (nlen < 1e-8f) {
+                // 退化三角形（面が無い）に到達した場合、安全策としてここでは辺/頂点判定が既に終わっているので false を返す。
+                // 実際の要件に応じて true/false を調整してください。
+                return false;
+            }
             float D = -(T1.x * N.x + T1.y * N.y + T1.z * N.z);
 
             float Size =fabs(SphereP.x * N.x + SphereP.y * N.y + SphereP.z * N.z + D) / VSize(N);
