@@ -101,3 +101,52 @@ bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VEC
     }
 }
 
+bool ModelCheckers::IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, VECTOR TB2, VECTOR TB3)
+{
+    VECTOR Triangle_A[3] = {TA1,TA2,TA3};
+    VECTOR Triangle_B[3] = {TB1,TB2,TB3};
+
+	VECTOR EdgesA[3] = { VSub(Triangle_A[1],Triangle_A[0]),VSub(Triangle_A[2],Triangle_A[1]),VSub(Triangle_A[0],Triangle_A[2]) };
+	VECTOR EdgesB[3] = { VSub(Triangle_B[1],Triangle_B[0]),VSub(Triangle_B[2],Triangle_B[1]),VSub(Triangle_B[0],Triangle_B[2]) };
+     
+	std::vector<VECTOR> Axes;
+
+	Axes.push_back(VCross(EdgesA[0], EdgesA[1]));
+	Axes.push_back(VCross(EdgesB[0], EdgesB[1]));
+
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+
+            Axes.push_back(VCross(EdgesA[i], EdgesB[j]));
+        }
+    }
+
+    for(const auto& Axis : Axes)
+    {
+		float MinA=0, MinB=0, MaxA=0, MaxB=0;
+
+		TProject(Triangle_A, Axis, MinA, MaxA);
+		TProject(Triangle_B, Axis, MinB, MaxB);
+
+        if (MaxA < MinB || MaxB < MinA)
+        {
+            return false; 
+        }
+	}
+
+    return false;
+}
+
+void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float &OutMax)
+{
+	float p0 = VDot(Triangle[0], Axis);
+	float p1 = VDot(Triangle[1], Axis);
+    float p2 = VDot(Triangle[2], Axis);
+
+    OutMin = (p0 < p1 ? (p0 < p2 ? p0 : p2) : (p1 < p2 ? p1 : p2));
+    OutMax = (p0 > p1 ? (p0 > p2 ? p0 : p2) : (p1 > p2 ? p1 : p2));
+
+}
+
