@@ -150,3 +150,11 @@ void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float
 
 }
 
+bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
+{
+    std::vector<int> TriangleNumber;
+    ////éOäpå`Çê€ÇÈ
+
+    return false;
+}
+
