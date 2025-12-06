@@ -284,9 +284,9 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 
 if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
 {
-	VECTOR Move = VGet(0, 0, 0);
+	VECTOR Move = VSub(NextPlayer.GetPos(),NextEnemy.GetPos());
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-	/*Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize()/4);*/
+	Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize() / 4);
 	player->SetMove(Move);
 	player->SetAnimType(player->Hit);
 	player->SetIsHit(true);
@@ -668,7 +668,7 @@ else if (!OnWall)
 			}
 			else
 			{
-				MATRIX RotY = MGetRotY(enemy->GetDir().y);
+
 				VECTOR Offset = WinCameraFast;
 				camera->ResetOffset(Offset, enemy->GetPos());
 				camera->Look(enemy->GetPos());

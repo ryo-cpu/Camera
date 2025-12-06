@@ -280,6 +280,10 @@ void Player::Update(float deltaTime)
 		}
 
 	}
+	if (AnimType == Hit)
+	{
+		Move = VScale(VNorm(Move), AnimSpeed);
+	}
 
 	
 	LiveTime+=deltaTime;
