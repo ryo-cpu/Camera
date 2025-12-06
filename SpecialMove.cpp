@@ -59,7 +59,7 @@ bool SpecialMove::Update(float DeltaTime)
 		camera.ResetOffset(VScale(VNorm(VSub(enemy.GetPos(), player.GetPos())), 1000), player.GetPos());
 		////ìGÇ∆é©ï™ÇÃäpìxÇãÅÇﬂÇÈ
 		float rat = atan2(EnemyDir.z,EnemyDir.x);
-		EffectM::Add(*SpE,player.GetPos(), VGet(0, rat, 0));
+		EffectM::Add(*SpE,player.GetPos(), VGet(0, rat, 0),VGet(0,0,0),SpEffctID);
 		NowMode = Zoom;
 	}
 	
@@ -151,6 +151,14 @@ bool SpecialMove::Update(float DeltaTime)
 	}
 	else if (ElapsedTime <= 6.0)
 	{
+		////////
+		Effect* SpEffect = nullptr;
+		SpEffect = EffectM::Search(SpEffctID);
+		if (SpEffect != nullptr)
+		{
+			SpEffect->Stop();
+			SpEffect = nullptr;
+		}
 		enemy.Update(DeltaTime);
 		player.SetPos(VAdd(player.GetPos(), VGet(0, (5.5-ElapsedTime)*1000*DeltaTime, 0)));
 		player.SetAttackCollison(player.GetPos(), 0.0f);
