@@ -25,7 +25,7 @@ Character& player;
 Character& enemy;
 
 int NowMode;
-std::vector< AfterImage> Afterimages;
+std::vector<AfterImage> Afterimages;
 public:
 	bool Update(float DeltaTime);
 	

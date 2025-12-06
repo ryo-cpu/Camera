@@ -9,11 +9,14 @@ bool SpecialMove::Update(float DeltaTime)
 	///ê√é~Ç≥ÇπÇÈ
 	player.SetMove(VGet(0, 0, 0));
 	///ê≥ñ Çå¸Ç©ÇπÇÈ
-	player.SetDir(VGet(0, 0, 0));
+	VECTOR Front = VNorm(VSub(enemy.GetPos(), player.GetPos()));
+	float Angle = atan2f(Front.z, Front.x);
+	
+	player.SetDir(VGet(0, Angle, 0));
 	MV1SetRotationXYZ(player.GetImg(),player.GetDir());
 	float ElapsedTime = player.GetLiveTime() -player.GetStartLiveTime();
-	VECTOR Front =VScale(VNorm( VSub(player.GetPos(),enemy.GetPos())),player.GetAttackCollison().GetSphereSize());
-	VECTOR HitPoint = VAdd(VGet(Front.x,400,Front.z), enemy.GetPos());
+
+	//VECTOR HitPoint = VAdd(VGet(Front.x,400,Front.z), enemy.GetPos());
 	EffectImg* SpE = new EffectImg("data/KickWave.efkefc", 100);
 
 	if (ElapsedTime <= 1.5)
@@ -179,7 +182,9 @@ bool SpecialMove::Update(float DeltaTime)
 		}
 		/*player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), -800)));*/
 		player.SetCollison(player.GetPos(), 40);
-		camera.ResetOffset(DefaultCamera, player.GetPos());
+		/////////////////////////////////////////////////
+
+		camera.ResetOffset(VTransformSR( DefaultCamera,MGetRotY(player.GetDir().y)), player.GetPos());
 		camera.CalculateAngle(player.GetPos());
 		camera.CalculateTargetAngle(player.GetPos());
 		enemy.SetisDraw(true);

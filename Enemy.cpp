@@ -228,7 +228,7 @@ void Enemy::Update(float deltaTime)
 	{
 		VECTOR CPos = MV1GetFramePosition(Img, HipIndex);
 		SetCollison(CPos, CollisonSize);
-		DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		
 	}
 	else
 	{

@@ -198,8 +198,13 @@ if (FadeAlpha > 0 && !InModeCheng)
 
 if (player->GetIsHit())
 {
+	float Checker = player->GetPos().y + G.y;
+	if (Checker >= 0)
+	{
+
 	player->SetMove(VAdd(player->GetMove(), G));
-	
+
+	}	
 	/////
 	if (player->GetTotalAnimTime() <= player->GetNowAnimTime() + deltaTime)
 	{
@@ -524,7 +529,11 @@ else if (!OnWall)
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			player->Draw();
-			enemy->Draw();              // モデルの描画
+			if (player->GetAnimType() != player->Hit)
+			{
+				enemy->Draw();
+			}
+			 // モデルの描画
 			// モデルの描画
 				   // モデルの描画
 		}
@@ -546,6 +555,7 @@ else if (!OnWall)
 				float Move = 40 * deltaTime;
 				MATRIX RotY = MGetRotY(ConversionRad(Move));
 				VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
+				enemy->SetPos(VGet(0, 0, 0));
 				camera->RotaionAxis(Axis, RotY);
 				camera->Look(Axis);
 				enemy->AnimUpdate(deltaTime);
@@ -659,9 +669,10 @@ else if (!OnWall)
 			else
 			{
 				MATRIX RotY = MGetRotY(enemy->GetDir().y);
-				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
+				VECTOR Offset = WinCameraFast;
 				camera->ResetOffset(Offset, enemy->GetPos());
-				enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+				camera->Look(enemy->GetPos());
+				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
 				
 				if (!enemy->GetIsAnim())
 				{
@@ -683,6 +694,7 @@ else if (!OnWall)
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
+				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
 				camera->ResetOffset(StartCamera, enemy->GetPos());
 				enemy->SetAnimType(enemy->Dance);
 				InModeCheng = false;
