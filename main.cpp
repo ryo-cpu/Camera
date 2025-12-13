@@ -286,6 +286,7 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
 {
 	VECTOR Move = VSub(NextPlayer.GetPos(),NextEnemy.GetPos());
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
+	Move.y = -10.0f;
 	Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize() / 4);
 	player->SetMove(Move);
 	player->SetAnimType(player->Hit);
@@ -317,7 +318,8 @@ if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && p
 
 		VECTOR TakeDistance = VScale(VNorm(Distance), (NextEnemy.GetSphereSize() + NextPlayer.GetSphereSize() + 1));
 
-		TakeDistance = VSub(TakeDistance, Distance);
+ 		TakeDistance = VSub(TakeDistance, Distance);
+		TakeDistance.y = 0;
 		player->SetMove(VAdd(player->GetMove(), TakeDistance));
 
 	}
