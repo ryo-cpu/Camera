@@ -213,6 +213,17 @@ if (player->GetIsHit())
 		camera->CalculateAngle(player->GetPos());
 		camera->CalculateTargetAngle(player->GetPos());
 		player->SetIsHit(false);
+		////////////////////////////////////
+		const char* HipName = "mixamorig:Hips";
+		VECTOR test = MV1GetPosition(player->GetImg());
+		int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
+		if (HipIndex >= 0)
+		{
+			VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
+			SetPos.y = 0;
+			player->SetPos(SetPos);
+		}
+
 	}
 
 }
@@ -269,7 +280,39 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 }
 ///かべとenemy
-if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
+////player攻撃
+if (Collision_Measurement->Collison(player->GetAttackCollison(), NextEnemy) && enemy->GetMoveType() != enemy->hit_stop)
+{
+	////敵の方向
+	VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
+	float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+	enemy->SetDir(VGet(0, Angle, 0));
+	VECTOR Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime);
+	if (player->GetInSpecialMove())
+	{
+		Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime * 10);
+	}
+	Knockback.y = 0;
+	const char* HipName = "mixamorig:LeftToe_End_end";
+	VECTOR test = MV1GetPosition(player->GetImg());
+	int LegIndex = MV1SearchFrame(player->GetImg(), HipName);
+	if (LegIndex >= 0)
+	{
+		VECTOR EffctPos = MV1GetFramePosition(player->GetImg(), LegIndex);
+		EffectM::Add(*ImpactE, EffctPos);
+	}
+
+	AttackSound->Play();
+	player->AddSpGauge(20);
+	enemy->SetMove((Knockback));
+	enemy->SetMoveType(enemy->hit_stop);
+	enemy->SetAnimType(enemy->Hit);
+	enemy->SubHp(player->GetAttack());
+	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+
+
+}
+else if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
 {
 	
 	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
@@ -408,48 +451,15 @@ else if (!OnWall)
 			{
 				BGM->Loop();
 				player->Update(deltaTime);
-				enemy->Update(deltaTime);
+				if (player->GetAnimType() != player->Hit)
+				{
+					enemy->Update(deltaTime);
+				}
+			
 			}
 			else
 			{
 				BGM->Stop();
-			}
-			
-
-
-		
-		
-			////player攻撃
-			if (Collision_Measurement->Collison(player->GetAttackCollison(), enemy->GetCollison()) && enemy->GetMoveType() != enemy->hit_stop)
-			{
-				////敵の方向
-				VECTOR EnemyDir = VNorm(VSub(enemy->GetPos(),player->GetPos()));
-				float Angle = atan2f(EnemyDir.x, EnemyDir.z); 
-				enemy->SetDir(VGet(0,Angle,0));
-				VECTOR Knockback = VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime);
-				if (player->GetInSpecialMove())
-				{
-				 Knockback = VScale(VNorm(VSub(enemy->GetPos(), player->GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime * 10);
-				}
-				Knockback.y = 0;
-				const char* HipName = "mixamorig:LeftToe_End_end";
-				VECTOR test = MV1GetPosition(player->GetImg());
-				int LegIndex = MV1SearchFrame(player->GetImg(), HipName);
-				if (LegIndex >= 0)
-				{
-					VECTOR EffctPos = MV1GetFramePosition(player->GetImg(), LegIndex);
-					EffectM::Add(*ImpactE,EffctPos);
-				}
-				
-				AttackSound->Play();
-				player->AddSpGauge(20);
-				enemy->SetMove((Knockback));
-				enemy->SetMoveType(enemy->hit_stop);
-				enemy->SetAnimType(enemy->Hit);
-				enemy->SubHp(player->GetAttack());
-				StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
-
-
 			}
 			//////カメラの押し戻し
 			camera->Update(player->GetPos());
@@ -674,7 +684,6 @@ else if (!OnWall)
 				VECTOR Offset = WinCameraFast;
 				camera->ResetOffset(Offset, enemy->GetPos());
 				camera->Look(enemy->GetPos());
-				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
 				
 				if (!enemy->GetIsAnim())
 				{

@@ -141,8 +141,10 @@ bool SpecialMove::Update(float DeltaTime)
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
 		player.SetAttackCollison(VAdd(player.GetPos(), AttackPos), 100.f);
-		
-		if (player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
+		Sphere_Collision Next_E;
+		Next_E.SetPos(VAdd(enemy.GetPos(), enemy.GetMove()));
+		Next_E.SetSphereSize(enemy.GetCollison().GetSphereSize());
+		if (player.GetCollison().Collison(player.GetAttackCollison(),Next_E))
 		{
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 300, 0);
 			StartJoypadVibration(DX_INPUT_PAD1, 1000, 50, 1);
