@@ -9,8 +9,8 @@ bool SpecialMove::Update(float DeltaTime)
 	///ê√é~Ç≥ÇπÇÈ
 	player.SetMove(VGet(0, 0, 0));
 	///ê≥ñ Çå¸Ç©ÇπÇÈ
-	VECTOR Front = VNorm(VSub(enemy.GetPos(), player.GetPos()));
-	float Angle = atan2f(Front.z, Front.x);
+	VECTOR Front = VNorm(VSub(player.GetPos(),enemy.GetPos()));
+	float Angle = atan2f(Front.x, Front.z);
 	
 	player.SetDir(VGet(0, Angle, 0));
 	MV1SetRotationXYZ(player.GetImg(),player.GetDir());
@@ -29,10 +29,20 @@ bool SpecialMove::Update(float DeltaTime)
 		camera.EndZoom();
 		NowMode = Jump;
 		Afterimages.clear();
+		float Rot = 0.02f;
+		VECTOR F = VScale(VGet(0, 0, 1), VSize(VGet(DefaultCamera.x, 0, DefaultCamera.z)));
+		camera.AddTAngle(VGet(0, Rot, 0));
+		VECTOR RotP = camera.GetTagetAngle();
+		MATRIX RotX = MGetRotX(RotP.x);
+		MATRIX RotY = MGetRotY(RotP.y);///ZÇÕâÒì]ÇµÇ»Ç¢
+		MATRIX RotAll = MMult(RotX, RotY);
+		camera.ResetOffset(VTransformSR(F, RotAll), player.GetPos());
+		camera.Look(player.GetPos());
 		
 	}
 	else if (ElapsedTime<=2.0)
 	{
+		player.SetDir(VGet(0, Angle, 0));
 		///îÚÇ—è„Ç™ÇË
 		player.SetMove(VGet(0, 1000*DeltaTime, 0));
 		camera.StartPan();
@@ -176,6 +186,7 @@ bool SpecialMove::Update(float DeltaTime)
 
 	else
 	{
+		player.SetDir(VGet(0, Angle, 0));
 		VECTOR PushBack = VSub(enemy.GetPos(), player.GetPos());
 		PushBack.y = 0;
 		if (VSize(PushBack) == 0)

@@ -176,6 +176,7 @@ bool Enemy::Tink()
 
 bool Enemy::Hit_Stop()
 {
+	AttackCollison = {};
 	if (!IsAnim)
 	{
 		const char* HipName = "mixamorig:Hips";

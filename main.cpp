@@ -280,6 +280,18 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 }
 ///かべとenemy
+if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
+{
+	
+	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
+	AddMove = VScale(VNorm(AddMove),Field.GetSphereSize()-enemy->GetCollison().GetSphereSize() / 2);
+	AddMove = VSub(AddMove,NextEnemy.GetPos());
+	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
+	///再更新　ほかの判定でも使うので
+	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
+}
+///enemy攻撃
 ////player攻撃
 if (Collision_Measurement->Collison(player->GetAttackCollison(), NextEnemy) && enemy->GetMoveType() != enemy->hit_stop)
 {
@@ -312,20 +324,9 @@ if (Collision_Measurement->Collison(player->GetAttackCollison(), NextEnemy) && e
 
 
 }
-else if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
-{
-	
-	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
-	AddMove = VScale(VNorm(AddMove),Field.GetSphereSize()-enemy->GetCollison().GetSphereSize() / 2);
-	AddMove = VSub(AddMove,NextEnemy.GetPos());
-	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
-	///再更新　ほかの判定でも使うので
-	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
-	NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
-}
-///enemy攻撃
 
-if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
+
+else if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison()) && player->GetAnimType() != player->Hit)
 {
 	VECTOR Move = VSub(NextPlayer.GetPos(),NextEnemy.GetPos());
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
@@ -613,6 +614,7 @@ else if (!OnWall)
 					MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
 					MV1SetPosition(player->GetImg(), player->GetPos());
 					player->SetScale(1.0f);// 試しに10倍
+
 					
 					///enemy初期化
 					enemy = new Enemy();
@@ -631,6 +633,9 @@ else if (!OnWall)
 
 
 					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
+					camera->ResetOffset(DefaultCamera, player->GetPos());
+					camera->CalculateAngle(player->GetPos());
+					camera->CalculateTargetAngle(player->GetPos());
 
 					SPMove = new SpecialMove(*camera, *player, *enemy);
 				}
