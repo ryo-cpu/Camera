@@ -264,7 +264,7 @@ NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 NextEnemy.SetPos(VAdd(enemy->GetCollison().GetPos(), enemy->GetMove()));
 NextEnemy.SetSphereSize(enemy->GetCollison().GetSphereSize());
 ///かべとplayer
-if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollison().GetSphereSize()/2)
+if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollison().GetSphereSize()/2&&!player->GetInSpecialMove())
 {
 	
 
@@ -280,7 +280,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	NextPlayer.SetSphereSize(player->GetCollison().GetSphereSize());
 }
 ///かべとenemy
-if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2)
+if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollison().GetSphereSize()/2 && !player->GetInSpecialMove())
 {
 	
 	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
@@ -305,13 +305,23 @@ if (Collision_Measurement->Collison(player->GetAttackCollison(), NextEnemy) && e
 		Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollison().GetSphereSize() * deltaTime * 10);
 	}
 	Knockback.y = 0;
-	const char* HipName = "mixamorig:LeftToe_End_end";
-	VECTOR test = MV1GetPosition(player->GetImg());
-	int LegIndex = MV1SearchFrame(player->GetImg(), HipName);
-	if (LegIndex >= 0)
+	const char* HipName = "mixamorig:Hips";
+	VECTOR test = MV1GetPosition(enemy->GetImg());
+	int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+	int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+
+	
+	if (enemyIndex >= 0&&PlayerIndex >=0)
 	{
-		VECTOR EffctPos = MV1GetFramePosition(player->GetImg(), LegIndex);
-		EffectM::Add(*ImpactE, EffctPos);
+		VECTOR EffctPos;
+		VECTOR EPos	= MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+		VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+		EffctPos = VAdd(PPos, VScale( VSub(EPos, PPos),0.25));
+
+
+		VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+		EffectMove = VNorm(EffectMove);
+		EffectM::Add(*ImpactE, EffctPos,VGet(0,0,0),EffectMove);
 	}
 
 	AttackSound->Play();
@@ -330,7 +340,7 @@ else if (Collision_Measurement->Collison(NextPlayer, enemy->GetAttackCollison())
 {
 	VECTOR Move = VSub(NextPlayer.GetPos(),NextEnemy.GetPos());
 	Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-	Move.y = -10.0f;
+	Move.y = 10.0f;
 	Move = VScale(VNorm(Move), enemy->GetAttackCollison().GetSphereSize() / 4);
 	player->SetMove(Move);
 	player->SetAnimType(player->Hit);
@@ -385,6 +395,26 @@ if (player->GetInSpecialMove())
 ///通常時
 else if (!OnWall)
 {
+	if (player->GetAnimType() == player->Roll)
+	{
+		float RollZoom = 500.0f;
+		camera->StartZoom(RollZoom);
+		const char* HipName = "mixamorig:Hips";
+		VECTOR test = MV1GetPosition(player->GetImg());
+		int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
+		if (HipIndex >= 0)
+		{
+			VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
+			SetPos.y = 0;
+			camera->Look(SetPos);
+		}
+
+	
+	}
+	else
+	{
+		camera->EndZoom();
+	}
 
 	if (!isInput)
 	{
@@ -405,7 +435,7 @@ else if (!OnWall)
 		}
 		 camera->StartMove(VScale(player->GetMove(), 1.0f));
 	}
-			}
+}
 			/////カメラが壁に触れているときは動きと同じ大きさの壁ー＞中心のベクトルを足したものをカメラにつける
 			else
 			{
@@ -689,7 +719,7 @@ else if (!OnWall)
 				VECTOR Offset = WinCameraFast;
 				camera->ResetOffset(Offset, enemy->GetPos());
 				camera->Look(enemy->GetPos());
-				
+				enemy->SetPos(VGet(enemy->GetPos().x, 650, enemy->GetPos().z));
 				if (!enemy->GetIsAnim())
 				{
 					SetFontSize(128);
