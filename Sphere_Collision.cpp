@@ -21,7 +21,7 @@ void Sphere_Collision::SetSphereSize(float sphereSize)
     Size = sphereSize;
 }
 
-bool Sphere_Collision::Collison(const Sphere_Collision& S1, const Sphere_Collision& S2)
+bool Sphere_Collision::Collision(const Sphere_Collision& S1, const Sphere_Collision& S2)
 {
     VECTOR Distance = VSub(S1.Pos, S2.Pos);
     

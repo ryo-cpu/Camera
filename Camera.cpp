@@ -196,7 +196,7 @@ void Camera::Move()
 
 }
 
-void Camera::RotaionAxis(VECTOR TPos, MATRIX TurnPower)
+void Camera::RotationAxis(VECTOR TPos, MATRIX TurnPower)
 {
     RotFreeAxis(Pos, TPos, TurnPower);
     ///ofsetの更新
@@ -206,9 +206,9 @@ void Camera::RotaionAxis(VECTOR TPos, MATRIX TurnPower)
 
 
 
-void Camera::Rotaion(MATRIX TurnPower)
+void Camera::Rotation(MATRIX TurnPower)
 {
-    Pos = VTransformSR(Pos, TurnPower);
+    Pos =VTransformSR(Pos, TurnPower);
 
 }
 
@@ -333,7 +333,7 @@ void Camera::Update(VECTOR TPos)
 VECTOR Camera::RotFreeAxis(VECTOR& V1, const VECTOR& Axis, const MATRIX& Power)
 {
     V1 = VSub(V1, Axis);
-    V1 = VTransformSR(V1, Power);
+    V1 =VTransformSR(V1, Power);
     V1 = VAdd(V1, Axis);
     return V1;
 }
@@ -382,26 +382,26 @@ void Camera::CalculateTargetAngle(VECTOR Target)
     float pitch = -atan2f(dir.y, sqrtf(dir.x * dir.x + dir.z * dir.z)); // X軸回転（上下）
     float roll = 0.0f; // Z軸回転は通常0（使っていなければ）
 
-    TagetAngle.x = pitch;
-    TagetAngle.y = yaw;
-    TagetAngle.z = roll;
+    TargetAngle.x = pitch;
+    TargetAngle.y = yaw;
+    TargetAngle.z = roll;
 }
 
 
 
 void Camera::SetTAngle(VECTOR angle)
 {
-    TagetAngle = angle;
+    TargetAngle = angle;
 }
 
 void Camera::AddTAngle(VECTOR addangle)
 {
-    TagetAngle = VAdd(addangle,TagetAngle);
+    TargetAngle = VAdd(addangle,TargetAngle);
 }
 
-VECTOR Camera::GetTagetAngle()
+VECTOR Camera::GetTargetAngle()
 {
-    return TagetAngle;
+    return TargetAngle;
 }
 
 VECTOR Camera::WorldToCamera(VECTOR Pos)

@@ -8,7 +8,7 @@ class EffectM
 	static Effect* Pool[MaxEffect];
 	static int Observer[MaxEffect];
 public:
-	static void Update(float detalTime);
+	static void Update(float deltaTime);
 	static	void Add(EffectImg origin);
 	static	void Add(EffectImg origin,VECTOR StartPos);
 	static	void Add(EffectImg origin, VECTOR StartPos,VECTOR StartRot);
@@ -19,5 +19,6 @@ public:
 	static  Effect* Search(int id);
 	static	void Draw();
    EffectM();
+   ~EffectM();
 };
 

@@ -10,7 +10,8 @@ EffectImg::EffectImg(char* Link, float Size)
 	Img = LoadEffekseerEffect(Link, Size);
 }
 
-int EffectImg::GetImg()
+
+int EffectImg::GetImg() const
 {
 	return Img;
 }

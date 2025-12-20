@@ -30,6 +30,7 @@ public:
 	bool Update(float DeltaTime);
 	
 	SpecialMove (Camera& Camera, Character& Player, Character& Enemy);
+    ~SpecialMove();
 
 
 };

@@ -6,14 +6,14 @@
 Effect* EffectM::Pool[MaxEffect] = { nullptr };
 int EffectM::Observer[MaxEffect] = { 0 };
 
-void EffectM::Update(float detalTime)
+void EffectM::Update(float deltaTime)
 {
 	for (int i = 0; i < MaxEffect; i++)
 	{
 		if (Pool[i] != nullptr)
 		{
 			///Œã‚Å‚·‚×‚Ä‚É‚·‚é
-			Pool[i]->Update(detalTime);
+			Pool[i]->Update(deltaTime);
 			if (IsEffekseer3DEffectPlaying(Pool[i]->GetPlayHandle())!=0)
 			{
 				for (int j = 0; j < MaxEffect; j++)
@@ -252,7 +252,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 	Pool[Observer[0] - 1] = new Effect(VGet(0, 0, 0), origin);
 	///ÅŒÃ‚ÌêŠ‚ðÅV‚É•Ï‚¦‚é
 	///‚¢‚Á‚½‚ñ•ÛŽ
-	int TNP = Observer[0];
+	int TMP = Observer[0];
 	Observer[0] = 0;
 	///‚O‚É‚µ‚Ä‹l‚ß‚é
 	for (int j = 1; j < MaxEffect; j++)
@@ -264,7 +264,7 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 		}
 
 	}
-	Observer[MaxEffect - 1] = TNP;
+	Observer[MaxEffect - 1] = TMP;
 
 }
 
@@ -293,4 +293,9 @@ void EffectM::Draw()
 EffectM::EffectM()
 {
 	
+}
+
+EffectM::~EffectM()
+{
+	delete[] Pool;
 }

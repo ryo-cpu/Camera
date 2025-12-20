@@ -7,7 +7,7 @@
 
 Player::Player()
 {
-	SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+	SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
 	MaxHp = 40;
 	Hp = MaxHp;
 	Attack = 10;
@@ -15,8 +15,14 @@ Player::Player()
 	IsHit = false;
 	InRolling = false;
 	IsActiveInput = true;
-	Grand = VGet(0, 0, 0);
+	GRund = VGet(0, 0, 0);
 	Move = VGet(0, 0, 0);
+	InputState = new XINPUT_STATE;
+}
+
+Player::~Player()
+{
+	delete InputState;
 }
 
 bool Player::Input(Camera& camera)
@@ -25,7 +31,7 @@ bool Player::Input(Camera& camera)
     isTurn = false;
 	VECTOR move=VGet(0,0,0);
 	float targetAngle =0.0f; // ƒ‰ƒWƒAƒ“Šp
-	XINPUT_STATE* InputState=new XINPUT_STATE;
+	
 	int* XBuf=new int;
 	int* YBuf=new int;
 	SetJoypadDeadZone(DX_INPUT_PAD1, 0.35f);
@@ -48,11 +54,11 @@ bool Player::Input(Camera& camera)
 			Turn(VGet(0, Rot, 0));
 			VECTOR F = VScale(VGet(0, 0, 1),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
 			camera.AddTAngle(VGet(0, Rot, 0));
-			VECTOR RotP = camera.GetTagetAngle();
+			VECTOR RotP = camera.GetTargetAngle();
 			MATRIX RotX = MGetRotX(RotP.x);
 			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
 			MATRIX RotAll = MMult(RotX,RotY);
-			camera.ResetOffset( VTransformSR(F, RotAll),Pos);
+			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
 			camera.Look(Pos);
 
 		}
@@ -61,7 +67,7 @@ bool Player::Input(Camera& camera)
 		
 			float Rot = (InputState->ThumbRY) * 0.000001f;
 			VECTOR F = VScale(VGet(0, 0, 1), VSize(DefaultCamera));
-			VECTOR RotP = camera.GetTagetAngle();
+			VECTOR RotP = camera.GetTargetAngle();
 			
 			if (RotP.x+ Rot>=-0.7&&RotP.x+Rot<=-0.2)
 			{
@@ -70,8 +76,8 @@ bool Player::Input(Camera& camera)
 			
 
 			
-			MATRIX RotX = MGetRotX(camera.GetTagetAngle().x);
-			MATRIX RotY = MGetRotY(camera.GetTagetAngle().y);///Z‚Í‰ñ“]‚µ‚È‚¢
+			MATRIX RotX = MGetRotX(camera.GetTargetAngle().x);
+			MATRIX RotY = MGetRotY(camera.GetTargetAngle().y);///Z‚Í‰ñ“]‚µ‚È‚¢
 			MATRIX RotAll = MMult(RotX, RotY);
 			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
 			
@@ -79,13 +85,13 @@ bool Player::Input(Camera& camera)
 
 		}
 		VECTOR MoveDir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
-		MoveDir = VTransformSR(MoveDir, MGetRotY(GetDir().y));
+		MoveDir =VTransformSR(MoveDir, MGetRotY(GetDir().y));
 		if (VSize(MoveDir) >= 100)
 		{
 			isInput = true;
 			if (!IsAnim || AnimType == Stop)
 			{
-				SetAnimType(Ran);
+				SetAnimType(Run);
 			}
 			move = VScale(MoveDir, 0.01f);
 		}
@@ -94,7 +100,7 @@ bool Player::Input(Camera& camera)
 		{
 			if (VSize(move) == 0)
 			{
-				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
+				move =VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
 			}
 			else
 			{
@@ -103,7 +109,7 @@ bool Player::Input(Camera& camera)
 			StartLiveTime = LiveTime;
 			InRolling = true;
 			SetAnimType(Roll);
-			Collison = {};
+			Collision = {};
 		}
 		if (isInput && VSize(move) != 0)
 		{
@@ -163,6 +169,9 @@ bool Player::Input(Camera& camera)
 			Move = VScale(VNorm(Move), MaxSpeed);
 		}
 	}
+	delete XBuf;
+	delete YBuf;
+
 	
 
 	
@@ -174,7 +183,7 @@ void Player::Update(float deltaTime)
 	
 	
 	
-	if (Grand.y < Pos.y)
+	if (GRund.y < Pos.y)
 	{
 		Pos = VAdd(Pos, G);
 
@@ -186,12 +195,12 @@ void Player::Update(float deltaTime)
 		if (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime)
 		{
 			VECTOR AttackPos = VGet(0, 100, -200);
-			AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
-			SetAttackCollison(VAdd(Pos, AttackPos), 30.f);
+			AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
+			SetAttackCollision(VAdd(Pos, AttackPos), 30.f);
 		}
 		else
 		{
-			AttackCollison = {};
+			AttackCollision = {};
 		}
 		
 		if (!IsAnim)
@@ -202,13 +211,13 @@ void Player::Update(float deltaTime)
 	}
 	else
 	{
-		AttackCollison = {};
+		AttackCollision = {};
 		
 
 	}
-	if (Collison.GetSphereSize() == 0)
+	if (Collision.GetSphereSize() == 0)
 	{
-		DrawSphere3D(AttackCollison.GetPos(), AttackCollison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		DrawSphere3D(AttackCollision.GetPos(),AttackCollision.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
 	if (AnimType == Hit &&NowAnimTime >= AnimTotalTime)
@@ -238,7 +247,7 @@ void Player::Update(float deltaTime)
 	else
 	{
 		
-		MoveCollison(Move);
+		MoveCollision(Move);
 	    SetPos(VAdd(Pos, Move));
 		
 	}
@@ -291,9 +300,9 @@ void Player::Update(float deltaTime)
 
 
 
-void Player::SetGrand(VECTOR grand)
+void Player::SetGRund(VECTOR gRund)
 {
-	Grand = grand;
+	GRund = gRund;
 }
 
 bool Player::GetIsHit()
@@ -335,7 +344,7 @@ bool Player::Rolling()
 		float move = 300;
 		Move = VNorm(Move);
 		SetPos(VAdd(Pos, VScale(Move,move)));	
-		SetCollison(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+		SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
 
 	
 	}
@@ -363,6 +372,11 @@ void Player::AddSpGauge(int add)
 bool Player::GetTurn()
 {
 	return isTurn;
+}
+
+XINPUT_STATE* Player::GetInputState()
+{
+	return InputState;
 }
 
 

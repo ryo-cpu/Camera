@@ -14,10 +14,10 @@ class Effect
 public:
   
    Effect();
-   Effect(VECTOR StartPos,EffectImg Img);
-   Effect(VECTOR StartPos, EffectImg Img,VECTOR StartRot);
-   Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot,VECTOR move);
-   Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move,int id);
+   Effect(VECTOR StartPos,const EffectImg &Img);
+   Effect(VECTOR StartPos, const EffectImg &Img,VECTOR StartRot);
+   Effect(VECTOR StartPos, const EffectImg &Img, VECTOR StartRot,VECTOR move);
+   Effect(VECTOR StartPos, const EffectImg &Img, VECTOR StartRot, VECTOR move,int id);
 
 
 

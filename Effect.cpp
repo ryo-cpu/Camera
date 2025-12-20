@@ -2,7 +2,7 @@
 
 
 
-Effect::Effect(VECTOR StartPos, EffectImg Img)
+Effect::Effect(VECTOR StartPos, const EffectImg &Img)
 {
 	Move = VGet(0, 0, 0);
 	Rot = VGet(0, 0, 0);
@@ -11,7 +11,7 @@ Effect::Effect(VECTOR StartPos, EffectImg Img)
 	Id = 0;
 }
 
-Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot)
+Effect::Effect(VECTOR StartPos, const EffectImg &Img, VECTOR StartRot)
 {
 	Move = VGet(0, 0, 0);
 	Rot = StartRot;
@@ -22,7 +22,7 @@ Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot)
 
 }
 
-Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move)
+Effect::Effect(VECTOR StartPos, const EffectImg &Img, VECTOR StartRot, VECTOR move)
 {
 	Move = move;
 	Rot = StartRot;
@@ -32,7 +32,7 @@ Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move)
 
 }
 
-Effect::Effect(VECTOR StartPos, EffectImg Img, VECTOR StartRot, VECTOR move, int id)
+Effect::Effect(VECTOR StartPos, const EffectImg &Img, VECTOR StartRot, VECTOR move, int id)
 {
 	Move = move;
 	Rot = StartRot;

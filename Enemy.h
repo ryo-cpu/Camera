@@ -9,11 +9,12 @@ class Enemy: public Character
     int MotionType;
 public:
     Enemy();
-    enum Motion {Ran,Junp, Dance, ArmSwing,Dwon, bat, Hit };
-    enum AttackMotion { Tackle, DownArmSwing, tink, hit_stop };
+    ~Enemy();
+    enum Motion {Run,Jump, Dance, ArmSwing,Down, Bat, Hit };
+    enum AttackMotion { Tackle, DownArmSwing,tink,hit_stop};
     void SetTarget(Character &target);
     VECTOR SearchTarget();
-    Sphere_Collision GetAttackCollison();
+    Sphere_Collision GetAttackCollision();
     void SetMoveType(int movetype);
     int GetMoveType();
     ///‚±‚¤‚Ç‚¤////

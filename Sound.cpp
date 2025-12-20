@@ -41,7 +41,7 @@ void Sound::Play(VECTOR SoundPos, VECTOR ListenerPos, VECTOR ListenerXAxis, VECT
 	MATRIX Matrix= MGetAxis2(ListenerXAxis,ListenerYAxis,ListenerZAxis,ListenerPos);
 	
 	///•ÏŠ·
-	 VECTOR Distance = VTransform(SoundPos, Matrix);
+	 VECTOR Distance = VTransformSR(SoundPos, Matrix);
 	 ////1ƒ[ƒgƒ‹‚ğ’è‹`‚·‚éŠÖ”‚ª“®‚©‚È‚¢‚½‚ß‚±‚¿‚ç‚Å–³—‚â‚è‹ß‚Ã‚¯‚Ü‚·
 	 float Scale = 1 / 1000;
 	 SoundPos = VScale(SoundPos, Scale);

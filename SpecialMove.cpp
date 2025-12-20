@@ -4,6 +4,10 @@ SpecialMove::SpecialMove(Camera& Camera, Character& Player, Character& Enemy) : 
 {
 	
 }
+SpecialMove::~SpecialMove()
+{
+	
+}
 bool SpecialMove::Update(float DeltaTime)
 {
 	///ÃŽ~‚³‚¹‚é
@@ -32,7 +36,7 @@ bool SpecialMove::Update(float DeltaTime)
 		float Rot = 0.02f;
 		VECTOR F = VScale(VGet(0, 0, 1), VSize(VGet(DefaultCamera.x, 0, DefaultCamera.z)));
 		camera.AddTAngle(VGet(0, Rot, 0));
-		VECTOR RotP = camera.GetTagetAngle();
+		VECTOR RotP = camera.GetTargetAngle();
 		MATRIX RotX = MGetRotX(RotP.x);
 		MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
 		MATRIX RotAll = MMult(RotX, RotY);
@@ -66,7 +70,7 @@ bool SpecialMove::Update(float DeltaTime)
 		///“G‚ÉŒü‚©‚¢‡‚¤‚æ‚¤‚È‰ñ“]—Í‚ðo‚·
 		float Angle = atan2f(EnemyDir.z, EnemyDir.x);
 		////UŒ‚‰ŠúˆÊ’u‚ð‰ñ“]‚¹‚ê‚é
-		InitPos = VTransformSR(InitPos, MGetRotY(Angle));
+		InitPos =VTransformSR(InitPos, MGetRotY(Angle));
 		player.SetPos(VAdd(enemy.GetPos(), InitPos));
 		///ƒJƒ‚ç
 		camera.ResetOffset(VScale(VNorm(VSub(enemy.GetPos(), player.GetPos())), 1000), player.GetPos());
@@ -98,19 +102,19 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 
 		///•KŽE‹Z–³“G
-		enemy.SetAttackCollison(enemy.GetPos(), 0);
+		enemy.SetAttackCollision(enemy.GetPos(), 0);
 		///ˆÚ“®‚ÆUŒ‚
-	    player.SetCollison(player.GetPos(), 0);
+	    player.SetCollision(player.GetPos(), 0);
 		///PlayerƒJƒ‰enemy‚Ì’¼üó‚ÉƒJƒƒ‰
 		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
 		if (ElapsedTime >= 3.5)
 		{
 			////Offset‚ð‰ñ“]‚³‚¹‚½‚à‚Ì
 			MATRIX RotY = MGetRotY(DX_PI_F / 2);
-			Offset = VAdd(Offset, VTransformSR(Offset, RotY));
+			Offset = VAdd(Offset,VTransformSR(Offset, RotY));
 		}
 		
-		if(fabs(fmod(ElapsedTime, 0.05f)) < 0.01f&& !player.GetCollison().Collison(player.GetAttackCollison(), enemy.GetCollison()))
+		if(fabs(fmod(ElapsedTime, 0.05f)) < 0.01f&& !player.GetCollision().Collision(player.GetAttackCollision(), enemy.GetCollision()))
 		{ 
 			////V‚µ‚¢Žc‘œ‚ðì‚é
 			        AfterImage NewAfterImage;
@@ -149,12 +153,12 @@ bool SpecialMove::Update(float DeltaTime)
 		player.SetMove(VScale(VNorm(VSub(enemy.GetPos(),player.GetPos())),VSize(SPInitPos)*DeltaTime));
 		///UŒ‚‚Ì”»’è‚ðì¬
 		VECTOR AttackPos = VGet(0, 0, 0);
-		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
-		player.SetAttackCollison(VAdd(player.GetPos(), AttackPos), 100.f);
+		AttackPos =VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
+		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 100.f);
 		Sphere_Collision Next_E;
 		Next_E.SetPos(VAdd(enemy.GetPos(), enemy.GetMove()));
-		Next_E.SetSphereSize(enemy.GetCollison().GetSphereSize());
-		if (player.GetCollison().Collison(player.GetAttackCollison(),Next_E))
+		Next_E.SetSphereSize(enemy.GetCollision().GetSphereSize());
+		if (player.GetCollision().Collision(player.GetAttackCollision(),Next_E))
 		{
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 300, 0);
 			StartJoypadVibration(DX_INPUT_PAD1, 1000, 50, 1);
@@ -176,7 +180,7 @@ bool SpecialMove::Update(float DeltaTime)
 		}
 		enemy.Update(DeltaTime);
 		player.SetPos(VAdd(player.GetPos(), VGet(0, (5.5-ElapsedTime)*1000*DeltaTime, 0)));
-		player.SetAttackCollison(player.GetPos(), 0.0f);
+		player.SetAttackCollision(player.GetPos(), 0.0f);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.CalculateAngle(player.GetPos());
 		camera.CalculateTargetAngle(player.GetPos());
@@ -194,7 +198,7 @@ bool SpecialMove::Update(float DeltaTime)
 			PushBack.x + 1;
 		}
 		/*player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), -800)));*/
-		player.SetCollison(player.GetPos(), 40);
+		player.SetCollision(player.GetPos(), 40);
 		/////////////////////////////////////////////////
 
 		camera.ResetOffset(VTransformSR( DefaultCamera,MGetRotY(player.GetDir().y)), player.GetPos());
@@ -204,7 +208,7 @@ bool SpecialMove::Update(float DeltaTime)
 		return false;
 	}
 	player.AnimUpdate(DeltaTime);
-	player.MoveCollison(player.GetMove());
+	player.MoveCollision(player.GetMove());
 	player.SetPos(VAdd(player.GetPos(),player.GetMove()));
 
 	player.AddLiveTime(DeltaTime);

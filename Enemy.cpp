@@ -1,12 +1,17 @@
 #include "Enemy.h"
-const float CollisonSize = 600.0f;
+const float CollisionSize = 600.0f;
 Enemy::Enemy()
 {
-	SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+	SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
 	MaxHp = 300;
 	Hp = MaxHp;
 	Attack = 10;
 
+}
+
+Enemy::~Enemy()
+{
+	delete Target;
 }
 
 void Enemy::SetTarget(Character &target)
@@ -41,9 +46,9 @@ void Enemy::SelectMove()
 		else if (VSize(distance) >= 1000)
 		{
 			MotionType = Tackle;
-			AttackCollison = GetCollison();
+			AttackCollision = GetCollision();
 			SetStartLiveTime(LiveTime);
-			SetAnimType(Junp);
+			SetAnimType(Jump);
 			SetSpeed(20);
 		}
 		else
@@ -87,14 +92,14 @@ void Enemy::SelectMove()
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=5;
-	if (!IsAnim && AnimType != Ran)
+	if (!IsAnim && AnimType != Run)
 	{
-		SetAnimType(Ran);
+		SetAnimType(Run);
 	}
-	else if (!IsAnim || AnimType == Ran)
+	else if (!IsAnim || AnimType == Run)
 	{
 		VECTOR move = VNorm(targetPos);
-		VECTOR Front = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
+		VECTOR Front =VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
 		
 		float rag = VDot(move, Front) / (VSize(move) * VSize(Front));
 		rag = acosf(rag);
@@ -106,34 +111,34 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 			////‚¹‚¢‚°‚ñ‚æ‚è‚Å‚©‚¢‚Ì‚Å‚ ‚ê‚Î‚¹‚¢‚°‚ñ‚ß‚¢‚Á‚Ï‚¢
 			if (crossY < 0)
 			{
-				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 1.0f * DX_PI / 180.0f));
+				move =VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y + 1.0f * DX_PI / 180.0f));
 
 			}
 			else
 			{
-				move = VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y - 1.0f * DX_PI / 180.0f));
+				move =VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y - 1.0f * DX_PI / 180.0f));
 			}
 
 		}
 		move = VScale(move, GetSpeed());
 		Move = move;
-		AttackCollison.SetPos(VAdd(Pos,move));
+		AttackCollision.SetPos(VAdd(Pos,move));
 		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
-		if (AttackCollison.Collison(AttackCollison, Target->GetCollison()))
+		if (AttackCollision.Collision(AttackCollision, Target->GetCollision()))
 		{
 			return false;
 		}
 
 		if (!IsAnim)
 		{
-			SetAnimType(Ran);
+			SetAnimType(Run);
 		}
 		float targetAngle = atan2f(move.x, -move.z); // ƒ‰ƒWƒAƒ“Šp
 		SetDir(VGet(0, -targetAngle, 0));
 	}
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
-		AttackCollison = {};
+		AttackCollision = {};
 		return false;
 	}
 
@@ -146,14 +151,14 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 	if (NowAnimTime >= 30.0f && NowAnimTime <= 40.0f)
 	{
 		VECTOR AttackPos = VGet(0, 50, -400);
-		AttackPos = VTransformSR(AttackPos, MGetRotY(GetDir().y));
-		SetAttackCollison(VAdd(Pos, AttackPos), 300.f);
+		AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
+		SetAttackCollision(VAdd(Pos, AttackPos), 300.f);
 		DrawSphere3D(GetPos(), 200, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	}
 	else
 	{
-		AttackCollison = {};
+		AttackCollision = {};
 	}
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
@@ -176,7 +181,7 @@ bool Enemy::Tink()
 
 bool Enemy::Hit_Stop()
 {
-	AttackCollison = {};
+	AttackCollision = {};
 	if (!IsAnim)
 	{
 		const char* HipName = "mixamorig:Hips";
@@ -185,14 +190,14 @@ bool Enemy::Hit_Stop()
 		if (HipIndex >= 0)
 		{
 			VECTOR CPos = MV1GetFramePosition(Img, HipIndex);
-			SetCollison(CPos, CollisonSize);
+			SetCollision(CPos, CollisionSize);
 			CPos.y = 0;
 			Pos = CPos;
 		}
 		else
 		{
 
-			SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+			SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
 
 		}
 	 return false;
@@ -200,9 +205,9 @@ bool Enemy::Hit_Stop()
 	return true;
 }
 
-Sphere_Collision Enemy::GetAttackCollison()
+Sphere_Collision Enemy::GetAttackCollision()
 {
-	return AttackCollison;
+	return AttackCollision;
 }
 
 void Enemy::SetMoveType(int movetype)
@@ -228,16 +233,16 @@ void Enemy::Update(float deltaTime)
 	if (HipIndex >= 0)
 	{
 		VECTOR CPos = MV1GetFramePosition(Img, HipIndex);
-		SetCollison(CPos, CollisonSize);
+		SetCollision(CPos, CollisionSize);
 		
 	}
 	else
 	{
 	 
-		SetCollison(VAdd(Pos, VGet(0, 500, 0)), CollisonSize);
+		SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
 
 	}
-	//DrawSphere3D(Collison.GetPos(), Collison.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+	//DrawSphere3D(Collision.GetPos(), Collision.GetSphereSize(), 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 
 	AddLiveTime(deltaTime);
 	

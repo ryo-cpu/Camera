@@ -15,20 +15,23 @@ class Player :public Character
     float Speed;
     bool InSpecialMove;
     VECTOR SpecialTaget;
-    VECTOR Grand;
+    VECTOR GRund;
     VECTOR G = VGet(0, -10, 0);
     VECTOR JumpPower = VGet(0, 30, 0);
     float LastDamageTime;
     bool InRolling;
     bool isTurn;
     int SpGauge = 0;
+    XINPUT_STATE* InputState;
+
    
 public:
     Player();
-    enum Motion { Stop, Ran, Down, Roll, Kick, Hit };
+    ~Player();
+    enum Motion { Stop, Run, Down, Roll, Kick, Hit };
     bool Input(Camera &camera);
     void Update(float deltaTime) override;
-    void SetGrand(VECTOR grand);
+    void SetGRund(VECTOR gRund);
     bool GetIsHit();
     void SetIsHit(bool ishit);
     bool GetInSpecialMove();
@@ -39,5 +42,6 @@ public:
     bool Rolling();
     void AddSpGauge(int add);
     bool GetTurn();
+    XINPUT_STATE* GetInputState();
 };
 

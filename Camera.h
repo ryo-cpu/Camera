@@ -21,7 +21,7 @@ class Camera
     VECTOR Offset;
     VECTOR Angle;////自分の向き
     VECTOR Dir;
-    VECTOR TagetAngle;////相手からの自分の向き
+    VECTOR TargetAngle;////相手からの自分の向き
     bool isMove, isPan, isChase,isZoom;
     float zoomDistance;///その距離分近ずく
 
@@ -63,11 +63,11 @@ public:
     /// <summary>
     ///  ターゲット軸回転
     /// </summary>
-    void RotaionAxis(VECTOR TPos, MATRIX TurnPower);
+    void RotationAxis(VECTOR TPos, MATRIX TurnPower);
     /// <summary>
     /// 自分軸回転
     /// </summary>
-    void Rotaion(MATRIX TurnPower);
+    void Rotation(MATRIX TurnPower);
     void SetOffset(VECTOR offset);
 
     /// <summary>
@@ -108,7 +108,7 @@ public:
     void CalculateTargetAngle(VECTOR Target);
     void SetTAngle(VECTOR angle);
     void AddTAngle(VECTOR addangle);
-    VECTOR GetTagetAngle();
+    VECTOR GetTargetAngle();
     VECTOR WorldToCamera(VECTOR Pos);
 
 

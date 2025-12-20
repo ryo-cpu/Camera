@@ -2,8 +2,19 @@
 #include"iostream"
 Character::Character()
 {
-    LiveTime = 0;
+    LiveTime = 0.0f;
+    StartLiveTime = 0.0f;
     isDraw = true;
+    isUpdate = true;
+
+    Img = -1;
+    Hp = 0;
+    MaxHp = 0;
+
+    AnimIndex = -1;
+    AnimType = -1;
+    AnimSpeed = 1.0f;
+    IsAnim = false;
 }
 int Character::GetImg()
 {
@@ -161,11 +172,8 @@ void Character::AnimUpdate(float deltaTime)
 
     NowAnimTime+= deltaTime * AnimSpeed;  // アニメーション時間を進める
 
-    if (AnimType >= 0)
-    {  // アニメーションが設定されていれば
-        NowAnimTime += deltaTime * AnimSpeed;
-        IsAnim = true;
-    }
+    IsAnim = true;
+
     if (NowAnimTime >= AnimTotalTime)
     {
         IsAnim=false;
@@ -176,7 +184,7 @@ void Character::AnimUpdate(float deltaTime)
 void Character::MoveUpdate(VECTOR move)
 {
     Pos = VAdd(Pos, move);
-    MoveCollison(move);
+    MoveCollision(move);
 }
 
 void Character::Update(float deltaTime)
@@ -195,15 +203,15 @@ void Character::Draw()
         MV1DrawModel(Img);
     }
 }
-Sphere_Collision Character::GetAttackCollison()
+Sphere_Collision Character::GetAttackCollision()
 {
-    return AttackCollison;
+    return AttackCollision;
 }
 
-void Character::SetAttackCollison(VECTOR Pos, float size)
+void Character::SetAttackCollision(VECTOR Pos, float size)
 {
-    AttackCollison.SetPos(Pos);
-    AttackCollison.SetSphereSize(size);
+   AttackCollision.SetPos(Pos);
+   AttackCollision.SetSphereSize(size);
 }
 
 bool Character::GetIsUpdate()
@@ -224,28 +232,28 @@ bool Character::GetIsAnim()
 
 
 
-void Character::Turn(VECTOR Power)
+void Character::Turn(VECTOR RotatePower)
 {
    
-    Dir = VAdd(Dir,Power);
+    Dir = VAdd(Dir, RotatePower);
     // 角度をY軸回転にセット
     MV1SetRotationXYZ(Img,Dir);
 }
 
-Sphere_Collision Character::GetCollison()
+Sphere_Collision Character::GetCollision()
 {
-    return Collison;
+    return Collision;
 }
 
-void Character::SetCollison(VECTOR Pos, float size)
+void Character::SetCollision(VECTOR Pos, float size)
 {
-    Collison.SetPos(Pos);
-    Collison.SetSphereSize(size);
+    Collision.SetPos(Pos);
+    Collision.SetSphereSize(size);
 }
 
-void Character::MoveCollison(VECTOR move)
+void Character::MoveCollision(VECTOR move)
 {
-    Collison.SetPos(VAdd(Pos, move));
+    Collision.SetPos(VAdd(Pos, move));
 }
 
 float Character::GetLiveTime()
@@ -258,7 +266,7 @@ void Character::AddLiveTime(float PassedTime)
     LiveTime += PassedTime;
 }
 
-int Character::GetStartLiveTime()
+float Character::GetStartLiveTime()
 {
     return StartLiveTime;
 }
