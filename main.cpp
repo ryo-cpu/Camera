@@ -403,18 +403,21 @@ else if (!OnWall)
 		if (HipIndex >= 0)
 		{
 			VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
-			SetPos.y = 0;
+		
+			camera->StartMove(VSub(VAdd(SetPos, camera->GetOffset()), camera->GetPos()));
 			camera->Look(SetPos);
 		}
 
 	
 	}
-	else
+	else if(camera->GetisZoom())
 	{
-		camera->EndZoom();
+		camera->ZoomOut(1.0f);
+		camera->Look(player->GetPos());
+
 	}
 
-	if (!isInput)
+	if (!isInput|| player->GetAnimType() != player->Roll)
 	{
 		camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
 
@@ -523,7 +526,6 @@ else if (!OnWall)
 			}
 			else
 			{
-				camera->EndZoom();
 				enemy->SetisDraw(true);
 			}
 			/*if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)

@@ -285,6 +285,17 @@ void Camera::Zoom(VECTOR TPos)
    
 }
 
+void Camera::ZoomOut(float OutSpeed)
+{
+    zoomDistance = zoomDistance - OutSpeed;
+
+    if (zoomDistance <= 0)
+    {
+        zoomDistance = 0;
+        EndZoom();
+    }
+}
+
 void Camera::Pan(VECTOR TPos)
 {
    

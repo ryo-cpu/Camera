@@ -86,6 +86,7 @@ public:
     /// </summary>
     /// <param name="TPos"></param>
     void Zoom(VECTOR TPos);
+    void ZoomOut(float OutSpeed);
     /// <summary>
     /// éÒêUÇËÇÃÇ›í«è]
     /// </summary>
