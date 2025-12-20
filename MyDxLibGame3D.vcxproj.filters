@@ -61,9 +61,6 @@
     <ClCompile Include="fps.cpp">
       <Filter>ソース ファイル\Fps</Filter>
     </ClCompile>
-    <ClCompile Include="Bsr.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="SpecialMove.cpp">
       <Filter>ソース ファイル\SpecialMove</Filter>
     </ClCompile>
@@ -81,6 +78,9 @@
     </ClCompile>
     <ClCompile Include="ModelCheckers.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Bar.cpp">
+      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +102,6 @@
     <ClInclude Include="fps.h">
       <Filter>ソース ファイル\Fps</Filter>
     </ClInclude>
-    <ClInclude Include="Bsr.h">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="SpecialMove.h">
       <Filter>ソース ファイル\SpecialMove</Filter>
     </ClInclude>
@@ -121,5 +118,8 @@
       <Filter>ソース ファイル\Sound</Filter>
     </ClInclude>
     <ClInclude Include="ModelCheckers.h" />
+    <ClInclude Include="Bar.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
