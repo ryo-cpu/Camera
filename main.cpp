@@ -97,6 +97,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	///背景
 	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
 	int  TileModel = MV1LoadModel("data/Tile.mv1");
+	int  ShadowImg = LoadGraph("data/TmpField.jpg");
 	MV1SetPosition(BackModel, VGet(0, 0, 0));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
 	MV1SetScale(TileModel, VGet(5, 0.01f, 5));
@@ -676,7 +677,7 @@ else if (!OnWall)
 				SetFontSize(256);
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
+				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 				ModelCheckers test;
 				test.ShowFrameName(player->GetImg());
 
@@ -686,6 +687,26 @@ else if (!OnWall)
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			enemy->Draw();
+			VECTOR V1, V2, V3, V4;
+			VECTOR P = VGet(100,100,0);
+			V1 = VAdd(P, VGet(-100, 1000, -100));
+			V2 = VAdd(P, VGet( -100, 1000, 100));
+			V3 = VAdd(P, VGet( 100, 100, -100));
+			V4 = VAdd(P, VGet( 100, 100, 100));
+
+			VECTOR Ps = ConvScreenPosToWorldPos(P);
+			V1=ConvWorldPosToScreenPos(V1);
+			V2=ConvWorldPosToScreenPos(V2);
+			V3=ConvWorldPosToScreenPos(V3);
+			V4=ConvWorldPosToScreenPos(V4);
+			V1 = VSub(V1, Ps);
+			V2 = VSub(V2, Ps);
+			V3 = VSub(V3, Ps);
+			V4 = VSub(V4, Ps);
+
+
+			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
+			
 			break;
 		case  Win:
 			MV1DrawModel(BackModel);
@@ -727,7 +748,7 @@ else if (!OnWall)
 					SetFontSize(128);
 					DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
 					SetFontSize(64);
-					DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
+					DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 
 				}
 				
@@ -779,7 +800,7 @@ else if (!OnWall)
 				SetFontSize(128);
 				DrawString(500, 350, "YOU LOSE", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT STSRT", GetColor(244, 229, 17));
+				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 			}
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);
