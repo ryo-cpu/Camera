@@ -602,7 +602,8 @@ else if (!OnWall)
 				MATRIX RotY = MGetRotY(ConversionRad(Move));
 				VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
 				enemy->SetPos(VGet(0, 0, 0));
-				camera->RotationAxis(Axis, RotY);
+			/*	camera->RotationAxis(Axis, RotY);*/
+				camera->ResetOffset(VGet(0,500,6000),enemy->GetPos());
 				camera->Look(Axis);
 				enemy->AnimUpdate(deltaTime);
 				if (CheckHitKey(KEY_INPUT_W))
@@ -682,23 +683,23 @@ else if (!OnWall)
 				test.ShowFrameName(player->GetImg());
 
 			}
-			MV1DrawModel(BackModel);
-			MV1DrawModel(TileModel);
+		/*	MV1DrawModel(BackModel);
+			MV1DrawModel(TileModel);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			enemy->Draw();
 			VECTOR V1, V2, V3, V4;
-			VECTOR P = VGet(100,100,0);
-			V1 = VAdd(P, VGet(-100, 1000, -100));
-			V2 = VAdd(P, VGet( -100, 1000, 100));
-			V3 = VAdd(P, VGet( 100, 100, -100));
-			V4 = VAdd(P, VGet( 100, 100, 100));
+			VECTOR P = VGet(0,0,0);
+			V1 = VAdd(P, VGet(0, 0, -1000));
+			V2 = VAdd(P, VGet( 1000, 0, 0));
+			V3 = VAdd(P, VGet( 0, 0, 1000));
+			V4 = VAdd(P, VGet( -1000, 0, 0));
 
-			VECTOR Ps = ConvScreenPosToWorldPos(P);
-			V1=ConvWorldPosToScreenPos(V1);
-			V2=ConvWorldPosToScreenPos(V2);
-			V3=ConvWorldPosToScreenPos(V3);
-			V4=ConvWorldPosToScreenPos(V4);
+			VECTOR Ps = ConvWorldPosToScreenPos(P);
+			V1=         ConvWorldPosToScreenPos(V1);
+			V2=         ConvWorldPosToScreenPos(V2);
+			V3=         ConvWorldPosToScreenPos(V3);
+			V4=         ConvWorldPosToScreenPos(V4);
 			V1 = VSub(V1, Ps);
 			V2 = VSub(V2, Ps);
 			V3 = VSub(V3, Ps);
@@ -706,6 +707,8 @@ else if (!OnWall)
 
 
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
+			
+
 			
 			break;
 		case  Win:
