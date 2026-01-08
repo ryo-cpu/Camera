@@ -27,5 +27,6 @@ public:
    bool IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, VECTOR TB2, VECTOR TB3);
    void TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float& OutMax);
    bool IsModel_Joint_Model(const int& M1, const int& M2, float M1_R);
+
 };
 

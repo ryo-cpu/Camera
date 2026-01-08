@@ -1,4 +1,5 @@
 #include "Sphere_Collision.h"
+#include "Capsule.h"
 
 
 VECTOR Sphere_Collision::GetPos()
@@ -11,6 +12,8 @@ void Sphere_Collision::SetPos(VECTOR pos)
     Pos = pos;
 }
 
+
+
 float Sphere_Collision::GetSphereSize()
 {
     return Size;
@@ -20,6 +23,8 @@ void Sphere_Collision::SetSphereSize(float sphereSize)
 {
     Size = sphereSize;
 }
+
+
 
 bool Sphere_Collision::Collision(const Sphere_Collision& S1, const Sphere_Collision& S2)
 {

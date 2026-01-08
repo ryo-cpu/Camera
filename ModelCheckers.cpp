@@ -12,6 +12,44 @@ struct Triangle {
 struct Vertex {
     float x, y, z;
 };
+bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) return false;
+
+    std::vector<Vertex> vertices;
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::istringstream ss(line);
+        std::string prefix;
+        ss >> prefix;
+
+        if (prefix == "v")  // 頂点座標
+        {
+            Vertex v;
+            ss >> v.x >> v.y >> v.z;
+            vertices.push_back(v);
+        }
+        else if (prefix == "f") // 三角形面
+        {
+            int idx[3];
+            ss >> idx[0] >> idx[1] >> idx[2];
+
+            Triangle tri;
+            for (int i = 0; i < 3; i++)
+            {
+                Vertex& v = vertices[idx[i] - 1]; // OBJは1始まり
+                tri.v[i] = VGet(v.x, v.y, v.z);
+            }
+            tris.push_back(tri);
+        }
+    }
+
+    return true;
+}
+
 
 void ModelCheckers::ShowTextureName(int Model)
 {
@@ -211,41 +249,3 @@ bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R
 
     return false;
 }
-bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
-{
-    std::ifstream file(filename);
-    if (!file.is_open()) return false;
-
-    std::vector<Vertex> vertices;
-    std::string line;
-
-    while (std::getline(file, line))
-    {
-        std::istringstream ss(line);
-        std::string prefix;
-        ss >> prefix;
-
-        if (prefix == "v")  // 頂点座標
-        {
-            Vertex v;
-            ss >> v.x >> v.y >> v.z;
-            vertices.push_back(v);
-        }
-        else if (prefix == "f") // 三角形面
-        {
-            int idx[3];
-            ss >> idx[0] >> idx[1] >> idx[2];
-
-            Triangle tri;
-            for (int i = 0; i < 3; i++)
-            {
-                Vertex& v = vertices[idx[i] - 1]; // OBJは1始まり
-                tri.v[i] = VGet(v.x, v.y, v.z);
-            }
-            tris.push_back(tri);
-        }
-    }
-
-    return true;
-}
-

@@ -20,9 +20,6 @@
     <Filter Include="ソース ファイル\Character\Enemy">
       <UniqueIdentifier>{91d21cd7-44dd-4ab9-97d9-754e6733d74f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Character\Base\sphere_collison">
-      <UniqueIdentifier>{0a715ef4-0d2b-449c-80d0-58612254d182}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Fps">
       <UniqueIdentifier>{d4c7684b-b3e9-4ba7-9501-db8427b8085e}</UniqueIdentifier>
     </Filter>
@@ -37,6 +34,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Sound">
       <UniqueIdentifier>{7d85aea6-718a-4a34-8a4c-9e83bdf4f867}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Base\Collision">
+      <UniqueIdentifier>{631e9362-5266-44d1-b5eb-2f365d146f29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Base\Collision\sphere_collison">
+      <UniqueIdentifier>{0a715ef4-0d2b-449c-80d0-58612254d182}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -56,7 +59,7 @@
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Sphere_Collision.cpp">
-      <Filter>ソース ファイル\Character\Base\sphere_collison</Filter>
+      <Filter>ソース ファイル\Character\Base\Collision\sphere_collison</Filter>
     </ClCompile>
     <ClCompile Include="fps.cpp">
       <Filter>ソース ファイル\Fps</Filter>
@@ -82,6 +85,12 @@
     <ClCompile Include="Bar.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Capsule.cpp">
+      <Filter>ソース ファイル\Character\Base\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>ソース ファイル\Character\Base\Collision</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -97,7 +106,7 @@
       <Filter>ソース ファイル\Character\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Sphere_Collision.h">
-      <Filter>ソース ファイル\Character\Base\sphere_collison</Filter>
+      <Filter>ソース ファイル\Character\Base\Collision\sphere_collison</Filter>
     </ClInclude>
     <ClInclude Include="fps.h">
       <Filter>ソース ファイル\Fps</Filter>
@@ -120,6 +129,12 @@
     <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Bar.h">
       <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Capsule.h">
+      <Filter>ソース ファイル\Character\Base\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>ソース ファイル\Character\Base\Collision</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
