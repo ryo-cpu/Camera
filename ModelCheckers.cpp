@@ -1,4 +1,17 @@
 #include "ModelCheckers.h"
+#include <vector>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+struct Triangle {
+    VECTOR v[3];
+};
+
+// OBJ読み込み用
+struct Vertex {
+    float x, y, z;
+};
 
 void ModelCheckers::ShowTextureName(int Model)
 {
@@ -152,9 +165,87 @@ void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float
 
 bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
 {
-    std::vector<int> TriangleNumber;
-    ////三角形を摂る
+  ///M２のモデルから三角形のリストを作成 ここがどうにもできない
+    std::vector<VECTOR> List;
+    std::vector<VECTOR> M1List;
+
+
+    for (int TriangleIndex = 0; TriangleIndex <= List.size(); TriangleIndex+=3)
+    {
+        VECTOR Triangle[3];
+         Triangle[0] = List[TriangleIndex];
+         Triangle[1] = List[TriangleIndex+1];
+         Triangle[2] = List[TriangleIndex+2];
+
+
+         if (IsTriangle_Joint_Sphere(Triangle[1], Triangle[0], Triangle[2], MV1GetPosition(M1), M1_R))
+         {
+             ///もっとも離れた二つを出す
+             VECTOR V1 = VSub(Triangle[0], Triangle[1]);
+             VECTOR V2 = VSub(Triangle[0], Triangle[2]);
+             VECTOR V3 = VSub(Triangle[2], Triangle[1]);
+
+             float Max = VSize(VMax(V1, V2, V3));
+             for(int Triangle2Index = 0; Triangle2Index <= M1List.size(); Triangle2Index += 3)
+             {
+                 ///さっきの反対のモデルでも同じことをする
+                 VECTOR Triangle2[3];
+                 Triangle2[0] = List[Triangle2Index];
+                 Triangle2[1] = List[Triangle2Index + 1];
+                 Triangle2[2] = List[Triangle2Index + 2];
+
+                 if (IsTriangle_Joint_Sphere(Triangle2[1], Triangle2[0], Triangle2[2], Triangle[0], Max))
+                 {
+                     if (IsTriangle_Joint_Triangle(Triangle[1], Triangle[0], Triangle[2], Triangle2[1], Triangle2[0], Triangle2[2]))
+                     {
+                         return true;
+                     }
+                 }
+             }
+
+         }
+    }
+
+   
+
 
     return false;
+}
+bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) return false;
+
+    std::vector<Vertex> vertices;
+    std::string line;
+
+    while (std::getline(file, line))
+    {
+        std::istringstream ss(line);
+        std::string prefix;
+        ss >> prefix;
+
+        if (prefix == "v")  // 頂点座標
+        {
+            Vertex v;
+            ss >> v.x >> v.y >> v.z;
+            vertices.push_back(v);
+        }
+        else if (prefix == "f") // 三角形面
+        {
+            int idx[3];
+            ss >> idx[0] >> idx[1] >> idx[2];
+
+            Triangle tri;
+            for (int i = 0; i < 3; i++)
+            {
+                Vertex& v = vertices[idx[i] - 1]; // OBJは1始まり
+                tri.v[i] = VGet(v.x, v.y, v.z);
+            }
+            tris.push_back(tri);
+        }
+    }
+
+    return true;
 }
 
