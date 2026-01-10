@@ -1,8 +1,12 @@
 #pragma once
+#include<iostream>
+#include<vector>
 #include"DxLib.h"
 #include"Sphere_Collision.h"
 #include<cmath>
 #include"EffectM.h"
+#include"Collision.h"
+
 
 class Character
 {
