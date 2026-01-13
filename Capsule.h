@@ -15,9 +15,11 @@ public:
     VECTOR   GetEndPos()const;
     void     SetStartPos(VECTOR pos);
     void     SetEndPos(VECTOR pos);
-    float    GetSize();
+    float    GetSize()const;
     void     SetSize(float size);
     virtual bool Survey(const Collision& C1, const Collision& C2)override;
+    bool Survey(const Capsule&C1, const Capsule& C2);
+
     /// @brief ƒ‚ƒfƒ‹‚É‚­‚Á‚Â‚¢‚Ä‚¢‚é‚Æ‚«‚É’Ç]‚·‚é‚æ‚¤
     /// @param Model 
     void Update(int Model);
