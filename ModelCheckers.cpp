@@ -106,6 +106,21 @@ VECTOR ModelCheckers::VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR End
     return Proj;
 }
 
+bool ModelCheckers::IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
+{
+    VECTOR Pos_inA = VProject(B1, A1, A2);
+    VECTOR ShadowPos = VAdd(A1, Pos_inA);
+
+    float Shadow_B1 = VSize(VSub(B1, ShadowPos));
+
+    Pos_inA = VProject(B2, A1, A2);
+    ShadowPos = VAdd(A1, Pos_inA);
+
+    float Shadow_B2 = VSize(VSub(B2, ShadowPos));
+
+    return Shadow_B1 == Shadow_B2;
+}
+
 bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VECTOR SphereP, float R)
 {
     ////ŠK‘w•ª‚¯‚É‚æ‚Á‚ÄŒvŽZ‚ðŒ¸‚ç‚·

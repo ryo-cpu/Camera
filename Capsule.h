@@ -5,7 +5,7 @@
 
 class Capsule : public Collision
 { 
-    float Size;
+    float RSize;
     VECTOR StartPos,EndPos;
     char* EndFrameName;
     char* StartFrameName;
@@ -15,11 +15,12 @@ public:
     VECTOR   GetEndPos()const;
     void     SetStartPos(VECTOR pos);
     void     SetEndPos(VECTOR pos);
-    float    GetSize()const;
-    void     SetSize(float size);
+    float    GetRSize()const;
+    void     SetRSize(float size);
     virtual bool Survey(const Collision& C1, const Collision& C2)override;
     bool Survey(const Capsule&C1, const Capsule& C2);
-
+    VECTOR PushBack(const Capsule& Move, const Capsule& Immodility);
+        
     /// @brief ÉÇÉfÉãÇ…Ç≠Ç¡Ç¬Ç¢ÇƒÇ¢ÇÈÇ∆Ç´Ç…í«è]Ç∑ÇÈÇÊÇ§
     /// @param Model 
     void Update(int Model);
