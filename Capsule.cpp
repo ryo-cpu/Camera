@@ -55,19 +55,27 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
     StartPoint = VAdd(StartPoint,VScale(Norm,Rsum));
     EndPoint = VAdd(EndPoint, VScale(Norm, -Rsum));///逆側に伸ばすのでマイナス
 
+
     
-    ////並行時の分岐 二点とimmodilityの近さを比較して並行かどうか調べる
+    //////並行時の分岐 二点とimmodilityの近さを比較して並行かどうか調べる
     ModelCheckers Tmp;
+
+    VECTOR Shadow_StartPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
+    VECTOR P1 = VSub(StartPoint,Shadow_StartPos);
+    float  Langth_Perpendicuar_Start = VSize(P1);
+    VECTOR Shadow_EndPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(EndPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
+    ///P1とP2の向きが違うときは小さいほうの逆を使う
    
-    if (Tmp.IsParallel(Immodility.GetStartPos(), Immodility.GetEndPos(),StartPoint,EndPoint))
-    {
-        VECTOR ImmodilityPoint = Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos());
-        VECTOR ShadowPos = VAdd(Immodility.GetStartPos(), ImmodilityPoint);
-        float StratShadow = VSize(VSub(StartPoint, ShadowPos));
-        ////並行な場合垂直に返せばいいので
-        return VSub(StartPoint, ShadowPos);
-    }
+    //if (Tmp.IsParallel(Immodility.GetStartPos(), Immodility.GetEndPos(),StartPoint,EndPoint))
+    //{
+    //    VECTOR ImmodilityPoint = Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos());
+    //    VECTOR ShadowPos = VAdd(Immodility.GetStartPos(), ImmodilityPoint);
+    //    float StratShadow = VSize(VSub(StartPoint, ShadowPos));
+    //    ////並行な場合垂直に返せばいいので
+    //    return VSub(StartPoint, ShadowPos);
+    //}
   
+    
 
     ///外積を取り交差を確認
 
