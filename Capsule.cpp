@@ -42,7 +42,7 @@ bool Capsule::Survey(const Capsule& C1, const Capsule& C2)
 }
 VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
 {
-    VECTOR pushback;
+    VECTOR pushback = VGet(0, 0, 0); {};
 
     VECTOR StartPoint, EndPoint,Norm;
 
@@ -62,10 +62,14 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
 
     VECTOR Shadow_StartPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
     VECTOR P1 = VSub(StartPoint,Shadow_StartPos);
-    float  Langth_Perpendicuar_Start = VSize(P1);
     VECTOR Shadow_EndPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(EndPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
-    ///P1‚ÆP2‚ÌŒü‚«‚ªˆá‚¤‚Æ‚«‚Í¬‚³‚¢‚Ù‚¤‚Ì‹t‚ðŽg‚¤
-   
+    VECTOR P2= VSub(EndPoint, Shadow_EndPos);
+    pushback = VSize(P1) >= VSize(P2) ? P1 : P2;
+    if (P1.x * P2.x < 0 && P1.y * P2.y < 0 && P1.z * P2.z < 0)
+    {
+        pushback = VScale(pushback, -1);
+    }
+ 
     //if (Tmp.IsParallel(Immodility.GetStartPos(), Immodility.GetEndPos(),StartPoint,EndPoint))
     //{
     //    VECTOR ImmodilityPoint = Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos());
