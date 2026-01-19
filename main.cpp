@@ -11,6 +11,7 @@
 #include "EffectM.h"
 #include "Sound.h"
 #include "ModelCheckers.h"
+#include"Capsule.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -602,8 +603,7 @@ else if (!OnWall)
 				MATRIX RotY = MGetRotY(ConversionRad(Move));
 				VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
 				enemy->SetPos(VGet(0, 0, 0));
-			/*	camera->RotationAxis(Axis, RotY);*/
-				camera->ResetOffset(VGet(0,500,6000),enemy->GetPos());
+				camera->RotationAxis(Axis, RotY);
 				camera->Look(Axis);
 				enemy->AnimUpdate(deltaTime);
 				if (CheckHitKey(KEY_INPUT_W))
@@ -680,14 +680,19 @@ else if (!OnWall)
 				SetFontSize(64);
 				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 				ModelCheckers test;
-				test.ShowFrameName(player->GetImg());
+				test.ShowFrameName(enemy->GetImg());
+				
+				Capsule Test;
+				Test.SetStartFrameName("mixamoring::Hips", enemy->GetImg());
+				Test.SetEndFrameName("mixamoring::Neck", enemy->GetImg());
+				DrawCapsule3D(Test.GetStartPos(), Test.GetEndPos(), 30.0f, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
 
 			}
 		/*	MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
-			enemy->Draw();
+			/*enemy->Draw();*/
 			VECTOR V1, V2, V3, V4;
 			VECTOR P = VGet(0,0,0);
 			V1 = VAdd(P, VGet(0, 0, -1000));
@@ -708,6 +713,7 @@ else if (!OnWall)
 
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
 			
+		
 
 			
 			break;

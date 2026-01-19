@@ -27,7 +27,10 @@ public:
     void Update(VECTOR Move);
 
     void SetStartFrameName(char* Name);
+    void SetStartFrameName(char* Name ,int Model);
     void SetEndFrameName(char* Name);
+    void SetEndFrameName(char* Name,int Model);
+
     void SetFrameName(char* StartName,char* EndName);
 
 

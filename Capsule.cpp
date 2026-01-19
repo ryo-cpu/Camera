@@ -115,12 +115,36 @@ void  Capsule::Update(VECTOR Move)
 void Capsule::SetStartFrameName(char* Name)
 {
     StartFrameName = Name;
+   
 }
+
+void Capsule::SetStartFrameName(char* Name, int Model)
+{
+    SetStartFrameName(Name);
+    int HipIndex = MV1SearchFrame(Model, Name);
+    if (HipIndex >= 0)
+    {
+        StartPos = MV1GetFramePosition(Model, HipIndex);
+    }
+
+}
+
+
 
 void Capsule::SetEndFrameName(char* Name)
 {
     EndFrameName = Name;
 
+}
+
+void Capsule::SetEndFrameName(char* Name, int Model)
+{
+    SetEndFrameName(Name);
+    int HipIndex = MV1SearchFrame(Model, Name);
+    if (HipIndex >= 0)
+    {
+        EndPos = MV1GetFramePosition(Model, HipIndex);
+    }
 }
 
 void Capsule::SetFrameName(char* StartName, char* EndName)
