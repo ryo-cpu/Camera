@@ -36,7 +36,7 @@ protected:
 public:
 	Character();
 	Character(int img);
-
+	~Character();
 	int 	GetImg();
 	void    SetImg(int img);
 	VECTOR  GetPos();

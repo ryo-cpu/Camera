@@ -55,6 +55,10 @@ Character::Character(int img)
     Capsule RightToeBase("mixamorig:RightToBase", "mixamorig:RightFoot", 100, Img);
     CapsuleCollision.push_back(RightFoot);
 }
+Character::~Character()
+{
+    MV1DrawModel(Img);
+}
 int Character::GetImg()
 {
     return Img;

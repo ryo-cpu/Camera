@@ -837,7 +837,8 @@ else if (!OnWall)
 ///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		fps.End();
 	}
-	MV1DeleteModel(player->GetImg());
+	MV1DeleteModel(BackModel);
+	MV1DeleteModel(TileModel);
 	delete(player);
 	delete(enemy);
 	delete(camera);
