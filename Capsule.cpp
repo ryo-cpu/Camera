@@ -1,6 +1,20 @@
 #include "Capsule.h"
 #include"ModelCheckers.h"
 
+Capsule::Capsule(char* startName, char* endName, float rsize)
+{
+    SetFrameName(startName, endName);
+    SetRSize(rsize);
+}
+
+Capsule::Capsule(char* startName, char* endName, float rsize, int Model)
+{
+    SetStartFrameName(startName, Model);
+    SetEndFrameName(endName, Model);
+    SetRSize(rsize);
+
+}
+
 VECTOR Capsule::GetStartPos() const
 {
     return StartPos;
@@ -125,6 +139,9 @@ void Capsule::SetStartFrameName(char* Name, int Model)
     if (HipIndex >= 0)
     {
         StartPos = MV1GetFramePosition(Model, HipIndex);
+        int T = MV1GetFrameParent(Model, HipIndex);
+        
+       std::string N=MV1GetFrameName(Model, T);
     }
 
 }

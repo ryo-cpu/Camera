@@ -11,6 +11,9 @@ class Capsule : public Collision
     char* StartFrameName;
 
 public:
+    Capsule(char* startName, char* endName, float rsize);
+    Capsule(char* startName, char* endName, float rsize,int Model);
+
     VECTOR   GetStartPos()const;
     VECTOR   GetEndPos()const;
     void     SetStartPos(VECTOR pos);

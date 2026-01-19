@@ -16,6 +16,45 @@ Character::Character()
     AnimSpeed = 1.0f;
     IsAnim = false;
 }
+Character::Character(int img)
+{
+    //ÉÇÉfÉãÇ™ìØÇ∂ÇÃÇ∆èàóùåyå∏ÇÃÇΩÇﬂéËìÆ
+    Img = img;
+    Capsule Body("mixamorig:Hips", "mixamorig:Neck", 100, Img);
+    CapsuleCollision.push_back(Body);
+    Capsule LeftArm("mixamorig:LeftArm", "mixamorig:Neck", 100, Img);
+    CapsuleCollision.push_back(LeftArm); 
+    Capsule LeftForeArm("mixamorig:LeftArm", "mixamorig:LeftForeArm", 100, Img);
+    CapsuleCollision.push_back(LeftForeArm);
+    Capsule LeftHand("mixamorig:LeftHand", "mixamorig:LeftForeArm", 100, Img);
+    CapsuleCollision.push_back(LeftHand);
+    Capsule LeftHandIndex("mixamorig:LeftHand", "mixamorig:LeftHandIndex3", 100, Img);
+    CapsuleCollision.push_back(LeftHandIndex);
+    Capsule RightArm("mixamorig:RightArm", "mixamorig:Neck", 100, Img);
+    CapsuleCollision.push_back(RightArm);
+    Capsule RightForeArm("mixamorig:RightArm", "mixamorig:RightForeArm", 100, Img);
+    CapsuleCollision.push_back(RightForeArm);
+    Capsule RightHand("mixamorig:RightHand", "mixamorig:RightForeArm", 100, Img);
+    CapsuleCollision.push_back(RightHand);
+    Capsule RightHandIndex("mixamorig:RightHand", "mixamorig:RightHandIndex3", 100, Img);
+    CapsuleCollision.push_back(RightHandIndex);
+    Capsule LeftUpLeg("mixamorig:Hips", "mixamorig:LeftUpLeg", 100, Img);
+    CapsuleCollision.push_back(LeftUpLeg);
+    Capsule LeftLeg("mixamorig:LeftLeg", "mixamorig:LeftUpLeg", 100, Img);
+    CapsuleCollision.push_back(LeftLeg);
+    Capsule LeftFoot("mixamorig:LeftLeg", "mixamorig:LeftFoot", 100, Img);
+    CapsuleCollision.push_back(LeftFoot);
+    Capsule LeftToeBase("mixamorig:LeftToBase", "mixamorig:LeftFoot", 100, Img);
+    CapsuleCollision.push_back(LeftFoot);
+    Capsule RightUpLeg("mixamorig:Hips", "mixamorig:RightUpLeg", 100, Img);
+    CapsuleCollision.push_back(RightUpLeg);
+    Capsule RightLeg("mixamorig:RightLeg", "mixamorig:RightUpLeg", 100, Img);
+    CapsuleCollision.push_back(RightLeg);
+    Capsule RightFoot("mixamorig:RightLeg", "mixamorig:RightFoot", 100, Img);
+    CapsuleCollision.push_back(RightFoot);
+    Capsule RightToeBase("mixamorig:RightToBase", "mixamorig:RightFoot", 100, Img);
+    CapsuleCollision.push_back(RightFoot);
+}
 int Character::GetImg()
 {
     return Img;

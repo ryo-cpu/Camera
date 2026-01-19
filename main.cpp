@@ -680,19 +680,19 @@ else if (!OnWall)
 				SetFontSize(64);
 				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 				ModelCheckers test;
-				test.ShowFrameName(enemy->GetImg());
+				test.ShowFrameName(player->GetImg());
 				
-				Capsule Test;
-				Test.SetStartFrameName("mixamoring::Hips", enemy->GetImg());
-				Test.SetEndFrameName("mixamoring::Neck", enemy->GetImg());
-				DrawCapsule3D(Test.GetStartPos(), Test.GetEndPos(), 30.0f, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+				
+				
+				
+				
 
 			}
 		/*	MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
-			/*enemy->Draw();*/
+			enemy->Draw();
 			VECTOR V1, V2, V3, V4;
 			VECTOR P = VGet(0,0,0);
 			V1 = VAdd(P, VGet(0, 0, -1000));

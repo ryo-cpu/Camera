@@ -5,7 +5,7 @@
 #include"Sphere_Collision.h"
 #include<cmath>
 #include"EffectM.h"
-#include"Collision.h"
+#include"Capsule.h"
 
 
 class Character
@@ -19,6 +19,7 @@ protected:
 	float Scale;
 	Sphere_Collision Collision;
 	Sphere_Collision AttackCollision;
+	std::vector<Capsule> CapsuleCollision;
 	int Attack;
 	int Hp;
 	int AnimType;
@@ -34,6 +35,8 @@ protected:
 	bool isUpdate;
 public:
 	Character();
+	Character(int img);
+
 	int 	GetImg();
 	void    SetImg(int img);
 	VECTOR  GetPos();
