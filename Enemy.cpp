@@ -9,6 +9,14 @@ Enemy::Enemy()
 
 }
 
+Enemy::Enemy(int img) : Character(img)
+{
+	SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
+	MaxHp = 300;
+	Hp = MaxHp;
+	Attack = 10;
+}
+
 Enemy::~Enemy()
 {
 	delete Target;

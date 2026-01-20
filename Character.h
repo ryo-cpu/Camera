@@ -84,5 +84,6 @@ public:
 	bool GetIsUpdate();
 	void SetIsUpdate(bool isupdate);
 	bool GetIsAnim();
+	void DrawCapsuleCollision();
 };
 

@@ -20,6 +20,21 @@ Player::Player()
 	InputState = new XINPUT_STATE;
 }
 
+Player::Player(int img):Character(img)
+{
+	SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+	MaxHp = 40;
+	Hp = MaxHp;
+	Attack = 10;
+	InSpecialMove = false;
+	IsHit = false;
+	InRolling = false;
+	IsActiveInput = true;
+	GRund = VGet(0, 0, 0);
+	Move = VGet(0, 0, 0);
+	InputState = new XINPUT_STATE;
+}
+
 Player::~Player()
 {
 	delete InputState;

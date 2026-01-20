@@ -9,6 +9,8 @@ class Enemy: public Character
     int MotionType;
 public:
     Enemy();
+    Enemy(int img);
+
     ~Enemy();
     enum Motion {Run,Jump, Dance, ArmSwing,Down, Bat, Hit };
     enum AttackMotion { Tackle, DownArmSwing,tink,hit_stop};

@@ -27,6 +27,8 @@ class Player :public Character
    
 public:
     Player();
+    Player(int img);
+
     ~Player();
     enum Motion { Stop, Run, Down, Roll, Kick, Hit };
     bool Input(Camera &camera);

@@ -79,10 +79,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 
 	///enemy初期化
-	Enemy* enemy = new Enemy();
+	Enemy* enemy = new Enemy(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-	enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
 	enemy->SetAnimSpeed(10);
 	enemy->SetAnimType(enemy->Dance);
@@ -688,8 +687,8 @@ else if (!OnWall)
 				
 
 			}
-		/*	MV1DrawModel(BackModel);
-			MV1DrawModel(TileModel);*/
+			MV1DrawModel(BackModel);
+			MV1DrawModel(TileModel);
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			enemy->Draw();
