@@ -20,10 +20,7 @@ Character::Character(int img)
 {
     //ƒ‚ƒfƒ‹‚ª“¯‚¶‚Ì‚Æˆ—ŒyŒ¸‚Ì‚½‚ßè“®
     Img = img;
-<<<<<<< HEAD
     isDraw = true;
-=======
->>>>>>> 326197309ae9bc627d6de8e082e10df2bf4ea782
     Capsule Body("mixamorig:Hips", "mixamorig:Neck", 100, Img);
     CapsuleCollision.push_back(Body);
     Capsule LeftArm("mixamorig:LeftArm", "mixamorig:Neck", 100, Img);

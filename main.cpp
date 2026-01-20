@@ -711,7 +711,7 @@ else if (!OnWall)
 
 
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
-			
+			enemy->DrawCapsuleCollision();
 		
 
 			
