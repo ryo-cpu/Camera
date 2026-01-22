@@ -283,6 +283,14 @@ void Character::DrawCapsuleCollision()
     }
 }
 
+void Character::UpdateCapsuleCollision()
+{
+    for (int i = 0; i < CapsuleCollision.size(); i++)
+    {
+        CapsuleCollision[i].Update(Img);
+    }
+}
+
 
 
 
