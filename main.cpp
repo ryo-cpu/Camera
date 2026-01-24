@@ -711,7 +711,13 @@ else if (!OnWall)
 
 
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
+			enemy->UpdateCapsuleCollision();
 			enemy->DrawCapsuleCollision();
+			for (int i = 0; i < enemy->GetCapsuleCollision().size(); i++)
+			{
+			 bool jag=enemy->GetCapsuleCollision()[i].Survey(enemy->GetCapsuleCollision()[i], enemy->GetCapsuleCollision()[i]);
+
+			}
 		
 
 			

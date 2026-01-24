@@ -86,6 +86,7 @@ public:
 	bool GetIsAnim();
 	void DrawCapsuleCollision();
 	void UpdateCapsuleCollision();
+	std::vector<Capsule> GetCapsuleCollision();
 
 };
 

@@ -291,6 +291,10 @@ void Character::UpdateCapsuleCollision()
     }
 }
 
+std::vector<Capsule> Character::GetCapsuleCollision()
+{
+    return CapsuleCollision;
+}
 
 
 
