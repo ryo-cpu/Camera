@@ -14,6 +14,12 @@ Capsule::Capsule(char* startName, char* endName, float rsize, int Model)
     SetRSize(rsize);
 
 }
+Capsule::Capsule(VECTOR startPos, VECTOR endPos, float rsize)
+{
+    StartPos = startPos;
+    EndPos = endPos;
+    SetRSize(rsize);
+}
 
 VECTOR Capsule::GetStartPos() const
 {
@@ -73,12 +79,14 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
     
     //////並行時の分岐 二点とimmodilityの近さを比較して並行かどうか調べる
     ModelCheckers Tmp;
-
+    ///最近点を求める　immodility上の
     VECTOR Shadow_StartPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
+    ///最近点の最近点を求める　Move上の
+    VECTOR Shadow_Shadow_StartPos = VAdd(StartPoint, Tmp.VProject(Shadow_StartPos, StartPoint, EndPoint));
     VECTOR P1 = VSub(StartPoint,Shadow_StartPos);
     VECTOR Shadow_EndPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(EndPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
     VECTOR P2= VSub(EndPoint, Shadow_EndPos);
-    pushback = VSize(P1) >= VSize(P2) ? P1 : P2;
+   pushback = VSize(P1) >= VSize(P2) ? P2 : P1;
     if (P1.x * P2.x < 0 && P1.y * P2.y < 0 && P1.z * P2.z < 0)
     {
         pushback = VScale(pushback, -1);
@@ -125,6 +133,8 @@ void Capsule::Update(int Model)
 void  Capsule::Update(VECTOR Move)
 {
     StartPos = VAdd(StartPos, Move);
+    EndPos = VAdd(EndPos, Move);
+
 }
 void Capsule::SetStartFrameName(char* Name)
 {

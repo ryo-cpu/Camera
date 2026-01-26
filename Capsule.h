@@ -13,6 +13,8 @@ class Capsule : public Collision
 public:
     Capsule(char* startName, char* endName, float rsize);
     Capsule(char* startName, char* endName, float rsize,int Model);
+    Capsule(VECTOR startPos, VECTOR endPos, float rsize);
+
 
     VECTOR   GetStartPos()const;
     VECTOR   GetEndPos()const;

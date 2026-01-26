@@ -162,7 +162,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound* BGM = new Sound("data/Thunderstorm.wav");
 
 
-	
+	Capsule TestCapsule(VGet(0, 1000, 0), VGet(100, 1000, 0), 100.0f);
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -713,9 +713,19 @@ else if (!OnWall)
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
 			enemy->UpdateCapsuleCollision();
 			enemy->DrawCapsuleCollision();
+			TestCapsule.Update(VGet(0, 0, -1));
+			
 			for (int i = 0; i < enemy->GetCapsuleCollision().size(); i++)
 			{
-			 bool jag=enemy->GetCapsuleCollision()[i].Survey(enemy->GetCapsuleCollision()[i], enemy->GetCapsuleCollision()[i]);
+			 bool jag=enemy->GetCapsuleCollision()[i].Survey(enemy->GetCapsuleCollision()[i], TestCapsule);
+
+
+			 DrawCapsule3D(TestCapsule.GetStartPos(), TestCapsule.GetEndPos(),100.0f, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+
+			 if (jag)
+			 {
+				 TestCapsule.Update(TestCapsule.PushBack(TestCapsule,enemy->GetCapsuleCollision()[i]));
+			 }
 
 			}
 		
