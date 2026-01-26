@@ -17,7 +17,7 @@ public:
    VECTOR VMax(VECTOR V1, VECTOR V2,VECTOR V3);
    VECTOR VMin(VECTOR V1, VECTOR V2);
    VECTOR VMin(VECTOR V1, VECTOR V2, VECTOR V3);
-   /// @brief 正射影ベクトルの終点を返す　垂線を下した先を示す
+   /// @brief 正射影ベクトルの終点を返す　垂線を下した先を示す(StartGroundからのベクトルを返す」)
    /// @param CheckPoint 
    /// @param StartGround 
    /// @param EndGround 

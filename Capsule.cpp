@@ -83,8 +83,9 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
     VECTOR Shadow_StartPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
     ///Å‹ß“_‚ÌÅ‹ß“_‚ð‹‚ß‚é@Moveã‚Ì
     VECTOR Shadow_Shadow_StartPos = VAdd(StartPoint, Tmp.VProject(Shadow_StartPos, StartPoint, EndPoint));
-    VECTOR P1 = VSub(StartPoint,Shadow_StartPos);
+    VECTOR P1 = VSub(Shadow_Shadow_StartPos,Shadow_StartPos);
     VECTOR Shadow_EndPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(EndPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
+    VECTOR Shadow_Shadow_EndPos= VAdd(StartPoint, Tmp.VProject(Shadow_EndPos, StartPoint, EndPoint));
     VECTOR P2= VSub(EndPoint, Shadow_EndPos);
    pushback = VSize(P1) >= VSize(P2) ? P2 : P1;
     if (P1.x * P2.x < 0 && P1.y * P2.y < 0 && P1.z * P2.z < 0)

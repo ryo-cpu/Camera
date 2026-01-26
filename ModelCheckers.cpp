@@ -102,7 +102,6 @@ VECTOR ModelCheckers::VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR End
     ////CheckPint‚Íˆø”‚Æ•Ê‚ê‚Ä‚¢‚é‚Æl‚¦‚é@•ÏX‚µ‚Ä‚àˆø”‘¤‚ğ‰ü•Ï‚µ‚È‚¢
     CheckPoint = VSub(CheckPoint, StartGround);
     VECTOR  Proj = VScale(Ground, (VDot(CheckPoint, Ground) / VDot(Ground, Ground)));
-    Proj = VAdd(Proj, StartGround);
     return Proj;
 }
 
