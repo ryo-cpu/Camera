@@ -266,7 +266,7 @@ void Player::Update(float deltaTime)
 	    SetPos(VAdd(Pos, Move));
 		
 	}
-	AnimUpdate(deltaTime);
+	//AnimUpdate(deltaTime);
 	
 	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
 	{

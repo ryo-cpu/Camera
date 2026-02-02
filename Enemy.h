@@ -2,6 +2,7 @@
 #include"Character.h"
 #include <algorithm>
 const float MaxTurn = 0.1f;
+const int EnemyHP = 300;
 class Enemy: public Character
 {
     Character *Target;

@@ -94,7 +94,7 @@ void Enemy::SelectMove()
 
 	}
 
-
+	
 }
 
 bool Enemy::TackleAttack(VECTOR targetPos)
@@ -233,7 +233,7 @@ void Enemy::Update(float deltaTime)
 {
     Pos = VAdd(Pos, Move);
 	
-	AnimUpdate(deltaTime);
+	//AnimUpdate(deltaTime);
 	
 	const char* HipName = "mixamorig:Hips";
 

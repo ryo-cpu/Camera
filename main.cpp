@@ -57,10 +57,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR JumpPower = VGet(0, 30, 0);
 	VECTOR G = VGet(0, -1, 0);
 
-	Player *player=new Player();
+	Player *player=new Player(MV1LoadModel("data/player.mv1"));
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
-	player->SetImg(MV1LoadModel("data/player.mv1"));
 	player->SetDir(VGet(0, 0, 0));
 	player->SetAnimSpeed(10);
 	player->SetAnimType(player->Stop);
@@ -264,6 +263,14 @@ NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
 NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
+player->AnimUpdate(deltaTime);
+enemy->AnimUpdate(deltaTime);
+player->AnimUpdate(deltaTime);
+player->UpdateCapsuleCollision();
+enemy->UpdateCapsuleCollision();
+player->DrawCapsuleCollision();
+enemy->DrawCapsuleCollision();
+
 ///かべとplayer
 if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()/2&&!player->GetInSpecialMove())
 {
@@ -582,6 +589,8 @@ else if (!OnWall)
 			 // モデルの描画
 			// モデルの描画
 				   // モデルの描画
+			player->DrawCapsuleCollision();
+			enemy->DrawCapsuleCollision();
 		}
 		break;
 		case Start:
@@ -636,7 +645,6 @@ else if (!OnWall)
 					GameMode = Game;
 					camera->ResetOffset(DefaultCamera, player->GetPos());
 					InModeCheng = false;
-					player = new Player();
 					player->SetPos(StartPlayerPos);
 					bool isJump = false;
 					player->SetImg(MV1LoadModel("data/player.mv1"));
@@ -650,7 +658,7 @@ else if (!OnWall)
 
 					
 					///enemy初期化
-					enemy = new Enemy();
+					
 					enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 					MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 					enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
@@ -660,6 +668,7 @@ else if (!OnWall)
 					enemy->SetNowAnimTime(0);
 					enemy->SetTarget(*player);
 					enemy->SetScale(5.0f);  // 試しに10倍
+					enemy->SetHp(EnemyHP);
 
 					playerHp = new Bar(player);
 					enemyHpBar = new Bar(enemy);
@@ -679,7 +688,7 @@ else if (!OnWall)
 				SetFontSize(64);
 				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 				ModelCheckers test;
-				test.ShowFrameName(player->GetImg());
+				
 				
 				
 				
@@ -711,8 +720,7 @@ else if (!OnWall)
 
 
 			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
-			enemy->UpdateCapsuleCollision();
-			enemy->DrawCapsuleCollision();
+	
 			TestCapsule.Update(VGet(0, 0, -1));
 			
 			for (int i = 0; i < enemy->GetCapsuleCollision().size(); i++)
@@ -720,7 +728,7 @@ else if (!OnWall)
 			 bool jag=enemy->GetCapsuleCollision()[i].Survey(enemy->GetCapsuleCollision()[i], TestCapsule);
 
 
-			 DrawCapsule3D(TestCapsule.GetStartPos(), TestCapsule.GetEndPos(),100.0f, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+			
 
 			 if (jag)
 			 {
