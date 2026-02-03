@@ -58,6 +58,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR G = VGet(0, -1, 0);
 
 	Player *player=new Player(MV1LoadModel("data/player.mv1"));
+	player->SetCapsuleCollisionRsize(10.0f);
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
 	player->SetDir(VGet(0, 0, 0));
@@ -267,7 +268,9 @@ player->AnimUpdate(deltaTime);
 enemy->AnimUpdate(deltaTime);
 player->AnimUpdate(deltaTime);
 player->UpdateCapsuleCollision();
+player->UpdateCapsuleCollision(player->GetMove());
 enemy->UpdateCapsuleCollision();
+enemy->UpdateCapsuleCollision(enemy->GetMove());
 player->DrawCapsuleCollision();
 enemy->DrawCapsuleCollision();
 
@@ -283,6 +286,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	AddMove = VScale(VNorm(AddMove),(Field.GetSphereSize()-NextPlayer.GetSphereSize()/2));
 	AddMove = VSub(AddMove,NextPlayer.GetPos());
 	player->SetMove(VAdd(player->GetMove(), AddMove));
+	player->UpdateCapsuleCollision(AddMove);
 	///再更新　ほかの判定でも使うので
 	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 	NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
@@ -295,6 +299,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 	AddMove = VScale(VNorm(AddMove),Field.GetSphereSize()-enemy->GetCollision().GetSphereSize() / 2);
 	AddMove = VSub(AddMove,NextEnemy.GetPos());
 	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
+	enemy->UpdateCapsuleCollision(AddMove);
 	///再更新　ほかの判定でも使うので
 	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
 	NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
@@ -339,6 +344,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 	enemy->SetAnimType(enemy->Hit);
 	enemy->SubHp(player->GetAttack());
 	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+	
 
 
 }
@@ -358,12 +364,12 @@ else if (Collision_Measurement->Collision(NextPlayer, enemy->GetAttackCollision(
 	/////必殺キャンセル
 	player->SetInSpecialMove(false);
 	
-	///playerの正面に移動
+	/*///playerの正面に移動
 	VECTOR FRONT = VGet(0, 100, -1000);
 	FRONT =VTransformSR(FRONT, MGetRotY(player->GetDir().y));
 	camera->ResetOffset(FRONT, player->GetPos());
 	camera->CalculateAngle(player->GetPos());
-	camera->CalculateTargetAngle(player->GetPos());
+	camera->CalculateTargetAngle(player->GetPos());*/
 
 	/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
 	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
@@ -371,9 +377,12 @@ else if (Collision_Measurement->Collision(NextPlayer, enemy->GetAttackCollision(
 
  else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
 {
-
+	VECTOR P= player->PushBackCapsuleCollison(*player, *enemy);
 	
-	///衝突検査（ここでするとSphereを持ち越さない）
+	player->SetMove(VAdd(player->GetMove(), P));
+	player->UpdateCapsuleCollision(P);
+	
+	/*///衝突検査（ここでするとSphereを持ち越さない）
 	if (Collision_Measurement->Collision(NextEnemy, NextPlayer))
 	{
 		VECTOR Distance = VSub(NextPlayer.GetPos(), NextEnemy.GetPos());
@@ -384,7 +393,7 @@ else if (Collision_Measurement->Collision(NextPlayer, enemy->GetAttackCollision(
 		TakeDistance.y = 0;
 		player->SetMove(VAdd(player->GetMove(), TakeDistance));
 
-	}
+	}*/
 
 
 

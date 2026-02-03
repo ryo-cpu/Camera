@@ -86,7 +86,10 @@ public:
 	bool GetIsAnim();
 	void DrawCapsuleCollision();
 	void UpdateCapsuleCollision();
-	std::vector<Capsule> GetCapsuleCollision();
+	void UpdateCapsuleCollision(VECTOR move);
+	void SetCapsuleCollisionRsize(float r);
+    std::vector<Capsule> GetCapsuleCollision();
+	VECTOR PushBackCapsuleCollison(Character Move,Character NotMove);
 
 };
 

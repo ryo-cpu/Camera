@@ -291,9 +291,49 @@ void Character::UpdateCapsuleCollision()
     }
 }
 
+void Character::UpdateCapsuleCollision(VECTOR move)
+{
+    for (int i = 0; i < CapsuleCollision.size(); i++)
+    {
+        CapsuleCollision[i].Update(move);
+    }
+}
+
+void Character::SetCapsuleCollisionRsize(float r)
+{
+    for (int i = 0; i < CapsuleCollision.size(); i++)
+    {
+        CapsuleCollision[i].SetRSize(r);
+    }
+}
+
 std::vector<Capsule> Character::GetCapsuleCollision()
 {
     return CapsuleCollision;
+}
+
+VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
+{
+    VECTOR pushBack = VGet(0, 0, 0);
+    std::vector<Capsule> M = Move.GetCapsuleCollision();
+    std::vector<Capsule> N =NotMove.GetCapsuleCollision();
+    Capsule Jag;
+
+    for (int i = 0; i <M.size(); i++)
+    {
+        for (int j = 0; j < N.size(); j++)
+        {
+            if (Jag.Survey(M[i], N[j]))
+            {
+             VECTOR p= Jag.PushBack(M[i], N[j]);
+
+             pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+            }
+        }
+
+    }
+
+    return pushBack;
 }
 
 

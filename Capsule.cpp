@@ -21,6 +21,11 @@ Capsule::Capsule(VECTOR startPos, VECTOR endPos, float rsize)
     SetRSize(rsize);
 }
 
+Capsule::Capsule()
+{
+
+}
+
 VECTOR Capsule::GetStartPos() const
 {
     return StartPos;
@@ -64,53 +69,34 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
 {
     VECTOR pushback = VGet(0, 0, 0); {};
 
-    VECTOR StartPoint, EndPoint,Norm;
-
-    StartPoint = Move.GetStartPos();
-    EndPoint =   Move.GetEndPos();
-    Norm = VNorm(VSub(EndPoint, StartPoint));
-
     float Rsum = Move.GetRSize() + Immodility.GetRSize();
-    ////線として調べため半径の合計分延長
-    StartPoint = VAdd(StartPoint,VScale(Norm,Rsum));
-    EndPoint = VAdd(EndPoint, VScale(Norm, -Rsum));///逆側に伸ばすのでマイナス
 
 
     
     //////並行時の分岐 二点とimmodilityの近さを比較して並行かどうか調べる
     ModelCheckers Tmp;
-    ///最近点を求める　immodility上の
-    VECTOR Shadow_StartPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
-    ///最近点の最近点を求める　Move上の
-    VECTOR Shadow_Shadow_StartPos = VAdd(StartPoint, Tmp.VProject(Shadow_StartPos, StartPoint, EndPoint));
-    VECTOR P1 = VSub(Shadow_Shadow_StartPos,Shadow_StartPos);
-    VECTOR Shadow_EndPos = VAdd(Immodility.GetStartPos(), Tmp.VProject(EndPoint, Immodility.GetStartPos(), Immodility.GetEndPos()));
-    VECTOR Shadow_Shadow_EndPos= VAdd(StartPoint, Tmp.VProject(Shadow_EndPos, StartPoint, EndPoint));
-    VECTOR P2= VSub(EndPoint, Shadow_EndPos);
-   pushback = VSize(P1) >= VSize(P2) ? P2 : P1;
-    if (P1.x * P2.x < 0 && P1.y * P2.y < 0 && P1.z * P2.z < 0)
-    {
-        pushback = VScale(pushback, -1);
-    }
- 
-    //if (Tmp.IsParallel(Immodility.GetStartPos(), Immodility.GetEndPos(),StartPoint,EndPoint))
-    //{
-    //    VECTOR ImmodilityPoint = Tmp.VProject(StartPoint, Immodility.GetStartPos(), Immodility.GetEndPos());
-    //    VECTOR ShadowPos = VAdd(Immodility.GetStartPos(), ImmodilityPoint);
-    //    float StratShadow = VSize(VSub(StartPoint, ShadowPos));
-    //    ////並行な場合垂直に返せばいいので
-    //    return VSub(StartPoint, ShadowPos);
-    //}
-  
-    
 
-    ///外積を取り交差を確認
+    VECTOR pA = Move.GetStartPos();
+    VECTOR qA = Move.GetEndPos();
 
-    ///交差しないなら分岐
+    VECTOR pB = Immodility.GetStartPos();
+    VECTOR qB = Immodility.GetEndPos();
 
+    // A始点 → B線分 最近点
+    VECTOR c1 = VAdd(pB, Tmp.VProject(pA, pB, qB));
+    VECTOR v1 = VSub(pA, c1);
 
+    // A終点 → B線分 最近点
+    VECTOR c2 = VAdd(pB, Tmp.VProject(qA, pB, qB));
+    VECTOR v2 = VSub(qA, c2);
 
+    // 短い方
+    VECTOR diff = (VSize(v1) < VSize(v2)) ? v1 : v2;
 
+    VECTOR dir = VNorm(diff);
+    float dist = VSize(diff);
+
+    pushback = VScale(dir, Rsum - dist);
 
     return pushback;
 }
