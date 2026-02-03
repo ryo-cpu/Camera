@@ -191,6 +191,7 @@ bool SpecialMove::Update(float DeltaTime)
 	else
 	{
 		player.SetDir(VGet(0, Angle, 0));
+		player.SetAttack(20);
 		VECTOR PushBack = VSub(enemy.GetPos(), player.GetPos());
 		PushBack.y = 0;
 		if (VSize(PushBack) == 0)

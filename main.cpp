@@ -207,7 +207,8 @@ if (player->GetIsHit())
 
 	}	
 	/////
-	if (player->GetTotalAnimTime() <= player->GetNowAnimTime() + deltaTime)
+	
+	if (StunTime <= player->GetNowAnimTime() + deltaTime)
 	{
 
 		camera->ResetOffset(VTransformSR(DefaultCamera,MGetRotY(player->GetDir().y)), player->GetPos());
@@ -350,29 +351,36 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 }
 
 
-else if (Collision_Measurement->Collision(NextPlayer, enemy->GetAttackCollision()) && player->GetAnimType() != player->Hit)
+else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != player->Hit&&(enemy->GetAnimType()==enemy->ArmSwing||enemy->GetAnimType()==enemy->Run))
 {
-	VECTOR Move = VSub(NextPlayer.GetPos(),NextEnemy.GetPos());
-	Move =VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-	Move.y = 10.0f;
-	Move = VScale(VNorm(Move), enemy->GetAttackCollision().GetSphereSize() / 4);
-	player->SetMove(Move);
-	player->SetAnimType(player->Hit);
-	player->SetIsHit(true);
-	player->SubHp(enemy->GetAttack());
-	player->SetLastDamageTime();
-	/////必殺キャンセル
-	player->SetInSpecialMove(false);
-	
-	/*///playerの正面に移動
-	VECTOR FRONT = VGet(0, 100, -1000);
-	FRONT =VTransformSR(FRONT, MGetRotY(player->GetDir().y));
-	camera->ResetOffset(FRONT, player->GetPos());
-	camera->CalculateAngle(player->GetPos());
-	camera->CalculateTargetAngle(player->GetPos());*/
+	if (enemy->GetAttackCollision().GetSphereSize() == 0)
+	{
+		
+	}
+	else
+	{
+		VECTOR Move = VGet(0, 0, -10);
+		Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
+		Move.y = 10.0f;
+		Move = VScale(VNorm(Move), enemy->GetAttackCollision().GetSphereSize());
+		player->SetMove(Move);
+		player->SetAnimType(player->Hit);
+		player->SetIsHit(true);
+		player->SubHp(enemy->GetAttack());
+		player->SetLastDamageTime();
+		/////必殺キャンセル
+		player->SetInSpecialMove(false);
 
-	/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
-	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+		/*///playerの正面に移動
+		VECTOR FRONT = VGet(0, 100, -1000);
+		FRONT =VTransformSR(FRONT, MGetRotY(player->GetDir().y));
+		camera->ResetOffset(FRONT, player->GetPos());
+		camera->CalculateAngle(player->GetPos());
+		camera->CalculateTargetAngle(player->GetPos());*/
+
+		/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
+		StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+	}
 }
 
  else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
@@ -664,6 +672,7 @@ else if (!OnWall)
 					MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
 					MV1SetPosition(player->GetImg(), player->GetPos());
 					player->SetScale(1.0f);// 試しに10倍
+					player->SetHp(playerMaxHp);
 
 					
 					///enemy初期化
@@ -756,7 +765,9 @@ else if (!OnWall)
 			if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InModeCheng = true;
-
+				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
+				camera->ResetOffset(StartCamera, enemy->GetPos());
+				enemy->SetAnimType(enemy->Dance);
 			}
 			if (InModeCheng)
 			{

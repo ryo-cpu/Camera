@@ -90,6 +90,7 @@ public:
 	void SetCapsuleCollisionRsize(float r);
     std::vector<Capsule> GetCapsuleCollision();
 	VECTOR PushBackCapsuleCollison(Character Move,Character NotMove);
+	bool isHitCaracters(Character A, Character B);
 
 };
 

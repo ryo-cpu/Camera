@@ -336,6 +336,23 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
     return pushBack;
 }
 
+bool Character::isHitCaracters(Character A, Character B)
+{
+    Capsule Jag;
+    for (int i = 0; i < A.GetCapsuleCollision().size(); i++)
+    {
+        for (int j = 0; j < B.GetCapsuleCollision().size(); j++)
+        {
+            if (Jag.Survey(A.GetCapsuleCollision()[i], B.GetCapsuleCollision()[j]))
+            {
+                return true;
+            }
+        }
+
+    }
+    return false;
+}
+
 
 
 void Character::Turn(VECTOR RotatePower)

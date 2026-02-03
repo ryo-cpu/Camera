@@ -99,7 +99,7 @@ void Enemy::SelectMove()
 
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
-	const float EndTime=5;
+	const float EndTime=10;
 	if (!IsAnim && AnimType != Run)
 	{
 		SetAnimType(Run);
@@ -132,7 +132,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		Move = move;
 		AttackCollision.SetPos(VAdd(Pos,move));
 		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
-		if (AttackCollision.Collision(AttackCollision, Target->GetCollision()))
+		if (isHitCaracters(*this,*Target))
 		{
 			return false;
 		}
@@ -156,7 +156,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
 	const float EndTime = 5;
-	if (NowAnimTime >= 30.0f && NowAnimTime <= 40.0f)
+	if (NowAnimTime >= 30.0f)
 	{
 		VECTOR AttackPos = VGet(0, 50, -400);
 		AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));

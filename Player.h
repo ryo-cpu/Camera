@@ -4,6 +4,8 @@
 
 const int MaxSpGauge = 100;
 const float MaxSpeed =10.0f;
+const int playerMaxHp = 40;
+const float StunTime = 20.0f;
 
 class Player :public Character
 {
