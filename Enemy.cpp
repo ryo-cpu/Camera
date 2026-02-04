@@ -102,6 +102,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 	const float EndTime=10;
 	if (!IsAnim && AnimType != Run)
 	{
+		Move = VGet(0, 0, 0);
 		SetAnimType(Run);
 	}
 	else if (!IsAnim || AnimType == Run)
