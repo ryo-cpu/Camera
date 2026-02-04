@@ -8,6 +8,7 @@ class Enemy: public Character
     Character *Target;
     bool IsMotion;
     int MotionType;
+    VECTOR KnockBack;
 public:
     Enemy();
     Enemy(int img);
@@ -19,6 +20,7 @@ public:
     VECTOR SearchTarget();
     Sphere_Collision GetAttackCollision();
     void SetMoveType(int movetype);
+    void SetKnockBack(VECTOR knockback);
     int GetMoveType();
     ///‚±‚¤‚Ç‚¤////
     void SelectMove();

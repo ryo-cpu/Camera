@@ -156,6 +156,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 
 bool Enemy::ArmSwingDown(VECTOR targetPos)
 {
+	Move = VGet(0, 0, 0);
 	const float EndTime = 5;
 	if (NowAnimTime >= 30.0f)
 	{
@@ -179,6 +180,7 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 
 bool Enemy::Tink()
 {
+	Move = VGet(0, 0, 0);
 	const float EndTime = 3;
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
@@ -191,6 +193,7 @@ bool Enemy::Tink()
 bool Enemy::Hit_Stop()
 {
 	AttackCollision = {};
+	Move = KnockBack;
 	if (!IsAnim)
 	{
 		const char* HipName = "mixamorig:Hips";
@@ -209,6 +212,7 @@ bool Enemy::Hit_Stop()
 			SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
 
 		}
+		SetKnockBack(VGet(0, 0, 0));
 	 return false;
 	}
 	return true;
@@ -224,6 +228,11 @@ void Enemy::SetMoveType(int movetype)
 	MotionType = movetype;
 }
 
+void Enemy::SetKnockBack(VECTOR knockback)
+{
+	KnockBack = knockback;
+}
+
 int Enemy::GetMoveType()
 {
 	return MotionType;
@@ -232,7 +241,7 @@ int Enemy::GetMoveType()
 
 void Enemy::Update(float deltaTime)
 {
-    Pos = VAdd(Pos, Move);
+    Pos = VAdd(Pos,Move);
 	
 	//AnimUpdate(deltaTime);
 	

@@ -264,6 +264,7 @@ if (player->GetPos().y <= BaseY)
 NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
+NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
 NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 player->AnimUpdate(deltaTime);
 enemy->AnimUpdate(deltaTime);
@@ -274,9 +275,7 @@ enemy->UpdateCapsuleCollision();
 enemy->UpdateCapsuleCollision(enemy->GetMove());
 player->DrawCapsuleCollision();
 enemy->DrawCapsuleCollision();
-VECTOR F = Field.GetPos();
-F.y = NextPlayer.GetPos().y;
-Field.SetPos(F);
+
 ///かべとplayer
 if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()&&!player->GetInSpecialMove())
 {
@@ -294,15 +293,22 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 	NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 }
-F.y = NextEnemy.GetPos().y;
-Field.SetPos(F);
+
 ///かべとenemy
 if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize()/2 && !player->GetInSpecialMove())
 {
 	
 	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
-	AddMove = VScale(VNorm(AddMove),Field.GetSphereSize()-enemy->GetCollision().GetSphereSize() / 2);
-	AddMove = VSub(AddMove,NextEnemy.GetPos());
+	///中心から敵の最長
+	AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (enemy->GetCollision().GetSphereSize() / 2)));
+	///フィールドの端から敵の最長（フィールドの長さを引く）
+	AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
+	///反転（敵の最奥から中心から）
+	AddMove = VScale(AddMove, -1);
+	if (VSize(AddMove)>=100)
+	{
+		enemy->UpdateCapsuleCollision(AddMove);
+	}
 	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
 	enemy->UpdateCapsuleCollision(AddMove);
 	///再更新　ほかの判定でも使うので
@@ -344,6 +350,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 
 	AttackSound->Play();
 	player->AddSpGauge(20);
+	enemy->SetKnockBack((Knockback));
 	enemy->SetMove((Knockback));
 	enemy->SetMoveType(enemy->hit_stop);
 	enemy->SetAnimType(enemy->Hit);
