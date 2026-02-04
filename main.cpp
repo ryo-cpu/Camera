@@ -274,9 +274,11 @@ enemy->UpdateCapsuleCollision();
 enemy->UpdateCapsuleCollision(enemy->GetMove());
 player->DrawCapsuleCollision();
 enemy->DrawCapsuleCollision();
-
+VECTOR F = Field.GetPos();
+F.y = NextPlayer.GetPos().y;
+Field.SetPos(F);
 ///かべとplayer
-if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()/2&&!player->GetInSpecialMove())
+if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()&&!player->GetInSpecialMove())
 {
 	
 
@@ -284,7 +286,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
 
 	///fieldの半径
-	AddMove = VScale(VNorm(AddMove),(Field.GetSphereSize()-NextPlayer.GetSphereSize()/2));
+	AddMove = VScale(VNorm(AddMove),(Field.GetSphereSize()-NextPlayer.GetSphereSize()));
 	AddMove = VSub(AddMove,NextPlayer.GetPos());
 	player->SetMove(VAdd(player->GetMove(), AddMove));
 	player->UpdateCapsuleCollision(AddMove);
@@ -292,6 +294,8 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
 	NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 }
+F.y = NextEnemy.GetPos().y;
+Field.SetPos(F);
 ///かべとenemy
 if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize()/2 && !player->GetInSpecialMove())
 {
@@ -359,7 +363,7 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 	}
 	else
 	{
-		VECTOR Move = VGet(0, 0, -10);
+		VECTOR Move = VGet(0, 0, -100);
 		Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
 		Move.y = 10.0f;
 		Move = VScale(VNorm(Move), enemy->GetAttackCollision().GetSphereSize());

@@ -129,6 +129,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 
 		}
 		move = VScale(move, GetSpeed());
+		move.y = 0;
 		Move = move;
 		AttackCollision.SetPos(VAdd(Pos,move));
 		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
