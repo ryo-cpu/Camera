@@ -27,6 +27,7 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 		///‹N‚±‚è
 		///‚±‚ÌŽžŠÔ‚Í‘OŒ„‚«
+		enemy.AnimUpdate(DeltaTime);
 		enemy.Update(DeltaTime);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.EndMove();

@@ -66,6 +66,7 @@ public:
 	void    AnimUpdate(float deltaTime);
 	void    MoveUpdate(VECTOR move);
     virtual	void   Update(float deltaTime);
+	virtual void  Initial();
  	void    Draw();
 	void    Turn(VECTOR RotatePower);
 	Sphere_Collision GetCollision();
@@ -91,6 +92,7 @@ public:
     std::vector<Capsule> GetCapsuleCollision();
 	VECTOR PushBackCapsuleCollison(Character Move,Character NotMove);
 	bool isHitCaracters(Character A, Character B);
+	
 
 };
 

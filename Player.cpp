@@ -394,6 +394,21 @@ XINPUT_STATE* Player::GetInputState()
 	return InputState;
 }
 
+void Player::Initial()
+{
+	SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+	MaxHp = 40;
+	Hp = MaxHp;
+	Attack = 10;
+	InSpecialMove = false;
+	IsHit = false;
+	InRolling = false;
+	IsActiveInput = true;
+	GRund = VGet(0, 0, 0);
+	Move = VGet(0, 0, 0);
+	SpGauge = 0;
+}
+
 
 
 void Player::SpecialMove(float deltaTime)

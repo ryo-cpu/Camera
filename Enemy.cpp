@@ -272,3 +272,11 @@ void Enemy::Update(float deltaTime)
 	AddLiveTime(deltaTime);
 	
 }
+
+void Enemy::Initial()
+{
+	SetCollision(VAdd(Pos, VGet(0, 500, 0)), CollisionSize);
+	MaxHp = 300;
+	Hp = MaxHp;
+	Attack = 10;
+}

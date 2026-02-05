@@ -235,6 +235,10 @@ void Character::Update(float deltaTime)
 {
 }
 
+void Character::Initial()
+{
+}
+
 
 
 

@@ -47,5 +47,6 @@ public:
     void AddSpGauge(int add);
     bool GetTurn();
     XINPUT_STATE* GetInputState();
+    void Initial()override;
 };
 

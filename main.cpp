@@ -355,6 +355,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 	enemy->SetMoveType(enemy->hit_stop);
 	enemy->SetAnimType(enemy->Hit);
 	enemy->SubHp(player->GetAttack());
+	enemy->SetAnimSpeed(EnemyAnimSpeed);
 	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 	
 
@@ -674,6 +675,7 @@ else if (!OnWall)
 					camera->ResetOffset(DefaultCamera, player->GetPos());
 					InModeCheng = false;
 					player->SetPos(StartPlayerPos);
+					player->Initial();
 					bool isJump = false;
 					player->SetImg(MV1LoadModel("data/player.mv1"));
 					player->SetDir(VGet(0, 0, 0));
@@ -684,6 +686,7 @@ else if (!OnWall)
 					MV1SetPosition(player->GetImg(), player->GetPos());
 					player->SetScale(1.0f);// 試しに10倍
 					player->SetHp(playerMaxHp);
+					
 
 					
 					///enemy初期化

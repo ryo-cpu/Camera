@@ -3,6 +3,7 @@
 #include <algorithm>
 const float MaxTurn = 0.1f;
 const int EnemyHP = 300;
+const int EnemyAnimSpeed = 20;
 class Enemy: public Character
 {
     Character *Target;
@@ -31,6 +32,7 @@ public:
    
 
     void Update(float deltaTime)override;
+    void Initial()override;
 
 };
 
