@@ -100,9 +100,10 @@ void Enemy::SelectMove()
 bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=10;
+	Move = VGet(0, 0, 0);
 	if (!IsAnim && AnimType != Run)
 	{
-		Move = VGet(0, 0, 0);
+		
 		SetAnimType(Run);
 	}
 	else if (!IsAnim || AnimType == Run)
