@@ -362,7 +362,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 }
 
 
-else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != player->Hit&&(enemy->GetAnimType()==enemy->ArmSwing||enemy->GetAnimType()==enemy->Run))
+else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != player->Hit&&(enemy->GetAnimType()==enemy->ArmSwing||enemy->GetAnimType()==enemy->Run)&& player->GetAnimType() != player->Roll)
 {
 	if (enemy->GetAttackCollision().GetSphereSize() == 0)
 	{
@@ -748,7 +748,7 @@ else if (!OnWall)
 			V4 = VSub(V4, Ps);
 
 
-			DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);
+			/*DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);*/
 	
 			TestCapsule.Update(VGet(0, 0, -1));
 			
