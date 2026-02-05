@@ -165,7 +165,7 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 		VECTOR AttackPos = VGet(0, 50, -400);
 		AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
 		SetAttackCollision(VAdd(Pos, AttackPos), 300.f);
-		DrawSphere3D(GetPos(), 200, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+	/*	DrawSphere3D(GetPos(), 200, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);*/
 		SetAnimSpeed(20);
 
 	}

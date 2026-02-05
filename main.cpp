@@ -273,8 +273,7 @@ player->UpdateCapsuleCollision();
 player->UpdateCapsuleCollision(player->GetMove());
 enemy->UpdateCapsuleCollision();
 enemy->UpdateCapsuleCollision(enemy->GetMove());
-player->DrawCapsuleCollision();
-enemy->DrawCapsuleCollision();
+
 
 ///かべとplayer
 if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()&&!player->GetInSpecialMove())
@@ -618,8 +617,8 @@ else if (!OnWall)
 			 // モデルの描画
 			// モデルの描画
 				   // モデルの描画
-			player->DrawCapsuleCollision();
-			enemy->DrawCapsuleCollision();
+			/*player->DrawCapsuleCollision();
+			enemy->DrawCapsuleCollision();*/
 		}
 		break;
 		case Start:
