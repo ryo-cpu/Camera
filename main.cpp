@@ -350,6 +350,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 
 	AttackSound->Play();
 	player->AddSpGauge(20);
+	player->SetMove(VGet(0, 0, 0));
 	enemy->SetKnockBack((Knockback));
 	enemy->SetMove((Knockback));
 	enemy->SetMoveType(enemy->hit_stop);
@@ -394,7 +395,7 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 	}
 }
 
- else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000)
+ else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000&& enemy->GetAnimType() != enemy->Hit)
 {
 	VECTOR P= player->PushBackCapsuleCollison(*player, *enemy);
 	

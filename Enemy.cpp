@@ -166,11 +166,14 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 		AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
 		SetAttackCollision(VAdd(Pos, AttackPos), 300.f);
 		DrawSphere3D(GetPos(), 200, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
+		SetAnimSpeed(20);
 
 	}
 	else
 	{
 		AttackCollision = {};
+		SetAnimSpeed(40);
+
 	}
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
@@ -184,6 +187,7 @@ bool Enemy::Tink()
 {
 	Move = VGet(0, 0, 0);
 	const float EndTime = 3;
+	SetAnimSpeed(20);
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
 		return false;
@@ -196,6 +200,7 @@ bool Enemy::Hit_Stop()
 {
 	AttackCollision = {};
 	Move = KnockBack;
+	SetAnimSpeed(20);
 	if (!IsAnim)
 	{
 		const char* HipName = "mixamorig:Hips";
