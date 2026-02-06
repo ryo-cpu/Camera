@@ -10,6 +10,7 @@ class Enemy: public Character
     bool IsMotion;
     int MotionType;
     VECTOR KnockBack;
+    bool IsInvincible;
 public:
     Enemy();
     Enemy(int img);
@@ -23,6 +24,7 @@ public:
     void SetMoveType(int movetype);
     void SetKnockBack(VECTOR knockback);
     int GetMoveType();
+    bool GetIsInvincible();
     ///‚±‚¤‚Ç‚¤////
     void SelectMove();
     bool TackleAttack(VECTOR targetPos);

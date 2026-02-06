@@ -6,7 +6,7 @@
 
 const VECTOR SpecaleMoveCamerafast = VGet(10, 0, 200);
 const VECTOR SpecaleMoveCameraS = VGet(100, -300, -500);
-const VECTOR DefaultCamera = VGet(0, 200, 1000);
+const VECTOR DefaultCamera = VGet(0, 600, 1300);
 const VECTOR StartCamera = VGet(0, 1000, 3000);
 const VECTOR LoseCamera = VGet(0, 300, 500);
 const VECTOR WinCameraFast = VGet(500, 1000, 1000);
@@ -54,6 +54,7 @@ public:
     void Look(VECTOR TPos);
     void StartMove(VECTOR dir);
     void ChangeMove(VECTOR dir);
+    void Apply();
     void EndMove();
     VECTOR GetDir();
     VECTOR GetPos();

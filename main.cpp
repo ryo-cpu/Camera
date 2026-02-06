@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//// 画面モードのセット
 	//ChangeWindowMode(TRUE);
-	ChangeWindowMode(TRUE);
+	ChangeWindowMode(FALSE);
 	SetGraphMode(1600, 900, 16);
 	
 	VECTOR PlayerPos = VGet(0,0,0);
@@ -62,7 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
 	player->SetDir(VGet(0, 0, 0));
-	player->SetAnimSpeed(10);
+	player->SetAnimSpeed(PlayerAnimSpeed);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
 	MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 	enemy->SetDir(VGet(0, ConversionRad(180), 0));
-	enemy->SetAnimSpeed(10);
+	enemy->SetAnimSpeed(EnemyAnimSpeed);
 	enemy->SetAnimType(enemy->Dance);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
@@ -314,9 +314,9 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
 	NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 }
-///enemy攻撃
+///enemy攻撃p
 ////player攻撃
-if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) && enemy->GetMoveType() != enemy->hit_stop)
+if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&(!enemy->GetIsInvincible()||(player->GetInSpecialMove()&&!(SPMove->GetWasHit()))))
 {
 	////敵の方向
 	VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
@@ -326,6 +326,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&
 	if (player->GetInSpecialMove())
 	{
 		Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
+		SPMove->Hit();
 	}
 	Knockback.y = 0;
 	const char* HipName = "mixamorig:Hips";
@@ -390,7 +391,7 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 		camera->CalculateAngle(player->GetPos());
 		camera->CalculateTargetAngle(player->GetPos());*/
 
-		/*camera->ResetOffset(DefaultCamera, player->GetPos());*/
+		/*					camera->ResetOffset(DefaultCamera, VAdd( player->GetPos(),PlayerTopPos));*/
 		StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 	}
 }
@@ -452,7 +453,7 @@ else if (!OnWall)
 	else if(camera->GetisZoom())
 	{
 		camera->ZoomOut(1.0f);
-		camera->Look(player->GetPos());
+		camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
 
 	}
 
@@ -492,7 +493,7 @@ else if (!OnWall)
 				SetPoint.y = camera->GetPos().y * Rate;
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
 				camera->ResetOffset(Offset, player->GetPos());
-				camera->Look(player->GetPos());
+				camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
 
 				/////ちかちかする理由
 				if (VSize(DefaultCamera)<VSize(camera->GetOffset()))
@@ -512,7 +513,7 @@ else if (!OnWall)
 					/////もし超えていたら戻すよう
 
 				}
-				camera->Look(player->GetPos());
+				camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Sphere_Collision PlayerCollision = player->GetCollision();
@@ -533,7 +534,7 @@ else if (!OnWall)
 				BGM->Stop();
 			}
 			//////カメラの押し戻し
-			camera->Update(player->GetPos());
+			camera->Update(VAdd(player->GetPos(),PlayerTopPoint));
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 			playerHp->Update(*camera);
@@ -642,6 +643,7 @@ else if (!OnWall)
 				enemy->SetPos(VGet(0, 0, 0));
 				camera->RotationAxis(Axis, RotY);
 				camera->Look(Axis);
+				camera->Apply();
 				enemy->AnimUpdate(deltaTime);
 				if (CheckHitKey(KEY_INPUT_W))
 				{
@@ -672,14 +674,14 @@ else if (!OnWall)
 				if (FadeAlpha >= 255)///画面が真っ黒になったら
 				{
 					GameMode = Game;
-					camera->ResetOffset(DefaultCamera, player->GetPos());
+				    camera->ResetOffset(DefaultCamera,player->GetPos());
 					InModeCheng = false;
 					player->SetPos(StartPlayerPos);
 					player->Initial();
 					bool isJump = false;
 					player->SetImg(MV1LoadModel("data/player.mv1"));
 					player->SetDir(VGet(0, 0, 0));
-					player->SetAnimSpeed(10);
+					player->SetAnimSpeed(PlayerAnimSpeed);
 					player->SetAnimType(player->Stop);
 					player->SetNowAnimTime(0);
 					MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
@@ -695,19 +697,20 @@ else if (!OnWall)
 					MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 					enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 					enemy->SetDir(VGet(0, ConversionRad(180), 0));
-					enemy->SetAnimSpeed(10);
+					enemy->SetAnimSpeed(EnemyAnimSpeed);
 					enemy->SetAnimType(enemy->Dance);
 					enemy->SetNowAnimTime(0);
 					enemy->SetTarget(*player);
 					enemy->SetScale(5.0f);  // 試しに10倍
 					enemy->SetHp(EnemyHP);
+					enemy->SetMove(VGet(0, 0, 0));
 
 					playerHp = new Bar(player);
 					enemyHpBar = new Bar(enemy);
 
 
 					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
-					camera->ResetOffset(DefaultCamera, player->GetPos());
+	                camera->ResetOffset(DefaultCamera,  player->GetPos());
 					camera->CalculateAngle(player->GetPos());
 					camera->CalculateTargetAngle(player->GetPos());
 
@@ -800,7 +803,7 @@ else if (!OnWall)
 			}
 			else if (Time <= 4)
 			{
-				camera->ResetOffset(DefaultCamera, player->GetPos());
+			camera->ResetOffset(DefaultCamera,player->GetPos());
 			}
 			else
 			{
@@ -821,6 +824,8 @@ else if (!OnWall)
 
 			}
 		}
+			camera->Apply();
+
 			enemy->AddLiveTime(deltaTime);
 			enemy->AnimUpdate(deltaTime);
 			player -> Draw();
@@ -868,6 +873,8 @@ else if (!OnWall)
 				SetFontSize(64);
 				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
 			}
+			camera->Apply();
+
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);
 			player->Draw();

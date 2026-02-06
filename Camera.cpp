@@ -136,7 +136,6 @@ void Camera::EndChase()
 
 void Camera::Chase(VECTOR TPos)
 {
-    SetCameraPositionAndTarget_UpVecY(VAdd(TPos,Offset), TPos);
     
     Pos = VAdd(TPos, Offset);
     CalculateAngle(TPos);
@@ -144,7 +143,6 @@ void Camera::Chase(VECTOR TPos)
 
 void Camera::Look(VECTOR TPos)
 {
-    SetCameraPositionAndTarget_UpVecY(VAdd(TPos, Offset), TPos);
     CalculateAngle(TPos);
 
 }
@@ -161,6 +159,11 @@ void Camera::StartMove(VECTOR dir)
 void Camera::ChangeMove(VECTOR dir)
 {
     Dir = dir;
+}
+
+void Camera::Apply()
+{
+    SetCameraPositionAndAngle(Pos, Angle.x, Angle.y, Angle.z);
 }
 
 void Camera::EndMove()
@@ -221,7 +224,6 @@ void Camera::ResetOffset(VECTOR offset, VECTOR TPos)
 {
     Offset = offset;
     Pos = VAdd(TPos, Offset);
-    SetCameraPositionAndTarget_UpVecY(VAdd(TPos, Offset), TPos);
     CalculateAngle(TPos);
 
 
@@ -338,7 +340,7 @@ void Camera::Update(VECTOR TPos)
     {
         Zoom(TPos);
     }
-   
+    Apply();
 }
 
 VECTOR Camera::RotFreeAxis(VECTOR& V1, const VECTOR& Axis, const MATRIX& Power)

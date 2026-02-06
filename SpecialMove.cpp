@@ -2,11 +2,21 @@
 
 SpecialMove::SpecialMove(Camera& Camera, Character& Player, Character& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {
-	
+	EnemyPos = enemy.GetPos();
+	///•KE‹Z”­“®‚É•ÏX‚³‚ê‚é@ƒfƒtƒHƒ‹ƒg‚Ítrue
+	WasHit = true;
 }
 SpecialMove::~SpecialMove()
 {
 	
+}
+bool SpecialMove::GetWasHit()
+{
+	return WasHit;
+}
+void SpecialMove::Hit()
+{
+	WasHit = true;
 }
 bool SpecialMove::Update(float DeltaTime)
 {
@@ -15,7 +25,6 @@ bool SpecialMove::Update(float DeltaTime)
 	///³–Ê‚ğŒü‚©‚¹‚é
 	VECTOR Front = VNorm(VSub(player.GetPos(),enemy.GetPos()));
 	float Angle = atan2f(Front.x, Front.z);
-	
 	player.SetDir(VGet(0, Angle, 0));
 	MV1SetRotationXYZ(player.GetImg(),player.GetDir());
 	float ElapsedTime = player.GetLiveTime() -player.GetStartLiveTime();
@@ -41,6 +50,7 @@ bool SpecialMove::Update(float DeltaTime)
 		MATRIX RotX = MGetRotX(RotP.x);
 		MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
 		MATRIX RotAll = MMult(RotX, RotY);
+		
 		camera.ResetOffset(VTransformSR(F, RotAll), player.GetPos());
 		camera.Look(player.GetPos());
 		
@@ -65,20 +75,30 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 		////UŒ‚‰ŠúˆÊ’u‚ÉˆÚ“®
 		VECTOR InitPos = SPInitPos;
+		const char* HipName = "mixamorig:Hips";
+		VECTOR test = MV1GetPosition(enemy.GetImg());
+		int HipIndex = MV1SearchFrame(enemy.GetImg(), HipName);
+		if (HipIndex >= 0)
+		{
+			EnemyPos = MV1GetFramePosition(enemy.GetImg(), HipIndex);
+		}
 		////“G‚Ì•ûŒü
-		VECTOR EnemyDir = VNorm(VSub(enemy.GetPos(), player.GetPos()));
+		VECTOR EnemyDir = VNorm(VSub(EnemyPos, player.GetPos()));
 		EnemyDir.y = 0;
 		///“G‚ÉŒü‚©‚¢‡‚¤‚æ‚¤‚È‰ñ“]—Í‚ğo‚·
 		float Angle = atan2f(EnemyDir.z, EnemyDir.x);
 		////UŒ‚‰ŠúˆÊ’u‚ğ‰ñ“]‚¹‚ê‚é
 		InitPos =VTransformSR(InitPos, MGetRotY(Angle));
-		player.SetPos(VAdd(enemy.GetPos(), InitPos));
+		player.SetPos(VAdd(EnemyPos, InitPos));
 		///ƒJƒ‚ç
-		camera.ResetOffset(VScale(VNorm(VSub(enemy.GetPos(), player.GetPos())), 1000), player.GetPos());
+		camera.ResetOffset(VScale(VNorm(VSub(EnemyPos, player.GetPos())), 1000), player.GetPos());
 		////“G‚Æ©•ª‚ÌŠp“x‚ğ‹‚ß‚é
 		float rat = atan2(EnemyDir.z,EnemyDir.x);
 		EffectM::Add(*SpE,player.GetPos(), VGet(0, rat, 0),VGet(0,0,0),SpEffctID);
 		NowMode = Zoom;
+		///•KE‹Z‚ğ‚Å“–‚Ä‚È‚¢‚æ‚¤‚É
+		WasHit = false;
+		player.SetAttack(200);
 	}
 	
 	else if (ElapsedTime <= 3.0)
@@ -103,11 +123,11 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 
 		///•KE‹Z–³“G
-		enemy.SetAttackCollision(enemy.GetPos(), 0);
+		enemy.SetAttackCollision(EnemyPos, 0);
 		///ˆÚ“®‚ÆUŒ‚
 	    player.SetCollision(player.GetPos(), 0);
 		///PlayerƒJƒ‰enemy‚Ì’¼üó‚ÉƒJƒƒ‰
-		VECTOR Offset = VSub(player.GetPos(), enemy.GetPos());
+		VECTOR Offset = VSub(player.GetPos(), EnemyPos);
 		if (ElapsedTime >= 3.5)
 		{
 			////Offset‚ğ‰ñ“]‚³‚¹‚½‚à‚Ì
@@ -150,24 +170,37 @@ bool SpecialMove::Update(float DeltaTime)
 			MV1DrawModel(Afterimages[i].handle);
 
 		}
-		camera.ResetOffset(VScale(Offset,1.25), player.GetPos());
-		player.SetMove(VScale(VNorm(VSub(enemy.GetPos(),player.GetPos())),VSize(SPInitPos)*DeltaTime));
+		camera.ResetOffset(VScale(Offset,2),player.GetPos());
+		player.SetMove(VScale(VNorm(VSub(EnemyPos,player.GetPos())),VSize(SPInitPos)*DeltaTime));
 		///UŒ‚‚Ì”»’è‚ğì¬
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos =VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
-		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 100.f);
+		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 200.f);
 		Sphere_Collision Next_E;
-		Next_E.SetPos(VAdd(enemy.GetPos(), enemy.GetMove()));
+		Next_E.SetPos(VAdd(EnemyPos, enemy.GetMove()));
 		Next_E.SetSphereSize(enemy.GetCollision().GetSphereSize());
-		if (player.GetCollision().Collision(player.GetAttackCollision(),Next_E))
+	/*	Capsule JagHit(player.GetAttackCollision().GetPos(), player.GetAttackCollision().GetPos(), player.GetAttackCollision().GetSphereSize());
+		for (int i = 0; i < player.GetCapsuleCollision().size(); i++)
 		{
+			
+			if (JagHit.Survey(player.GetCapsuleCollision()[i], JagHit))
+			{
+
+				
+				
+			}
+		}*/
+		if (WasHit)
+		{
+			
+
 			StartJoypadVibration(DX_INPUT_PAD1, 100, 300, 0);
 			StartJoypadVibration(DX_INPUT_PAD1, 1000, 50, 1);
 			///’â~
-			player.SetMove(VGet(0,0,0));
-
+			player.SetMove(VGet(0, 0, 0));
 		}
-		player.SetAttack(200);
+		
+		
 	}
 	else if (ElapsedTime <= 6.0)
 	{
@@ -193,17 +226,18 @@ bool SpecialMove::Update(float DeltaTime)
 	{
 		player.SetDir(VGet(0, Angle, 0));
 		player.SetAttack(20);
-		VECTOR PushBack = VSub(enemy.GetPos(), player.GetPos());
+		WasHit = true;
+		VECTOR PushBack = VSub(EnemyPos, player.GetPos());
 		PushBack.y = 0;
 		if (VSize(PushBack) == 0)
 		{
 			PushBack.x + 1;
 		}
-		/*player.SetPos(VAdd(enemy.GetPos(), VScale(VNorm(PushBack), -800)));*/
+		/*player.SetPos(VAdd(EnemyPos, VScale(VNorm(PushBack), -800)));*/
 		player.SetCollision(player.GetPos(), 40);
 		/////////////////////////////////////////////////
 
-		camera.ResetOffset(VTransformSR( DefaultCamera,MGetRotY(player.GetDir().y)), player.GetPos());
+		camera.ResetOffset(VTransformSR(DefaultCamera,MGetRotY(player.GetDir().y)),  player.GetPos());
 		camera.CalculateAngle(player.GetPos());
 		camera.CalculateTargetAngle(player.GetPos());
 		enemy.SetisDraw(true);

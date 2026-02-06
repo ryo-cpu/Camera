@@ -6,6 +6,7 @@ Enemy::Enemy()
 	MaxHp = 300;
 	Hp = MaxHp;
 	Attack = 10;
+   IsInvincible = false;
 
 }
 
@@ -15,6 +16,8 @@ Enemy::Enemy(int img) : Character(img)
 	MaxHp = 300;
 	Hp = MaxHp;
 	Attack = 10;
+	IsInvincible = false;
+
 }
 
 Enemy::~Enemy()
@@ -101,6 +104,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=10;
 	Move = VGet(0, 0, 0);
+	IsInvincible = false;
 	if (!IsAnim && AnimType != Run)
 	{
 		
@@ -162,6 +166,8 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 	const float EndTime = 5;
 	if (NowAnimTime >= 30.0f)
 	{
+		IsInvincible = false;
+
 		VECTOR AttackPos = VGet(0, 50, -400);
 		AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
 		SetAttackCollision(VAdd(Pos, AttackPos), 300.f);
@@ -171,12 +177,13 @@ bool Enemy::ArmSwingDown(VECTOR targetPos)
 	}
 	else
 	{
-		AttackCollision = {};
+		IsInvincible = true;
 		SetAnimSpeed(40);
-
 	}
-	if (LiveTime - StartLiveTime >= EndTime)
+	
+	if (LiveTime - StartLiveTime >= EndTime||NowAnimTime>=AnimTotalTime)
 	{
+		AttackCollision = {};
 		return false;
 	}
 
@@ -187,6 +194,7 @@ bool Enemy::Tink()
 {
 	Move = VGet(0, 0, 0);
 	const float EndTime = 3;
+	IsInvincible = false;
 	SetAnimSpeed(20);
 	if (LiveTime - StartLiveTime >= EndTime)
 	{
@@ -199,6 +207,7 @@ bool Enemy::Tink()
 bool Enemy::Hit_Stop()
 {
 	AttackCollision = {};
+	IsInvincible = true;
 	Move = KnockBack;
 	SetAnimSpeed(20);
 	if (!IsAnim)
@@ -220,6 +229,8 @@ bool Enemy::Hit_Stop()
 
 		}
 		SetKnockBack(VGet(0, 0, 0));
+	IsInvincible = false;
+
 	 return false;
 	}
 	return true;
@@ -243,6 +254,11 @@ void Enemy::SetKnockBack(VECTOR knockback)
 int Enemy::GetMoveType()
 {
 	return MotionType;
+}
+
+bool Enemy::GetIsInvincible()
+{
+	return IsInvincible;
 }
 
 

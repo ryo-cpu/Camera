@@ -18,6 +18,7 @@ Player::Player()
 	GRund = VGet(0, 0, 0);
 	Move = VGet(0, 0, 0);
 	InputState = new XINPUT_STATE;
+	AnimSpeed = PlayerAnimSpeed;
 }
 
 Player::Player(int img):Character(img)
@@ -33,6 +34,8 @@ Player::Player(int img):Character(img)
 	GRund = VGet(0, 0, 0);
 	Move = VGet(0, 0, 0);
 	InputState = new XINPUT_STATE;
+	AnimSpeed = PlayerAnimSpeed;
+
 }
 
 Player::~Player()
@@ -70,11 +73,11 @@ bool Player::Input(Camera& camera)
 			VECTOR F = VScale(VGet(0, 0, 1),VSize(VGet(DefaultCamera.x,0,DefaultCamera.z)));
 			camera.AddTAngle(VGet(0, Rot, 0));
 			VECTOR RotP = camera.GetTargetAngle();
-			MATRIX RotX = MGetRotX(RotP.x);
+			MATRIX RotX = MGetRotX(RotP.x); 
 			MATRIX RotY = MGetRotY(RotP.y);///Z‚Í‰ñ“]‚µ‚È‚¢
 			MATRIX RotAll = MMult(RotX,RotY);
-			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
-			camera.Look(Pos);
+			camera.ResetOffset(VTransformSR(F, RotAll),VAdd(Pos,PlayerTopPoint));
+		/*	camera.Look(VAdd(Pos,PlayerTopPoint));*/
 
 		}
 		if (InputState->ThumbRY >= 100 || InputState->ThumbRY <= -100)
@@ -94,9 +97,9 @@ bool Player::Input(Camera& camera)
 			MATRIX RotX = MGetRotX(camera.GetTargetAngle().x);
 			MATRIX RotY = MGetRotY(camera.GetTargetAngle().y);///Z‚Í‰ñ“]‚µ‚È‚¢
 			MATRIX RotAll = MMult(RotX, RotY);
-			camera.ResetOffset(VTransformSR(F, RotAll),Pos);
+			camera.ResetOffset(VTransformSR(F, RotAll),VAdd(Pos, PlayerTopPoint));
 			
-			camera.Look(Pos);
+			/*camera.Look(VAdd(Pos,PlayerTopPoint));*/
 
 		}
 		VECTOR MoveDir = VGet(-(InputState->ThumbLX), 0, -(InputState->ThumbLY));
@@ -221,7 +224,7 @@ void Player::Update(float deltaTime)
 		if (!IsAnim)
 		{
 			SetAnimType(Stop);
-			SetAnimSpeed(10.0f);
+			SetAnimSpeed(PlayerAnimSpeed);
 		}
 	}
 	else
@@ -254,7 +257,7 @@ void Player::Update(float deltaTime)
 				RollingPos.y = 0;
 				SetPos(RollingPos);
 			}
-			SetAnimSpeed(10.0);
+			SetAnimSpeed(PlayerAnimSpeed);
 			SetAnimType(Stop);
 			
 		}

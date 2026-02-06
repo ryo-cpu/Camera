@@ -6,6 +6,8 @@ const int MaxSpGauge = 100;
 const float MaxSpeed =10.0f;
 const int playerMaxHp = 40;
 const float StunTime = 20.0f;
+const float PlayerAnimSpeed = 20.0f;
+const VECTOR PlayerTopPoint = VGet(0, 300, 0);
 
 class Player :public Character
 {

@@ -26,12 +26,22 @@ Character& enemy;
 
 int NowMode;
 std::vector<AfterImage> Afterimages;
+VECTOR EnemyPos;
+/// <summary>
+/// 攻撃の二重化防止フラグ　デフォルトtrue
+/// </summary>
+bool  WasHit;
 public:
 	bool Update(float DeltaTime);
+
 	
 	SpecialMove (Camera& Camera, Character& Player, Character& Enemy);
     ~SpecialMove();
 
-
+    bool GetWasHit();
+    /// <summary>
+    /// 外からWasHItをtrueにする
+    /// </summary>
+    void Hit();
 };
 
