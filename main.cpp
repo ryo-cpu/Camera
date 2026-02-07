@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//// 画面モードのセット
 	//ChangeWindowMode(TRUE);
-	ChangeWindowMode(FALSE);
+	ChangeWindowMode(TRUE);
 	SetGraphMode(1600, 900, 16);
 	
 	VECTOR PlayerPos = VGet(0,0,0);
@@ -316,48 +316,57 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 }
 ///enemy攻撃p
 ////player攻撃
-if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy) &&(!enemy->GetIsInvincible()||(player->GetInSpecialMove()&&!(SPMove->GetWasHit()))))
+if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 {
 	////敵の方向
-	VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
-	float Angle = atan2f(EnemyDir.x, EnemyDir.z);
-	enemy->SetDir(VGet(0, Angle, 0));
-	VECTOR Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime);
-	if (player->GetInSpecialMove())
+	if (!enemy->GetIsInvincible()|| (player->GetInSpecialMove() && !(SPMove->GetWasHit())))
 	{
-		Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
-		SPMove->Hit();
-	}
-	Knockback.y = 0;
-	const char* HipName = "mixamorig:Hips";
-	VECTOR test = MV1GetPosition(enemy->GetImg());
-	int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
-	int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+		VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
+		float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+		enemy->SetDir(VGet(0, Angle, 0));
+		VECTOR Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime);
+		if (player->GetInSpecialMove())
+		{
+			Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
+			SPMove->Hit();
+		}
+		Knockback.y = 0;
+		const char* HipName = "mixamorig:Hips";
+		VECTOR test = MV1GetPosition(enemy->GetImg());
+		int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+		int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
 
+
+		if (enemyIndex >= 0 && PlayerIndex >= 0)
+		{
+			VECTOR EffctPos;
+			VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+			VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+			EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+
+			VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+			EffectMove = VNorm(EffectMove);
+			EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+		}
+
+		AttackSound->Play();
+		player->AddSpGauge(20);
+		player->SetMove(VGet(0, 0, 0));
+		enemy->SetKnockBack((Knockback));
+		enemy->SetMove((Knockback));
+		enemy->SetMoveType(enemy->hit_stop);
+		enemy->SetAnimType(enemy->Hit);
+		enemy->SubHp(player->GetAttack());
+		enemy->SetAnimSpeed(EnemyAnimSpeed); 
+		
+		StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
+	}
 	
-	if (enemyIndex >= 0&&PlayerIndex >=0)
+	else
 	{
-		VECTOR EffctPos;
-		VECTOR EPos	= MV1GetFramePosition(enemy->GetImg(), enemyIndex);
-		VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
-		EffctPos = VAdd(PPos, VScale( VSub(EPos, PPos),0.25));
-
-
-		VECTOR EffectMove = VSub(EffctPos, player->GetPos());
-		EffectMove = VNorm(EffectMove);
-		EffectM::Add(*ImpactE, EffctPos,VGet(0,0,0),EffectMove);
+		StartJoypadVibration(DX_INPUT_PAD1, 1000, 200, -1);
 	}
-
-	AttackSound->Play();
-	player->AddSpGauge(20);
-	player->SetMove(VGet(0, 0, 0));
-	enemy->SetKnockBack((Knockback));
-	enemy->SetMove((Knockback));
-	enemy->SetMoveType(enemy->hit_stop);
-	enemy->SetAnimType(enemy->Hit);
-	enemy->SubHp(player->GetAttack());
-	enemy->SetAnimSpeed(EnemyAnimSpeed);
-	StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 	
 
 
@@ -370,7 +379,7 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 	{
 		
 	}
-	else
+	else 
 	{
 		VECTOR Move = VGet(0, 0, -100);
 		Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
@@ -459,7 +468,7 @@ else if (!OnWall)
 
 	if (!isInput|| player->GetAnimType() != player->Roll)
 	{
-		camera->StartMove(VScale(VSub(VAdd(player->GetPos(), camera->GetOffset()), camera->GetPos()), 0.1f));
+		camera->StartMove(VScale(VSub(VAdd(VAdd( player->GetPos(),PlayerTopPoint), camera->GetOffset()), camera->GetPos()), 0.1f));
 
 		if (VSize(player->GetMove()) <= 0)
 		{
@@ -490,10 +499,11 @@ else if (!OnWall)
 				VECTOR SetPoint = VNorm(PassingPoint);
 				SetPoint = VScale(SetPoint, FieldSize);
 				float Rate = VSize(SetPoint) / VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z));///Yの高さは比率でとる
-				SetPoint.y = camera->GetPos().y * Rate;
+				SetPoint.y = 100;
+				///SetPoint.y=Rate;
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
-				camera->ResetOffset(Offset, player->GetPos());
-				camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
+				camera->ResetOffset(Offset,VAdd(player->GetPos(), PlayerTopPoint));
+			/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
 
 				/////ちかちかする理由
 				if (VSize(DefaultCamera)<VSize(camera->GetOffset()))
@@ -512,8 +522,8 @@ else if (!OnWall)
 					//camera->StartMove(Move);
 					/////もし超えていたら戻すよう
 
-				}
-				camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
+				}/*
+			*//*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
 			}
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			Sphere_Collision PlayerCollision = player->GetCollision();
@@ -636,6 +646,8 @@ else if (!OnWall)
 			}
 			else
 			{
+				MV1SetPosition(enemy->GetImg(), enemy->GetPos());
+
 				////回転量を算出
 				float Move = 40 * deltaTime;
 				MATRIX RotY = MGetRotY(ConversionRad(Move));
@@ -679,7 +691,6 @@ else if (!OnWall)
 					player->SetPos(StartPlayerPos);
 					player->Initial();
 					bool isJump = false;
-					player->SetImg(MV1LoadModel("data/player.mv1"));
 					player->SetDir(VGet(0, 0, 0));
 					player->SetAnimSpeed(PlayerAnimSpeed);
 					player->SetAnimType(player->Stop);
@@ -695,7 +706,6 @@ else if (!OnWall)
 					
 					enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 					MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-					enemy->SetImg(MV1LoadModel("data/Monstor.mv1"));
 					enemy->SetDir(VGet(0, ConversionRad(180), 0));
 					enemy->SetAnimSpeed(EnemyAnimSpeed);
 					enemy->SetAnimType(enemy->Dance);
@@ -704,7 +714,7 @@ else if (!OnWall)
 					enemy->SetScale(5.0f);  // 試しに10倍
 					enemy->SetHp(EnemyHP);
 					enemy->SetMove(VGet(0, 0, 0));
-
+					enemy->Initial();
 					playerHp = new Bar(player);
 					enemyHpBar = new Bar(enemy);
 
@@ -714,14 +724,14 @@ else if (!OnWall)
 					camera->CalculateAngle(player->GetPos());
 					camera->CalculateTargetAngle(player->GetPos());
 
-					SPMove = new SpecialMove(*camera, *player, *enemy);
+					
 				}
 				
 			
 				SetFontSize(256);
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
+				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 				ModelCheckers test;
 				
 				
@@ -817,7 +827,7 @@ else if (!OnWall)
 					SetFontSize(128);
 					DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
 					SetFontSize(64);
-					DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
+					DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 
 				}
 				
@@ -871,7 +881,7 @@ else if (!OnWall)
 				SetFontSize(128);
 				DrawString(500, 350, "YOU LOSE", GetColor(244, 229, 17));
 				SetFontSize(64);
-				DrawString(600, 550, "NEXT START", GetColor(244, 229, 17));
+				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 			}
 			camera->Apply();
 

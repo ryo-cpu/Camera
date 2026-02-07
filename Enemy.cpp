@@ -45,7 +45,7 @@ VECTOR Enemy::SearchTarget()
 void Enemy::SelectMove()
 {
 	VECTOR distance = VSub(SearchTarget(), Pos);
-	if (!IsMotion && !IsAnim)///“®‚«‚ÌØ‚è‘Ö‚¦
+	if (!IsMotion)///“®‚«‚ÌØ‚è‘Ö‚¦
 	{
 		Move = VGet(0, 0, 0);
 		if (MotionType == Tackle || MotionType == DownArmSwing)
@@ -295,4 +295,5 @@ void Enemy::Initial()
 	MaxHp = 300;
 	Hp = MaxHp;
 	Attack = 10;
+    IsMotion = false;
 }
