@@ -328,7 +328,36 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 		if (player->GetInSpecialMove())
 		{
 			Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
+			if (SPMove->GetWasHit() == false)
+			{
+				enemy->SubHp(player->GetAttack());
+			}
 			SPMove->Hit();
+			player->SetMove(VGet(0, 0, 0));
+			AttackSound->Play();
+			player->AddSpGauge(20);
+
+			enemy->SetKnockBack((Knockback));
+			enemy->SetMove((Knockback));
+			enemy->SetMoveType(enemy->hit_stop);
+			enemy->SetAnimType(enemy->Hit);
+
+
+			enemy->SetAnimSpeed(EnemyAnimSpeed);
+		}
+		else
+		{
+			enemy->SubHp(player->GetAttack());
+			AttackSound->Play();
+			player->AddSpGauge(20);
+
+			enemy->SetKnockBack((Knockback));
+			enemy->SetMove((Knockback));
+			enemy->SetMoveType(enemy->hit_stop);
+			enemy->SetAnimType(enemy->Hit);
+
+
+			enemy->SetAnimSpeed(EnemyAnimSpeed);
 		}
 		Knockback.y = 0;
 		const char* HipName = "mixamorig:Hips";
@@ -350,36 +379,11 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 			EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
 		}
 
-		AttackSound->Play();
-		player->AddSpGauge(20);
-		player->SetMove(VGet(0, 0, 0));
-		enemy->SetKnockBack((Knockback));
-		enemy->SetMove((Knockback));
-		enemy->SetMoveType(enemy->hit_stop);
-		enemy->SetAnimType(enemy->Hit);
-		if (player->GetInSpecialMove())
-		{
-			if (SPMove->GetWasHit() == false)
-			{
-				enemy->SubHp(player->GetAttack());
-			}
-		}
-		else
-		{
-			enemy->SubHp(player->GetAttack());
-		}
 		
-		enemy->SetAnimSpeed(EnemyAnimSpeed); 
 		
 		StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
 	}
 	
-	else
-	{
-		StartJoypadVibration(DX_INPUT_PAD1, 1000, 200, -1);
-	}
-	
-
 
 }
 
