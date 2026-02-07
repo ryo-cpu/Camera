@@ -319,7 +319,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 {
 	////敵の方向
-	if (!enemy->GetIsInvincible()|| (player->GetInSpecialMove() && !(SPMove->GetWasHit())))
+	if (!enemy->GetIsInvincible()|| (player->GetInSpecialMove()))
 	{
 		VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
 		float Angle = atan2f(EnemyDir.x, EnemyDir.z);
@@ -357,7 +357,18 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 		enemy->SetMove((Knockback));
 		enemy->SetMoveType(enemy->hit_stop);
 		enemy->SetAnimType(enemy->Hit);
-		enemy->SubHp(player->GetAttack());
+		if (player->GetInSpecialMove())
+		{
+			if (SPMove->GetWasHit() == false)
+			{
+				enemy->SubHp(player->GetAttack());
+			}
+		}
+		else
+		{
+			enemy->SubHp(player->GetAttack());
+		}
+		
 		enemy->SetAnimSpeed(EnemyAnimSpeed); 
 		
 		StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
