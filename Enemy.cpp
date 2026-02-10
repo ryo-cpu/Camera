@@ -22,7 +22,7 @@ Enemy::Enemy(int img) : Character(img)
 
 Enemy::~Enemy()
 {
-	delete Target;
+	/*delete Target;*/
 }
 
 void Enemy::SetTarget(Character &target)
