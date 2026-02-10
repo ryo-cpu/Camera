@@ -331,19 +331,39 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 			if (SPMove->GetWasHit() == false)
 			{
 				enemy->SubHp(player->GetAttack());
+				SPMove->Hit();
+				player->SetMove(VGet(0, 0, 0));
+				AttackSound->Play();
+				player->AddSpGauge(20);
+
+				enemy->SetKnockBack((Knockback));
+				enemy->SetMove((Knockback));
+				enemy->SetMoveType(enemy->hit_stop);
+				enemy->SetAnimType(enemy->Hit);
+
+
+				enemy->SetAnimSpeed(EnemyAnimSpeed);
+				Knockback.y = 0;
+				const char* HipName = "mixamorig:Hips";
+				VECTOR test = MV1GetPosition(enemy->GetImg());
+				int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+				int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+
+
+				if (enemyIndex >= 0 && PlayerIndex >= 0)
+				{
+					VECTOR EffctPos;
+					VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+					VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+					EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+
+					VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+					EffectMove = VNorm(EffectMove);
+					EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+				}
 			}
-			SPMove->Hit();
-			player->SetMove(VGet(0, 0, 0));
-			AttackSound->Play();
-			player->AddSpGauge(20);
-
-			enemy->SetKnockBack((Knockback));
-			enemy->SetMove((Knockback));
-			enemy->SetMoveType(enemy->hit_stop);
-			enemy->SetAnimType(enemy->Hit);
-
-
-			enemy->SetAnimSpeed(EnemyAnimSpeed);
+			
 		}
 		else
 		{
@@ -358,30 +378,35 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 
 
 			enemy->SetAnimSpeed(EnemyAnimSpeed);
+			Knockback.y = 0;
+			const char* HipName = "mixamorig:Hips";
+			VECTOR test = MV1GetPosition(enemy->GetImg());
+			int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+			int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+
+
+			if (enemyIndex >= 0 && PlayerIndex >= 0)
+			{
+				VECTOR EffctPos;
+				VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+				VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+				EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+
+				VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+				EffectMove = VNorm(EffectMove);
+				EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+			}
 		}
-		Knockback.y = 0;
-		const char* HipName = "mixamorig:Hips";
-		VECTOR test = MV1GetPosition(enemy->GetImg());
-		int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
-		int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
-
-
-		if (enemyIndex >= 0 && PlayerIndex >= 0)
-		{
-			VECTOR EffctPos;
-			VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
-			VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
-			EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
-
-
-			VECTOR EffectMove = VSub(EffctPos, player->GetPos());
-			EffectMove = VNorm(EffectMove);
-			EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
-		}
+		
 
 		
 		
 		StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
+	}
+	else///無敵中攻撃判定
+	{
+
 	}
 	
 
