@@ -758,7 +758,7 @@ else if (!OnWall)
 					enemy->SetMove(VGet(0, 0, 0));
 					enemy->Initial();
 					playerHp->ResetOwner(player);
-					enemyHpBar->ResetOwner(enemy);
+					enemyHpBar->ResetOwner(enemy,VGet(-400,900,0));
 
 
 					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
@@ -863,7 +863,6 @@ else if (!OnWall)
 				VECTOR Offset = WinCameraFast;
 				camera->ResetOffset(Offset, enemy->GetPos());
 				camera->Look(enemy->GetPos());
-				enemy->SetPos(VGet(enemy->GetPos().x, 650, enemy->GetPos().z));
 				if (!enemy->GetIsAnim())
 				{
 					SetFontSize(128);
@@ -912,7 +911,7 @@ else if (!OnWall)
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
-				enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
 				MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 				camera->ResetOffset(StartCamera, enemy->GetPos());
 				InModeCheng = false;

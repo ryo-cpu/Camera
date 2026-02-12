@@ -18,6 +18,7 @@ Bar::Bar(Character *owner)
         maxValue = Owner->GetMaxHp();
         minValue = 0;
         position = ConvWorldPosToScreenPos(Owner->GetPos());
+        Offset = VGet(0, 0, 0);
         SetHandleSize(DefaultBarSizeX , DefaultBarSizeY);
         SetBackSize(DefaultBarSizeX , DefaultBarSizeY);
         SetBackColor(BackColor);
@@ -35,9 +36,14 @@ Bar::Bar(Character *owner)
     
 }
 
+Bar::Bar(Character* owner, VECTOR offset3D):Bar(owner)
+{
+    Offset = offset3D;
+}
+
 Bar::~Bar()
 {
-    delete Owner;
+   
 }
 
 void Bar::SetValue(float setValue)
@@ -135,6 +141,7 @@ void Bar::ResetOwner(Character* owner)
         maxValue = Owner->GetMaxHp();
         minValue = 0;
         position = ConvWorldPosToScreenPos(Owner->GetPos());
+        Offset = VGet(0, 0, 0);
         SetHandleSize(DefaultBarSizeX, DefaultBarSizeY);
         SetBackSize(DefaultBarSizeX, DefaultBarSizeY);
         SetBackColor(BackColor);
@@ -150,6 +157,12 @@ void Bar::ResetOwner(Character* owner)
         SetFillColor(BaseColor);
     }
 
+}
+
+void Bar::ResetOwner(Character* owner, VECTOR offset3d)
+{
+    ResetOwner(owner);
+    Offset = offset3d;
 }
 
 
@@ -169,7 +182,7 @@ void Bar::Update(Camera camera)
     SetHandleSize(DefaultBarSizeX  * Mscale, DefaultBarSizeY * Mscale);
     SetBackSize(DefaultBarSizeX  * Mscale, DefaultBarSizeY * Mscale);
     value = Owner->GetHp();
-    position = ConvWorldPosToScreenPos(Owner->GetPos());
+    position = ConvWorldPosToScreenPos(VAdd(Owner->GetPos(),Offset));
    
 }
 
