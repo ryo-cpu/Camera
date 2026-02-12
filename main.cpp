@@ -336,6 +336,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 				AttackSound->Play();
 				player->AddSpGauge(20);
 
+				Knockback.y = 0;
 				enemy->SetKnockBack((Knockback));
 				enemy->SetMove((Knockback));
 				enemy->SetMoveType(enemy->hit_stop);
@@ -343,7 +344,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 
 
 				enemy->SetAnimSpeed(EnemyAnimSpeed);
-				Knockback.y = 0;
+				
 				const char* HipName = "mixamorig:Hips";
 				VECTOR test = MV1GetPosition(enemy->GetImg());
 				int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
