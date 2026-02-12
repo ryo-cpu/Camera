@@ -119,8 +119,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 
 	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,0.0f);
-	fps fps;
-	fps.Initialization(1.0 / 60.0);
+	fps *Fps = new fps();
+	Fps->Initialization(1.0 / 60.0);
 
 	
 	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
@@ -176,7 +176,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		SetUseLighting(true); // ライティングを有効にする
 
-		fps.Start();
+		Fps->Start();
 	
  		ClearDrawScreen();
 
@@ -643,6 +643,7 @@ else if (!OnWall)
 				camera->ResetOffset(Offset, player->GetPos());
 				player->SetAnimType(player->Down);
 				BGM->Stop();
+				EffectM::Clear();
 			}
 			if (enemy->GetHp() <= 0&&!player->GetInSpecialMove())
 			{
@@ -654,7 +655,8 @@ else if (!OnWall)
 				camera->ResetOffset(Offset, enemy->GetPos());
 				enemy->SetStartLiveTime(enemy->GetLiveTime());
 				BGM->Stop();
-			
+				EffectM::Clear();
+
 
 			}
 			MV1DrawModel(BackModel);
@@ -755,8 +757,8 @@ else if (!OnWall)
 					enemy->SetHp(EnemyHP);
 					enemy->SetMove(VGet(0, 0, 0));
 					enemy->Initial();
-					playerHp = new Bar(player);
-					enemyHpBar = new Bar(enemy);
+					playerHp->ResetOwner(player);
+					enemyHpBar->ResetOwner(enemy);
 
 
 					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
@@ -949,14 +951,14 @@ else if (!OnWall)
 		
 		ScreenFlip();// 裏画面の内容を表画面に反映 
 ///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		fps.End();
+		Fps->End();
 	}
 	MV1DeleteModel(BackModel);
 	MV1DeleteModel(TileModel);
 	delete(player);
 	delete(enemy);
 	delete(camera);
-	delete(&fps);
+	delete Fps;
 	delete(Collision_Measurement);
 	delete(ImpactE);
 	delete(RingE);

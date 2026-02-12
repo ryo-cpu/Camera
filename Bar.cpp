@@ -125,6 +125,33 @@ bool Bar::CheakIsDraw(Character CheakTarget,Camera camera)
     return (modelRight < uiLeft || modelLeft > uiRight || modelBottom < uiTop || modelTop > uiBottom);
 }
 
+void Bar::ResetOwner(Character* owner)
+{
+    Owner = owner;
+    if (Owner)
+    {
+        value = Owner->GetHp();
+
+        maxValue = Owner->GetMaxHp();
+        minValue = 0;
+        position = ConvWorldPosToScreenPos(Owner->GetPos());
+        SetHandleSize(DefaultBarSizeX, DefaultBarSizeY);
+        SetBackSize(DefaultBarSizeX, DefaultBarSizeY);
+        SetBackColor(BackColor);
+        SetFillColor(BaseColor);
+    }
+
+    else
+    {
+        position = VGet(0, 0, 0);
+        SetHandleSize(100, 20);
+        SetBackSize(100, 20);
+        SetBackColor(BackColor);
+        SetFillColor(BaseColor);
+    }
+
+}
+
 
 
 

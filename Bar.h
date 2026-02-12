@@ -38,7 +38,11 @@ public:
     void SetFillColor(unsigned int setFillColor);
     bool inScreen();
     bool CheakIsDraw(Character CheakTarget,Camera camera);
-
+    /// <summary>
+    /// オーナーの変更または初期化
+    /// </summary>
+    /// <param name="owner"></param>
+    void ResetOwner(Character* owner);
     void Update(Camera camera);
     void Draw();
 };

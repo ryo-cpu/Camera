@@ -290,6 +290,19 @@ void EffectM::Draw()
 	DrawEffekseer3D();
 }
 
+void EffectM::Clear()
+{
+	for each(Effect *&e  in Pool)
+	{
+		
+		if (e != nullptr)
+		{
+			e->Stop();
+			e = nullptr;
+		}
+	}
+}
+
 EffectM::EffectM()
 {
 	

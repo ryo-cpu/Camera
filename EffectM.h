@@ -18,6 +18,7 @@ public:
 
 	static  Effect* Search(int id);
 	static	void Draw();
+	static  void Clear();
    EffectM();
    ~EffectM();
 };
