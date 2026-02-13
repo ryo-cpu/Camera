@@ -357,7 +357,7 @@ bool Character::isHitCaracters(Character A, Character B)
     return false;
 }
 
-VECTOR Character::GetFramPos(char* framName)
+VECTOR Character::GetFramPos(const char* framName)
 {
     VECTOR Pos=VGet(0,0,0);
     const char* FramName = framName;

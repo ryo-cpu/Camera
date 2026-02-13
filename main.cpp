@@ -15,7 +15,7 @@
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
-
+const char* HipName = "mixamorig:Hips";
 /// メイン関数
 /// </summary>
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -49,9 +49,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		return -1;
 	}
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-	////マウス系の初期化　宣言
-	int MouseX, MouseY;
-	GetMousePoint(&MouseX, &MouseY);
+	
 	///player初期化
 	float BaseY = NULL;
 	VECTOR JumpPower = VGet(0, 30, 0);
@@ -88,6 +86,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
 	enemy->SetScale(5.0f);  // 試しに10倍
+	player->SetCapsuleCollisionRsize(80.0f);
+
 
 
 	MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
@@ -261,7 +261,7 @@ if (player->GetPos().y <= BaseY)
 
 ////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
 ///次の動きの判定
-NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+NextPlayer.SetPos(VAdd(player->GetFramPos(HipName), player->GetMove()));
 NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
 NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
@@ -278,7 +278,6 @@ enemy->UpdateCapsuleCollision(enemy->GetMove());
 ///かべとplayer
 if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()&&!player->GetInSpecialMove())
 {
-	
 
 	////1中心から
 	VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
@@ -304,6 +303,12 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 	AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
 	///反転（敵の最奥から中心から）
 	AddMove = VScale(AddMove, -1);
+	if (enemy->GetAnimType() == enemy->Hit)
+	{
+		VECTOR HipPos = enemy->GetFramPos(HipName);
+		HipPos.y = AddMove.y;
+		AddMove = VAdd(AddMove, VSub(enemy->GetPos(), HipPos));
+	}
 	if (VSize(AddMove)>=100)
 	{
 		enemy->UpdateCapsuleCollision(AddMove);
@@ -776,13 +781,6 @@ else if (!OnWall)
 				SetFontSize(64);
 				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 				ModelCheckers test;
-				
-				
-				
-				
-				
-				
-
 			}
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
@@ -809,21 +807,9 @@ else if (!OnWall)
 
 			/*DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);*/
 	
-			TestCapsule.Update(VGet(0, 0, -1));
-			
-			for (int i = 0; i < enemy->GetCapsuleCollision().size(); i++)
-			{
-			 bool jag=enemy->GetCapsuleCollision()[i].Survey(enemy->GetCapsuleCollision()[i], TestCapsule);
-
-
 			
 
-			 if (jag)
-			 {
-				 TestCapsule.Update(TestCapsule.PushBack(TestCapsule,enemy->GetCapsuleCollision()[i]));
-			 }
-
-			}
+			
 		
 
 			
