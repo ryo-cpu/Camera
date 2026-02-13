@@ -357,6 +357,24 @@ bool Character::isHitCaracters(Character A, Character B)
     return false;
 }
 
+VECTOR Character::GetFramPos(char* framName)
+{
+    VECTOR Pos=VGet(0,0,0);
+    const char* FramName = framName;
+    
+    if (Img != 0)
+    {
+        int FramIndex = MV1SearchFrame(Img, FramName);
+        if (FramIndex >= 0)
+        {
+            Pos = MV1GetFramePosition(Img, FramIndex);
+        }
+
+    }
+    
+    return Pos;
+}
+
 
 
 void Character::Turn(VECTOR RotatePower)

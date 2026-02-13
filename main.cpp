@@ -217,7 +217,7 @@ if (player->GetIsHit())
 		player->SetIsHit(false);
 		////////////////////////////////////
 		const char* HipName = "mixamorig:Hips";
-		VECTOR test = MV1GetPosition(player->GetImg());
+		VECTOR test = player->GetFramPos("mixamorig:Hips");
 		int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
 		if (HipIndex >= 0)
 		{
