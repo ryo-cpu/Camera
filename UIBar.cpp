@@ -13,7 +13,6 @@ UIBar::UIBar(Character* owner)
 
         maxValue = Owner->GetMaxHp();
         minValue = 0;
-        position = ConvWorldPosToScreenPos(Owner->GetPos());
         SetHandleSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackColor(HPBackColor);
@@ -22,7 +21,7 @@ UIBar::UIBar(Character* owner)
 
     else
     {
-        position = VGet(0, 0, 0);
+     
         SetHandleSize(100, 20);
         SetBackSize(100, 20);
         SetBackColor(HPBackColor);
@@ -92,7 +91,7 @@ void UIBar::ResetOwner(Character* owner)
 
         maxValue = Owner->GetMaxHp();
         minValue = 0;
-        position = ConvWorldPosToScreenPos(Owner->GetPos());
+        position = VGet(0, 0, 0);
         SetHandleSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackColor(HPBackColor);
@@ -126,6 +125,16 @@ void UIBar::Update()
 
 void UIBar::Draw()
 {
-   
+    float Proportion;
+    if (value > 0)
+    {
+        Proportion = value / maxValue;
+    }
+    else
+    {
+        Proportion = 0;
+    }
+    DrawBox(position.x,position.y,position.x+ handleSize.x*Proportion, position.y + handleSize.y ,HPBackColor, true);
+    DrawBox(position.x, position.y, position.x + handleSize.x, position.y + handleSize.y, fillColor, true);
 
 }

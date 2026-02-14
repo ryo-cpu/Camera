@@ -292,7 +292,7 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 	///ヒットじの特殊処理
 	if (player->GetAnimType() == player->Hit)
 	{
-	/*	AddMove.y = 100l;*/
+	
 	}
 
 	player->SetMove(VAdd(player->GetMove(), AddMove));
