@@ -281,10 +281,20 @@ if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Fi
 
 	////1中心から
 	VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
+	///中心から敵の最長
+	AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (player->GetCollision().GetSphereSize() / 2)));
+	///フィールドの端から敵の最長（フィールドの長さを引く）
+	AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
+	///反転（敵の最奥から中心から）
+	AddMove = VScale(AddMove, -1);
 
 	///fieldの半径
-	AddMove = VScale(VNorm(AddMove),(Field.GetSphereSize()-NextPlayer.GetSphereSize()));
-	AddMove = VSub(AddMove,NextPlayer.GetPos());
+	///ヒットじの特殊処理
+	if (player->GetAnimType() == player->Hit)
+	{
+	/*	AddMove.y = 100l;*/
+	}
+
 	player->SetMove(VAdd(player->GetMove(), AddMove));
 	player->UpdateCapsuleCollision(AddMove);
 	///再更新　ほかの判定でも使うので
@@ -308,10 +318,6 @@ if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Fiel
 		VECTOR HipPos = enemy->GetFramPos(HipName);
 		HipPos.y = AddMove.y;
 		AddMove = VAdd(AddMove, VSub(enemy->GetPos(), HipPos));
-	}
-	if (VSize(AddMove)>=100)
-	{
-		enemy->UpdateCapsuleCollision(AddMove);
 	}
 	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
 	enemy->UpdateCapsuleCollision(AddMove);
@@ -412,7 +418,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 	}
 	else///無敵中攻撃判定
 	{
-
+		StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 	}
 	
 
@@ -451,7 +457,7 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 	}
 }
 
- else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000&& enemy->GetAnimType() != enemy->Hit)
+ else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000&& (enemy->GetAnimType() != enemy->Hit|| player->GetAnimType() != player->Hit))
 {
 	VECTOR P= player->PushBackCapsuleCollison(*player, *enemy);
 	
