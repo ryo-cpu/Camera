@@ -12,6 +12,7 @@
 #include "Sound.h"
 #include "ModelCheckers.h"
 #include"Capsule.h"
+#include"UIBar.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -86,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
 	enemy->SetScale(5.0f);  // 試しに10倍
-	player->SetCapsuleCollisionRsize(80.0f);
+	enemy->SetCapsuleCollisionRsize(80.0f);
 
 
 
@@ -128,6 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	Bar *playerHp= new Bar(player);
 	Bar *enemyHpBar=new Bar(enemy);
+	UIBar* playerHP = new UIBar(player);
 	SpecialMove *SPMove= new SpecialMove(*camera, *player, *enemy);
 	///時間系の初期化宣言
 	auto NowTime = std::chrono::high_resolution_clock::now();
@@ -600,6 +602,7 @@ else if (!OnWall)
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 			playerHp->Update(*camera);
+			playerHP->Update();
 			enemyHpBar->Update(*camera);
 			/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -612,6 +615,7 @@ else if (!OnWall)
 					enemyHpBar->Draw();
 				}
 				playerHp->Draw();
+				playerHP->Draw();
 			}
 			////エネミーの点滅
 			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f&&player->GetAttackCollision().GetSphereSize()>0)
@@ -947,6 +951,9 @@ else if (!OnWall)
 	}
 	MV1DeleteModel(BackModel);
 	MV1DeleteModel(TileModel);
+	delete playerHp;
+	delete enemyHpBar;
+	delete playerHP;
 	delete(player);
 	delete(enemy);
 	delete(camera);

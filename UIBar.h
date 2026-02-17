@@ -2,10 +2,6 @@
 #include"Camera.h"
 #include"Character.h"
 
-class Bar
-{
-};
-
 
 class UIBar
 {
