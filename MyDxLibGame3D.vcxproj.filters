@@ -41,6 +41,9 @@
     <Filter Include="ソース ファイル\Character\Base\Collision\sphere_collison">
       <UniqueIdentifier>{0a715ef4-0d2b-449c-80d0-58612254d182}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Shadow">
+      <UniqueIdentifier>{2558f47d-c56a-4451-be10-aa52b7cfaaf5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -91,6 +94,12 @@
     <ClCompile Include="Collision.cpp">
       <Filter>ソース ファイル\Character\Base\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Shadow.cpp">
+      <Filter>ソース ファイル\Shadow</Filter>
+    </ClCompile>
+    <ClCompile Include="UIBar.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -135,6 +144,12 @@
     </ClInclude>
     <ClInclude Include="Collision.h">
       <Filter>ソース ファイル\Character\Base\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="UIBar.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Shadow.h">
+      <Filter>ソース ファイル\Shadow</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

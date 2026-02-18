@@ -2,17 +2,15 @@
 #include<vector>
 #include "DxLib.h"
 #include"Arithmetic.h"
-#include"Effect.h"
 #include "fps.h"
-#include"Player.h"
-#include"Enemy.h"
-#include"Bar.h"
 #include "SpecialMove.h"
+#include"Bar.h"
 #include "EffectM.h"
 #include "Sound.h"
 #include "ModelCheckers.h"
 #include"Capsule.h"
 #include"UIBar.h"
+#include"Shadow.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -96,12 +94,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	///背景
+	SetUseBackCulling(FALSE);
 	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
 	int  TileModel = MV1LoadModel("data/Tile.mv1");
 	int  ShadowImg = LoadGraph("data/TmpField.jpg");
 	MV1SetPosition(BackModel, VGet(0, 0, 0));
+	MV1SetPosition(TileModel, VGet(0, -100, 0));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
-	MV1SetScale(TileModel, VGet(5, 0.01f, 5));
+	MV1SetScale(TileModel, VGet(5, 1.0f, 5));
+
 
 
 
@@ -115,11 +116,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseLighting(TRUE);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f, 0.3f));
 	ChangeLightTypeDir(VGet(0, -1, 0));
-	SetLightDirection(VGet(0.5f, 1, 0));
+	VECTOR Light = VGet(0.5f, -1, 0.5f);
+	SetLightDirection(Light);
+	///影
+	Shadow* shadow= new Shadow(Light);
+
+	shadow->AddTarget(player->GetImg());
+	shadow->AddTarget(enemy->GetImg());
+	
+	
+
+
 
 	
 
-	int SpotL= CreateSpotLightHandle(VGet(0.0f, 1000.0f, 0.0f), VGet(0.0f, -1.0f, 0.0f), DX_PI_F / 2.0f, DX_PI_F / 4.0f, 2000.0f,0.01f,  0.002f,0.0f);
+	
 	fps *Fps = new fps();
 	Fps->Initialization(1.0 / 60.0);
 
@@ -675,8 +686,10 @@ else if (!OnWall)
 
 
 			}
+			shadow->Draw();
+			shadow->StartUse();
 			MV1DrawModel(BackModel);
-			MV1DrawModel(TileModel);
+			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			player->Draw();
@@ -684,6 +697,7 @@ else if (!OnWall)
 			{
 				enemy->Draw();
 			}
+			shadow->EndUse();
 			 // モデルの描画
 			// モデルの描画
 				   // モデルの描画
@@ -792,12 +806,19 @@ else if (!OnWall)
 				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 				ModelCheckers test;
 			}
+			SetUseBackCulling(FALSE);
+			shadow->Draw();
+			shadow->StartUse();
 			MV1DrawModel(BackModel);
-			MV1DrawModel(TileModel);
+			/*MV1DrawModel(TileModel);*/
+			// 描画先を裏画面に変更
+			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
+			
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			enemy->Draw();
-			VECTOR V1, V2, V3, V4;
+			shadow->EndUse();
+			/*VECTOR V1, V2, V3, V4;
 			VECTOR P = VGet(0,0,0);
 			V1 = VAdd(P, VGet(0, 0, -1000));
 			V2 = VAdd(P, VGet( 1000, 0, 0));
@@ -812,7 +833,7 @@ else if (!OnWall)
 			V1 = VSub(V1, Ps);
 			V2 = VSub(V2, Ps);
 			V3 = VSub(V3, Ps);
-			V4 = VSub(V4, Ps);
+			V4 = VSub(V4, Ps);*/
 
 
 			/*DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);*/
@@ -878,7 +899,7 @@ else if (!OnWall)
 			enemy->AnimUpdate(deltaTime);
 			player -> Draw();
 			enemy->Draw();
-			MV1DrawModel(TileModel);
+			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
@@ -926,7 +947,7 @@ else if (!OnWall)
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);
 			player->Draw();
-			MV1DrawModel(TileModel);
+			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
 
 			// アルファ値（透明度）の設定（0〜255）
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);  // ← 透明度80（調整可能）
@@ -951,6 +972,7 @@ else if (!OnWall)
 	}
 	MV1DeleteModel(BackModel);
 	MV1DeleteModel(TileModel);
+	delete shadow;
 	delete playerHp;
 	delete enemyHpBar;
 	delete playerHP;

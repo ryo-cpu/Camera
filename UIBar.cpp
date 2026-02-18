@@ -134,7 +134,8 @@ void UIBar::Draw()
     {
         Proportion = 0;
     }
-    DrawBox(position.x,position.y,position.x+ handleSize.x*Proportion, position.y + handleSize.y ,HPBackColor, true);
-    DrawBox(position.x, position.y, position.x + handleSize.x, position.y + handleSize.y, fillColor, true);
+   
+    DrawBox(position.x, position.y, position.x + handleSize.x, position.y + handleSize.y,HPBackColor, true);
+    DrawBox(position.x, position.y, position.x + handleSize.x * Proportion, position.y + handleSize.y, HPBaseColor, true);
 
 }

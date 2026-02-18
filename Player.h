@@ -1,5 +1,5 @@
 #pragma once
-#include"Character.h"
+#include"Enemy.h"
 #include"Camera.h"
 
 const int MaxSpGauge = 100;
