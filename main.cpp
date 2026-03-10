@@ -3,7 +3,7 @@
 #include "DxLib.h"
 #include"Arithmetic.h"
 #include "fps.h"
-#include "SpecialMove.h"
+#include"Counter.h"
 #include"Bar.h"
 #include "EffectM.h"
 #include "Sound.h"
@@ -96,12 +96,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	///背景
 	SetUseBackCulling(FALSE);
 	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
-	int  TileModel = MV1LoadModel("data/Tile.mv1");
+	int  TileModel = MV1LoadModel("data/map3d/room-wide.mv1");
 	int  ShadowImg = LoadGraph("data/TmpField.jpg");
 	MV1SetPosition(BackModel, VGet(0, 0, 0));
-	MV1SetPosition(TileModel, VGet(0, -100, 0));
+	MV1SetPosition(TileModel, VGet(0, 0, 0));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
-	MV1SetScale(TileModel, VGet(5, 1.0f, 5));
+	MV1SetScale(TileModel, VGet(15, 1.0f, 10));
 
 
 
@@ -138,9 +138,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
 	
 	
-	Bar *playerHp= new Bar(player);
+	//Bar *playerHp= new Bar(player);
 	Bar *enemyHpBar=new Bar(enemy);
-	UIBar* playerHP = new UIBar(player);
+	UIBar* playerHP = new UIBar(player,100,700);
 	SpecialMove *SPMove= new SpecialMove(*camera, *player, *enemy);
 	///時間系の初期化宣言
 	auto NowTime = std::chrono::high_resolution_clock::now();
@@ -612,7 +612,7 @@ else if (!OnWall)
 			camera->Update(VAdd(player->GetPos(),PlayerTopPoint));
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-			playerHp->Update(*camera);
+			
 			playerHP->Update();
 			enemyHpBar->Update(*camera);
 			/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -625,7 +625,7 @@ else if (!OnWall)
 				{
 					enemyHpBar->Draw();
 				}
-				playerHp->Draw();
+				
 				playerHP->Draw();
 			}
 			////エネミーの点滅
@@ -689,7 +689,8 @@ else if (!OnWall)
 			shadow->Draw();
 			shadow->StartUse();
 			MV1DrawModel(BackModel);
-			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
+			MV1DrawModel(TileModel);
+		/*	DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			player->Draw();
@@ -787,7 +788,7 @@ else if (!OnWall)
 					enemy->SetHp(EnemyHP);
 					enemy->SetMove(VGet(0, 0, 0));
 					enemy->Initial();
-					playerHp->ResetOwner(player);
+
 					enemyHpBar->ResetOwner(enemy,VGet(-400,900,0));
 
 
@@ -810,9 +811,9 @@ else if (!OnWall)
 			shadow->Draw();
 			shadow->StartUse();
 			MV1DrawModel(BackModel);
-			/*MV1DrawModel(TileModel);*/
+			MV1DrawModel(TileModel);
 			// 描画先を裏画面に変更
-			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
+			/*DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 			
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
@@ -897,9 +898,14 @@ else if (!OnWall)
 
 			enemy->AddLiveTime(deltaTime);
 			enemy->AnimUpdate(deltaTime);
-			player -> Draw();
+			shadow->Draw();
+			shadow->StartUse();
+			MV1DrawModel(TileModel);
+			player->Draw();
+			/*;DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 			enemy->Draw();
-			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
+			shadow->EndUse();
+			
 			if (FadeAlpha >= 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
@@ -946,8 +952,12 @@ else if (!OnWall)
 
 			player->AddLiveTime(deltaTime);
 			player->AnimUpdate(deltaTime);
+			shadow->Draw();
+			shadow->StartUse();
+			MV1DrawModel(TileModel);
 			player->Draw();
-			DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);
+			shadow->EndUse();
+			/*DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 
 			// アルファ値（透明度）の設定（0〜255）
 			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);  // ← 透明度80（調整可能）
@@ -973,7 +983,6 @@ else if (!OnWall)
 	MV1DeleteModel(BackModel);
 	MV1DeleteModel(TileModel);
 	delete shadow;
-	delete playerHp;
 	delete enemyHpBar;
 	delete playerHP;
 	delete(player);

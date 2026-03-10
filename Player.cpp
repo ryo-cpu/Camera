@@ -276,7 +276,6 @@ void Player::Update(float deltaTime)
 	
 		AddSpGauge(1);
 	}
-	DrawSphere3D(GetPos(), 20, 16, GetColor(200, 255, 255), GetColor(0, 0, 0), TRUE);
 	Effect* PlayerEffect = nullptr;
 	if (SpGauge >= MaxSpGauge)
 	{

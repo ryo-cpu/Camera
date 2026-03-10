@@ -26,6 +26,7 @@ private:
 
 public:
     UIBar(Character* owner);
+    UIBar(Character* owner,float posX,float posY);
     ~UIBar();
     void SetValue(float setValue);
     void SetMaxValue(float setMaxValue);

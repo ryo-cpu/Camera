@@ -29,6 +29,11 @@ UIBar::UIBar(Character* owner)
     }
 }
 
+UIBar::UIBar(Character* owner, float posX, float posY) :UIBar(owner)
+{
+    position = VGet(posX, posY, 0);
+}
+
 UIBar::~UIBar()
 {
 }
@@ -91,7 +96,7 @@ void UIBar::ResetOwner(Character* owner)
 
         maxValue = Owner->GetMaxHp();
         minValue = 0;
-        position = VGet(0, 0, 0);
+       
         SetHandleSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackSize(DefaultUIBarSizeX, DefaultUIBarSizeY);
         SetBackColor(HPBackColor);
@@ -100,7 +105,7 @@ void UIBar::ResetOwner(Character* owner)
 
     else
     {
-        position = VGet(0, 0, 0);
+     
         SetHandleSize(100, 20);
         SetBackSize(100, 20);
         SetBackColor(HPBackColor);

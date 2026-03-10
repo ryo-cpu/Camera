@@ -5,6 +5,9 @@ const int screenW = 1600;
 const int screenH = 900;
 class Bar
 {
+/// <summary>
+/// 
+/// </summary>
 private:
     int handleColor;
     int backColor;
