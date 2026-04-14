@@ -165,6 +165,7 @@
     <ClCompile Include="Capsule.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="Counter.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectImg.cpp" />
     <ClCompile Include="EffectM.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Capsule.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Collision.h" />
+    <ClInclude Include="Counter.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectImg.h" />
     <ClInclude Include="EffectM.h" />
