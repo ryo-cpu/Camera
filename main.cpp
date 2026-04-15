@@ -192,6 +192,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Fps->Start();
 	
  		ClearDrawScreen();
+		Fps->GetDeltaTime();
 
 		GetJoypadXInputState(DX_INPUT_PAD1,player->GetInputState());
 
@@ -703,7 +704,7 @@ else if (!OnWall)
 		}
 		break;
 		case Start:
-			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード デルタタイム　車道　BOOl
+			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード Fps　車道　BOOl
 			if (Fade ->GetAlpha()> 0 && !InModeCheng)
 			{
 			

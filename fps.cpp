@@ -3,6 +3,12 @@
 
 
 
+fps::fps()
+{
+    FrameStart = std::chrono::high_resolution_clock::now();
+    LastTime = FrameStart;
+}
+
 void fps::Initialization(double targetFrameTime)
 {
     TargetFrameTime = targetFrameTime;
@@ -10,8 +16,10 @@ void fps::Initialization(double targetFrameTime)
 
 void fps::Start()
 {
+   
     FrameStart = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float, std::milli> duration_ms = FrameStart - LastTime;
+    LastTime = FrameStart;
     DeltaTime = duration_ms.count() / 1000;
 }
 
