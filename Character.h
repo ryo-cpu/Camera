@@ -13,9 +13,21 @@ class Character
 protected:
 	VECTOR Pos;
 	VECTOR Dir;
+	/// <summary>
+	/// 移動値
+	/// </summary>
 	VECTOR Move;
+	/// <summary>
+	/// dirにかけることでMoveを求める
+	/// </summary>
 	float Speed;
+	/// <summary>
+	/// モデルの格納
+	/// </summary>
 	int Img;
+	/// <summary>
+	/// モデルのスケール値
+	/// </summary>
 	float Scale;
 	Sphere_Collision Collision;
 	Sphere_Collision AttackCollision;
@@ -24,11 +36,26 @@ protected:
 	int Hp;
 	int AnimType;
 	int AnimIndex;
+	/// <summary>
+	/// 現在再生されているアニメーションの終わりまでの時間
+	/// </summary>
 	float AnimTotalTime;
+	/// <summary>
+	/// アニメーションが再生されてからの時間
+	/// </summary>
 	float NowAnimTime;
+	/// <summary>
+	/// アニメーション再生スピード
+	/// </summary>
 	float AnimSpeed;
 	bool IsAnim;
+	/// <summary>
+	/// キャラクターの存在した時間（キャラごとのタイマー）
+	/// </summary>
 	float LiveTime;
+	/// <summary>
+	/// 行動時間が決まっている行動をするとき開始を記録する
+	/// </summary>
 	float StartLiveTime;
 	int MaxHp;
 	bool isDraw;

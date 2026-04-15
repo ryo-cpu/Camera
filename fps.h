@@ -3,11 +3,12 @@
 #include <thread>
 static class fps
 {
-double TargetFrameTime;
+double TargetFrameTime = 0;
 std::chrono::high_resolution_clock::time_point FrameStart;
 std::chrono::high_resolution_clock::time_point LastTime;
-float DeltaTime;
+float DeltaTime=0;
 public:
+  
     /// 必要なものの用意や目標とするFpsを取る
     void Initialization(double targetFrameTime);
     /// 処理時間を取りスリープで合わせる

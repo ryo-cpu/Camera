@@ -21,6 +21,7 @@ public:
 	/// <param name="DeltaTime">経過時間</param>
 	/// <returns>アップデートするかを返す</returns>
 	bool Update(float DeltaTime);
+	void SetHit(bool isHit);
 
 
 };

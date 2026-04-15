@@ -1,6 +1,7 @@
 ﻿
 #include<vector>
 #include "DxLib.h"
+#include"Box.h"
 #include"Arithmetic.h"
 #include "fps.h"
 #include"Counter.h"
@@ -153,7 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int GameMode = Start;
 	bool isInput = false;
 	bool InModeCheng = false;
-	int FadeAlpha = 0;
+	Box *Fade = new Box(1600, 900, 255);
 	bool OnWall = false;
 	VECTOR BasePoint = VGet(0, 0, 0);
 	float FieldSize = 4000.0f;
@@ -175,7 +176,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound* BGM = new Sound("data/Thunderstorm.wav");
 
 
-	Capsule TestCapsule(VGet(0, 1000, 0), VGet(100, 1000, 0), 100.0f);
 	
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -200,13 +200,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		case Game:
 		{
 
-if (FadeAlpha > 0 && !InModeCheng)
+if (Fade->GetAlpha() > 0 && !InModeCheng)
 {
-	FadeAlpha -= 255 / 2 * deltaTime;
-	if (FadeAlpha > 0)
-	{
-		FadeAlpha = 0;
-	}
+	Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
 }
 
 
@@ -707,14 +703,11 @@ else if (!OnWall)
 		}
 		break;
 		case Start:
-			if (FadeAlpha > 0 && !InModeCheng)
+			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード
+			if (Fade ->GetAlpha()> 0 && !InModeCheng)
 			{
 			
-				FadeAlpha -= 255 / 2 * deltaTime;
-				if (FadeAlpha < 0)
-				{
-					FadeAlpha = 0;
-				}
+			  Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
 
 			}
 			else
@@ -750,13 +743,13 @@ else if (!OnWall)
 				if (InModeCheng)
 				{
 					///画面を暗く
-					FadeAlpha += 255 / 2 * deltaTime;
+					Fade->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
 				}
 				else
 				{
 					///Modeチェンジが押されるまでの表現
 				}
-				if (FadeAlpha >= 255)///画面が真っ黒になったら
+				if (Fade->GetAlpha() >= 255)///画面が真っ黒になったら
 				{
 					GameMode = Game;
 				    camera->ResetOffset(DefaultCamera,player->GetPos());
@@ -805,7 +798,7 @@ else if (!OnWall)
 				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 				SetFontSize(64);
 				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
-				ModelCheckers test;
+				
 			}
 			SetUseBackCulling(FALSE);
 			shadow->Draw();
@@ -860,7 +853,7 @@ else if (!OnWall)
 			if (InModeCheng)
 			{
 				///画面を暗く
-				FadeAlpha += 255 / 2 * deltaTime;
+				Fade ->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
 			}
 			else
 			{
@@ -906,7 +899,7 @@ else if (!OnWall)
 			enemy->Draw();
 			shadow->EndUse();
 			
-			if (FadeAlpha >= 255)///画面が真っ黒になったら
+			if (Fade->GetAlpha()== 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
 				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
@@ -926,13 +919,13 @@ else if (!OnWall)
 			{
 				///画面を暗く
 				///画面を暗く
-				FadeAlpha += 255 / 2 * deltaTime;
+				Fade->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
 			}
 			else
 			{
 				///Modeチェンジが押されるまでの表現
 			}
-			if (FadeAlpha >= 255)///画面が真っ黒になったら
+			if (Fade->GetAlpha()== 255)///画面が真っ黒になったら
 			{
 				GameMode = Start;
 				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
@@ -970,9 +963,7 @@ else if (!OnWall)
 		}
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, FadeAlpha);
-		DrawBox(0, 0, 1600, 900, GetColor(0, 0, 0), TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+		Fade->Draw();
 		
 
 		
@@ -995,6 +986,7 @@ else if (!OnWall)
 	delete(HitSound);
 	delete(SpSound);
 	delete(BGM);
+	delete(Fade);
 	
 
 	Effkseer_End();

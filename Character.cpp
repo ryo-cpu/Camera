@@ -11,6 +11,9 @@ Character::Character()
     Hp = 0;
     MaxHp = 0;
 
+    AnimTotalTime = 0;
+    Attack = 0;
+
     AnimIndex = -1;
     AnimType = -1;
     AnimSpeed = 1.0f;

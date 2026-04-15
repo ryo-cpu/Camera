@@ -46,22 +46,22 @@ Bar::~Bar()
    
 }
 
-void Bar::SetValue(float setValue)
+void Bar::SetValue(int setValue)
 {
     value = setValue;
 }
 
-void Bar::SetMaxValue(float setMaxValue)
+void Bar::SetMaxValue(int setMaxValue)
 {
     maxValue = setMaxValue;
 }
 
-void Bar::SetMinValue(float setMinValue)
+void Bar::SetMinValue(int setMinValue)
 {
     minValue = setMinValue;
 }
 
-float Bar::GetValue()
+int Bar::GetValue()
 {
     return value;
 }
@@ -190,7 +190,7 @@ void Bar::Draw()
 {
     if (inScreen())
     {
-        float Proportion;
+        int Proportion;
         if (value>0)
         {
             Proportion = value / maxValue;

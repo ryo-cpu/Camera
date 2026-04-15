@@ -30,9 +30,9 @@ private:
 
     VECTOR handlePosition = {};
     bool isDraw;
-    float value;
-    float maxValue = 1;
-    float minValue = 0; 
+    int value;
+    int maxValue = 1;
+    int minValue = 0; 
     float Scale;
 
 public:
@@ -40,10 +40,10 @@ public:
     Bar(Character* owner,VECTOR offset3D);
 
     ~Bar();
-    void SetValue(float setValue);
-    void SetMaxValue(float setMaxValue);
-    void SetMinValue(float setMinValue);
-    float GetValue();
+    void SetValue(int setValue);
+    void SetMaxValue(int setMaxValue);
+    void SetMinValue(int setMinValue);
+    int GetValue();
     void SetPosition(float setPositionX, float setPositionY);
     void SetBackSize(float setBackWidth, float setBackHeight);
     void SetHandleSize(float setHandleWidth, float setHandleHeight);

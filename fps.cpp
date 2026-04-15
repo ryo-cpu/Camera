@@ -1,6 +1,8 @@
 #include "fps.h"
 
 
+
+
 void fps::Initialization(double targetFrameTime)
 {
     TargetFrameTime = targetFrameTime;

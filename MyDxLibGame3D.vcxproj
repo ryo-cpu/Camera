@@ -170,6 +170,7 @@
     <ClCompile Include="EffectImg.cpp" />
     <ClCompile Include="EffectM.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Box.cpp" />
     <ClCompile Include="fps.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelCheckers.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="EffectImg.h" />
     <ClInclude Include="EffectM.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="fps.h" />
     <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Player.h" />
