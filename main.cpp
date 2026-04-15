@@ -757,6 +757,7 @@ else if (!OnWall)
 					InModeCheng = false;
 					player->SetPos(StartPlayerPos);
 					player->Initial();
+
 					bool isJump = false;
 					player->SetDir(VGet(0, 0, 0));
 					player->SetAnimSpeed(PlayerAnimSpeed);

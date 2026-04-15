@@ -106,6 +106,12 @@
     <ClCompile Include="Box.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="StartScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h">
@@ -159,5 +165,7 @@
     </ClInclude>
     <ClInclude Include="Counter.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="StartScene.h" />
   </ItemGroup>
 </Project>

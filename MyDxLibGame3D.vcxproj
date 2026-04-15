@@ -175,10 +175,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelCheckers.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="SpecialMove.cpp" />
     <ClCompile Include="Sphere_Collision.cpp" />
+    <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="UIBar.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -196,10 +198,12 @@
     <ClInclude Include="fps.h" />
     <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SpecialMove.h" />
     <ClInclude Include="Sphere_Collision.h" />
+    <ClInclude Include="StartScene.h" />
     <ClInclude Include="UIBar.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
