@@ -703,7 +703,7 @@ else if (!OnWall)
 		}
 		break;
 		case Start:
-			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード
+			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード デルタタイム　車道　BOOl
 			if (Fade ->GetAlpha()> 0 && !InModeCheng)
 			{
 			
@@ -952,10 +952,6 @@ else if (!OnWall)
 			shadow->EndUse();
 			/*DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 
-			// アルファ値（透明度）の設定（0〜255）
-			SetDrawBlendMode(DX_BLENDMODE_ALPHA, 20);  // ← 透明度80（調整可能）
-			DrawBox(0, 0, 1600, 1200, GetColor(255, 0, 0), TRUE);
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
 			break;
 	
