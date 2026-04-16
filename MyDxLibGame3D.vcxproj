@@ -184,6 +184,7 @@
     <ClCompile Include="UIBar.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Arithmetic.h" />
     <ClInclude Include="Bar.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Capsule.h" />

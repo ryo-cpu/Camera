@@ -167,5 +167,8 @@
     <ClInclude Include="Box.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="StartScene.h" />
+    <ClInclude Include="Arithmetic.h">
+      <Filter>ソース ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

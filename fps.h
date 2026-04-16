@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include <thread>
-static class fps
+class fps
 {
 double TargetFrameTime = 0;
 std::chrono::high_resolution_clock::time_point FrameStart;

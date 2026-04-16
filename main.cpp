@@ -1,8 +1,9 @@
 ﻿
 #include<vector>
 #include "DxLib.h"
-#include"Box.h"
+
 #include"Arithmetic.h"
+#include"Box.h"
 #include "fps.h"
 #include"Counter.h"
 #include"Bar.h"
@@ -12,6 +13,7 @@
 #include"Capsule.h"
 #include"UIBar.h"
 #include"Shadow.h"
+#include"StartScene.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0, 0, 0);
 enum GameModeType{Start,Win,Lose,Game};
@@ -151,7 +153,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float deltaTime = duration_ms.count();
 	float TotalTime = 0.0f;
 	///ゲームモード設定
-	int GameMode = Start;
+	int GameMode = 7;
 	bool isInput = false;
 	bool InModeCheng = false;
 	Box *Fade = new Box(1600, 900, 255);
@@ -176,7 +178,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound* BGM = new Sound("data/Thunderstorm.wav");
 
 
-	
+	StartScene* start = new StartScene(camera,player,enemy,BackModel,TileModel,Fps,Fade,shadow);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		NowTime= std::chrono::high_resolution_clock::now();
@@ -956,9 +958,15 @@ else if (!OnWall)
 
 
 			break;
-	
+		case 7:
+			if (start->Update())
+			{
+				GameMode = Game;
+			}
+			break;
 		
 		}
+		
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 		Fade->Draw();
