@@ -213,7 +213,7 @@ bool SpecialMove::Update(float DeltaTime)
 			SpEffect = nullptr;
 		}
 		enemy.Update(DeltaTime);
-		player.SetPos(VAdd(player.GetPos(), VGet(0, (5.5-ElapsedTime)*1000*DeltaTime, 0)));
+		player.SetPos(VAdd(player.GetPos(), VGet(0, (5.5f-ElapsedTime)*1000*DeltaTime, 0)));
 		player.SetAttackCollision(player.GetPos(), 0.0f);
 		camera.ResetOffset(DefaultCamera, player.GetPos());
 		camera.CalculateAngle(player.GetPos());
@@ -231,7 +231,9 @@ bool SpecialMove::Update(float DeltaTime)
 		PushBack.y = 0;
 		if (VSize(PushBack) == 0)
 		{
-			PushBack.x + 1;
+	    ///0‚Ì‚¨Žd•Ô‚µ‚ð”ð‚¯‚é‚½‚ß
+
+		PushBack.x =+ 1;
 		}
 		/*player.SetPos(VAdd(EnemyPos, VScale(VNorm(PushBack), -800)));*/
 		player.SetCollision(player.GetPos(), 40);

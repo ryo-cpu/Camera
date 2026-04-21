@@ -26,9 +26,6 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{369b89c7-0490-4d44-a585-795c86b46eb8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\SpecialMove">
-      <UniqueIdentifier>{19fe998a-0978-486d-a37e-f4313b20684b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Effect">
       <UniqueIdentifier>{ff89f150-6c8b-49db-974f-2e291926a959}</UniqueIdentifier>
     </Filter>
@@ -43,6 +40,15 @@
     </Filter>
     <Filter Include="ソース ファイル\Shadow">
       <UniqueIdentifier>{2558f47d-c56a-4451-be10-aa52b7cfaaf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Move">
+      <UniqueIdentifier>{19fe998a-0978-486d-a37e-f4313b20684b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Tools">
+      <UniqueIdentifier>{696bd22d-dbec-4aec-a86a-2e586de9729c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene">
+      <UniqueIdentifier>{824cd85d-72d3-48ee-885f-cf1831d9bf66}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +74,7 @@
       <Filter>ソース ファイル\Fps</Filter>
     </ClCompile>
     <ClCompile Include="SpecialMove.cpp">
-      <Filter>ソース ファイル\SpecialMove</Filter>
+      <Filter>ソース ファイル\Move</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>ソース ファイル\Effect</Filter>
@@ -81,9 +87,6 @@
     </ClCompile>
     <ClCompile Include="Sound.cpp">
       <Filter>ソース ファイル\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelCheckers.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Bar.cpp">
       <Filter>ソース ファイル\UI</Filter>
@@ -101,16 +104,19 @@
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="Counter.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Move</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelCheckers.cpp">
+      <Filter>ソース ファイル\Tools</Filter>
     </ClCompile>
     <ClCompile Include="Box.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
     <ClCompile Include="StartScene.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +139,7 @@
       <Filter>ソース ファイル\Fps</Filter>
     </ClInclude>
     <ClInclude Include="SpecialMove.h">
-      <Filter>ソース ファイル\SpecialMove</Filter>
+      <Filter>ソース ファイル\Move</Filter>
     </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>ソース ファイル\Effect</Filter>
@@ -147,7 +153,6 @@
     <ClInclude Include="Sound.h">
       <Filter>ソース ファイル\Sound</Filter>
     </ClInclude>
-    <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Bar.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
@@ -163,12 +168,23 @@
     <ClInclude Include="Shadow.h">
       <Filter>ソース ファイル\Shadow</Filter>
     </ClInclude>
-    <ClInclude Include="Counter.h" />
-    <ClInclude Include="Box.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="StartScene.h" />
     <ClInclude Include="Arithmetic.h">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelCheckers.h">
+      <Filter>ソース ファイル\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Counter.h">
+      <Filter>ソース ファイル\Move</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>ソース ファイル\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="StartScene.h">
+      <Filter>ソース ファイル\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@ constexpr float PI = 3.14159265359f;
 /// </summary>
 /// <param name="Frequency">度数法表記</param>
 /// <returns></returns>
-float ConversionRad(float Frequency)
+constexpr float ConversionRad(float Frequency)
 {
     return Frequency * PI /180;
 }
@@ -15,16 +15,16 @@ float ConversionRad(float Frequency)
 /// <param name="Rad">ラジアン表記
 /// </param>
 /// <returns></returns>
-float ConversionFrequency(float Rad)
+constexpr float ConversionFrequency(float Rad)
 {
     return Rad * 180/PI;
 }
-bool InRange(int Strat, int Last,int Check)
+constexpr bool InRange(int Strat, int Last,int Check)
 {
     return Check >= Strat && Last >= Check;
 }
 
-bool InRange(float Strat, float  Last, float Check)
+constexpr bool InRange(float Strat, float  Last, float Check)
 {
     return Check >= Strat && Last >= Check;
 }

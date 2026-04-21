@@ -12,6 +12,10 @@ private:
 	Character& enemy;
 	bool InWait;///‘Ò‹@ó‘Ô‚©”»’f
 	bool IsHit;
+	/// <summary>
+	/// UŒ‚ó‘Ô‚É“ü‚Á‚½ŠÔ
+	/// </summary>
+	float InAttackTime;
 public:
 	Counter(Camera& Camera,Player& Player, Character& Enemy);
 	~Counter();

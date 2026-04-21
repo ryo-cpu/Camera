@@ -1,4 +1,5 @@
 #pragma once
+#include"Arithmetic.h"
 #include"Camera.h"
 #include"Player.h"
 #include"Box.h"

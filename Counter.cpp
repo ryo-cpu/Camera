@@ -1,6 +1,7 @@
 #include "Counter.h"
 const float CounterTime = 300.0f;
 const float CounterHitStopTime=30.0f;
+const float HitWaitTime = 10.0f;
 Counter::Counter(Camera& Camera, Player& Player, Character& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {
 	InWait = true;
@@ -29,22 +30,32 @@ bool Counter::Update(float DeltaTime)
 			if (player.GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InWait = false;
+				InAttackTime = player.GetLiveTime();
 			}
 		
 	}
-	////UŒ‚ó‘Ô
+	////UŒ‚ó‘Ô ///”²‚¯‚éŽž‚ÍŠO•”‚©‚çSetHi‚”‚ª@ŒÄ‚Î‚ê‚é
 	else if(!IsHit)
 	{
 		///UŒ‚¶¬‚ÆˆÚ“®—ÍŒˆ’è
-
+		VECTOR Distance = VSub(player.GetPos(), enemy.GetPos());
+		Distance.y = 0;
+		//–ˆ‰ñ“¯‚¶ŽžŠÔ‚ÅI‚í‚è‚½‚¢‚Ì‚ÅUŒ‚ŠJŽn‚©‚çŒo‰ß‚ðˆø‚«@UŒ‚‚É‚©‚©‚é•b”‚©‚çˆø‚«@‚»‚Ì’l‚ÅŠ„‚é‚±‚Æ‚Å@‘å‘Ì“¯‚¶•b”‚ÅI‚í‚é‚Í‚¸
+		VECTOR Move = VScale(Distance, (1 / (HitWaitTime - (player.GetLiveTime() - InAttackTime))));
+		///UŒ‚‚Ì”»’è‚ðì¬
+		VECTOR AttackPos = VGet(0, 0, 0);
+		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
+		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 200.f);
 		
-
 	}
 	///ƒqƒbƒgƒXƒgƒbƒv
 	else
 	{
-
-		return false;
+		if (ElapsedTime > CounterHitStopTime)
+		{
+			return false;
+		}
+		
 
 	}
 	

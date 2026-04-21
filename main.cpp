@@ -1,21 +1,22 @@
 ﻿
-#include<vector>
+#include <vector>
 #include "DxLib.h"
 
-#include"Arithmetic.h"
-#include"Box.h"
+
+#include "Box.h"
 #include "fps.h"
-#include"Counter.h"
-#include"Bar.h"
+#include "Counter.h"
+#include "Bar.h"
 #include "EffectM.h"
 #include "Sound.h"
 #include "ModelCheckers.h"
-#include"Capsule.h"
-#include"UIBar.h"
-#include"Shadow.h"
-#include"StartScene.h"
+#include "Capsule.h"
+#include "UIBar.h"
+#include "Shadow.h"
+#include "StartScene.h"
+//#include "Arithmetic.h"
 using namespace std::chrono;
-const VECTOR StartPlayerPos = VGet(0, 0, 0);
+const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
 enum GameModeType{Start,Win,Lose,Game};
 const char* HipName = "mixamorig:Hips";
 /// メイン関数
@@ -145,17 +146,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Bar *enemyHpBar=new Bar(enemy);
 	UIBar* playerHP = new UIBar(player,100,700);
 	SpecialMove *SPMove= new SpecialMove(*camera, *player, *enemy);
-	///時間系の初期化宣言
-	auto NowTime = std::chrono::high_resolution_clock::now();
-	auto LastTime = NowTime;
-	// 経過時間をミリ秒に変換して取得
-	std::chrono::duration<float, std::milli> duration_ms = NowTime - LastTime;
-	float deltaTime = duration_ms.count();
+	Counter* counter = new Counter(*camera, *player, *enemy);
+	
+	float deltaTime = Fps->GetDeltaTime();
 	float TotalTime = 0.0f;
 	///ゲームモード設定
 	int GameMode = 7;
 	bool isInput = false;
 	bool InModeCheng = false;
+
+	//fedein.out用　の透明化できるボックス
 	Box *Fade = new Box(1600, 900, 255);
 	bool OnWall = false;
 	VECTOR BasePoint = VGet(0, 0, 0);
@@ -181,20 +181,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	StartScene* start = new StartScene(camera,player,enemy,BackModel,TileModel,Fps,Fade,shadow);
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
-		NowTime= std::chrono::high_resolution_clock::now();
-		std::chrono::duration<float, std::milli> duration_ms = NowTime - LastTime;
-		deltaTime = duration_ms.count()/1000;
-		LastTime = NowTime; 
+		
 		isInput = false;
 		Effekseer_Sync3DSetting();
 
 
 		SetUseLighting(true); // ライティングを有効にする
 
-		Fps->Start();
+        Fps->Start();
 	
  		ClearDrawScreen();
-		Fps->GetDeltaTime();
+		deltaTime=Fps->GetDeltaTime();
 
 		GetJoypadXInputState(DX_INPUT_PAD1,player->GetInputState());
 
@@ -726,6 +723,7 @@ else if (!OnWall)
 				camera->Look(Axis);
 				camera->Apply();
 				enemy->AnimUpdate(deltaTime);
+
 				if (CheckHitKey(KEY_INPUT_W))
 				{
 					HitSound->Play(VGet(0,0,0),VGet(6000,0,0),VGet(1,0,0),VGet(0,1,0),VGet(0,0,1));
@@ -816,25 +814,7 @@ else if (!OnWall)
 			EffectM::Draw();
 			enemy->Draw();
 			shadow->EndUse();
-			/*VECTOR V1, V2, V3, V4;
-			VECTOR P = VGet(0,0,0);
-			V1 = VAdd(P, VGet(0, 0, -1000));
-			V2 = VAdd(P, VGet( 1000, 0, 0));
-			V3 = VAdd(P, VGet( 0, 0, 1000));
-			V4 = VAdd(P, VGet( -1000, 0, 0));
-
-			VECTOR Ps = ConvWorldPosToScreenPos(P);
-			V1=         ConvWorldPosToScreenPos(V1);
-			V2=         ConvWorldPosToScreenPos(V2);
-			V3=         ConvWorldPosToScreenPos(V3);
-			V4=         ConvWorldPosToScreenPos(V4);
-			V1 = VSub(V1, Ps);
-			V2 = VSub(V2, Ps);
-			V3 = VSub(V3, Ps);
-			V4 = VSub(V4, Ps);*/
-
-
-			/*DrawModiBillboard3D(P, V1.x, V1.y,V2.x,V2.y,V3.x,V3.y,V4.x,V4.y, ShadowImg, TRUE);*/
+			
 	
 			
 
@@ -962,6 +942,8 @@ else if (!OnWall)
 			if (start->Update())
 			{
 				GameMode = Game;
+				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
+				playerHP->ResetOwner(player);
 			}
 			break;
 		

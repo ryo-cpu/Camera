@@ -2,7 +2,7 @@
 
 bool StartScene::Update()
 {
-    bool InModeCheng=false;
+   
 	float deltaTime = Fps->GetDeltaTime();
 	
 	if (Fade->GetAlpha() > 0 && !InModeCheng)
@@ -17,7 +17,7 @@ bool StartScene::Update()
 
 		////‰ñ“]—Ê‚ðŽZo
 		float Move = 40 * deltaTime;
-		MATRIX RotY = MGetRotY((Move));
+		MATRIX RotY = MGetRotY(ConversionRad(Move));
 		VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///ƒ‚ƒfƒ‹‚ÌˆÊ’u‚ÆPos‚Ì‚¸‚ê’¼‚µ
 		enemy->SetPos(VGet(0, 0, 0));
 		camera->RotationAxis(Axis, RotY);
@@ -66,7 +66,7 @@ bool StartScene::Update()
 
 			enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 			MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-			enemy->SetDir(VGet(0, -1, 0));
+			enemy->SetDir(VGet(0, ConversionRad(180), 0));
 			enemy->SetAnimSpeed(EnemyAnimSpeed);
 			enemy->SetAnimType(enemy->Dance);
 			enemy->SetNowAnimTime(0);
@@ -83,7 +83,7 @@ bool StartScene::Update()
 			camera->ResetOffset(DefaultCamera, player->GetPos());
 			camera->CalculateAngle(player->GetPos());
 			camera->CalculateTargetAngle(player->GetPos());
-
+			InModeCheng = false;
 			return true;
 		}
 
@@ -109,4 +109,5 @@ bool StartScene::Update()
 StartScene::StartScene(Camera* camera, Player* player, Enemy* enemy, int& BackModel, int& MapModel, fps* Fps, Box* Fade, Shadow* shadow) :
 	Scene(camera, player, enemy, BackModel, MapModel,  Fps, Fade,  shadow)
 {
+   InModeCheng = false;
 }
