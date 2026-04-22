@@ -172,6 +172,7 @@
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Box.cpp" />
     <ClCompile Include="fps.cpp" />
+    <ClCompile Include="LoseScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelCheckers.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -182,6 +183,7 @@
     <ClCompile Include="Sphere_Collision.cpp" />
     <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="UIBar.cpp" />
+    <ClCompile Include="WinScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Arithmetic.h" />
@@ -197,8 +199,10 @@
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="Box.h" />
     <ClInclude Include="fps.h" />
+    <ClInclude Include="LoseScene.h" />
     <ClInclude Include="ModelCheckers.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene%27s.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sound.h" />
@@ -206,6 +210,7 @@
     <ClInclude Include="Sphere_Collision.h" />
     <ClInclude Include="StartScene.h" />
     <ClInclude Include="UIBar.h" />
+    <ClInclude Include="WinScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

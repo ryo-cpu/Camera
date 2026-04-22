@@ -190,10 +190,10 @@ void Bar::Draw()
 {
     if (inScreen())
     {
-        int Proportion;
+        float Proportion;
         if (value>0)
         {
-            Proportion = value / maxValue;
+            Proportion = static_cast<float>( value )/ static_cast<float>(maxValue);
         }
         else
         {

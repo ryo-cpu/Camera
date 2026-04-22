@@ -5,6 +5,10 @@
 #include<vector>
 const VECTOR SPInitPos = VGet(0, 1000, -2000);
 const int SpEffctID = 2034;
+/// <summary>
+/// UŒ‚ŠÔ‚É‚½‚Ü‚éSpPower
+/// </summary>
+const int ChargeSpPowerAttack = 20;
 struct AfterImage 
 {
     int handle;

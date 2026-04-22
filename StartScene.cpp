@@ -5,7 +5,7 @@ bool StartScene::Update()
    
 	float deltaTime = Fps->GetDeltaTime();
 	
-	if (Fade->GetAlpha() > 0 && !InModeCheng)
+	if (Fade->GetAlpha() > 0 && !InModeChange)
 	{
 
 		Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
@@ -30,11 +30,11 @@ bool StartScene::Update()
 		}
 		if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0 && GetJoypadNum() != 0)
 		{
-			InModeCheng = true;
+			InModeChange = true;
 
 
 		}
-		if (InModeCheng)
+		if (InModeChange)
 		{
 			///‰æ–Ê‚ðˆÃ‚­
 			Fade->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
@@ -46,7 +46,7 @@ bool StartScene::Update()
 		if (Fade->GetAlpha() >= 255)///‰æ–Ê‚ª^‚Á•‚É‚È‚Á‚½‚ç
 		{
 			camera->ResetOffset(DefaultCamera, player->GetPos());
-			InModeCheng = false;
+			InModeChange = false;
 			/*player->SetPos(StartPlayerPos);*/
 			player->Initial();
 
@@ -83,7 +83,7 @@ bool StartScene::Update()
 			camera->ResetOffset(DefaultCamera, player->GetPos());
 			camera->CalculateAngle(player->GetPos());
 			camera->CalculateTargetAngle(player->GetPos());
-			InModeCheng = false;
+			InModeChange = false;
 			return true;
 		}
 
@@ -109,5 +109,5 @@ bool StartScene::Update()
 StartScene::StartScene(Camera* camera, Player* player, Enemy* enemy, int& BackModel, int& MapModel, fps* Fps, Box* Fade, Shadow* shadow) :
 	Scene(camera, player, enemy, BackModel, MapModel,  Fps, Fade,  shadow)
 {
-   InModeCheng = false;
+   InModeChange = false;
 }

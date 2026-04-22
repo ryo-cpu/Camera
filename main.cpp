@@ -13,7 +13,7 @@
 #include "Capsule.h"
 #include "UIBar.h"
 #include "Shadow.h"
-#include "StartScene.h"
+#include "Scene's.h"
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ChangeWindowMode(TRUE);
 	SetGraphMode(1600, 900, 16);
 	
-	VECTOR PlayerPos = VGet(0,0,0);
+	VECTOR PlayerPos = VGet(0,0.0f,0.0f);
 
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 裏画面を描画対象にする
@@ -55,14 +55,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	
 	///player初期化
 	float BaseY = NULL;
-	VECTOR JumpPower = VGet(0, 30, 0);
-	VECTOR G = VGet(0, -1, 0);
+	VECTOR JumpPower = VGet(0.0f, 30.0f, 0.0f);
+	VECTOR G = VGet(0.0f, -1, 0.0f);
 
 	Player *player=new Player(MV1LoadModel("data/player.mv1"));
 	player->SetCapsuleCollisionRsize(10.0f);
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
-	player->SetDir(VGet(0, 0, 0));
+	player->SetDir(VGet(0.0f, 0.0f, 0.0f));
 	player->SetAnimSpeed(PlayerAnimSpeed);
 	player->SetAnimType(player->Stop);
 	player->SetNowAnimTime(0);
@@ -83,7 +83,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Enemy* enemy = new Enemy(MV1LoadModel("data/Monstor.mv1"));
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-	enemy->SetDir(VGet(0, ConversionRad(180), 0));
+	enemy->SetDir(VGet(0.0f, ConversionRad(180), 0.0f));
 	enemy->SetAnimSpeed(EnemyAnimSpeed);
 	enemy->SetAnimType(enemy->Dance);
 	enemy->SetNowAnimTime(0);
@@ -102,24 +102,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	int  BackModel = MV1LoadModel("data/Dome_Y902.mv1");
 	int  TileModel = MV1LoadModel("data/map3d/room-wide.mv1");
 	int  ShadowImg = LoadGraph("data/TmpField.jpg");
-	MV1SetPosition(BackModel, VGet(0, 0, 0));
-	MV1SetPosition(TileModel, VGet(0, 0, 0));
+	MV1SetPosition(BackModel, VGet(0, 0.0f, 0.0f));
+	MV1SetPosition(TileModel, VGet(0.0f, 0.0f, 0.0f));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
-	MV1SetScale(TileModel, VGet(15, 1.0f, 10));
+	MV1SetScale(TileModel, VGet(15, 1.0f, 10.0f));
 
 
 
 
 
 	///////カメラの初期化
-	SetCameraPositionAndTarget_UpVecY(VGet(0, 0, 0), player->GetPos());
+	SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, 0.0f), player->GetPos());
 	////スタート時のカメラ
 	Camera* camera = new Camera(100.0f, 10000.0f, VAdd(enemy->GetPos(),StartCamera), enemy->GetPos());
 	camera->CalculateAngle(PlayerPos);
 	camera->CalculateTargetAngle(player->GetPos());
 	SetUseLighting(TRUE);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f, 0.3f));
-	ChangeLightTypeDir(VGet(0, -1, 0));
+	ChangeLightTypeDir(VGet(0, -1, 0.0f));
 	VECTOR Light = VGet(0.5f, -1, 0.5f);
 	SetLightDirection(Light);
 	///影
@@ -151,27 +151,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	float deltaTime = Fps->GetDeltaTime();
 	float TotalTime = 0.0f;
 	///ゲームモード設定
-	int GameMode = 7;
+	int GameMode = Start;
 	bool isInput = false;
-	bool InModeCheng = false;
+	bool InModeChange = false;
 
 	//fedein.out用　の透明化できるボックス
-	Box *Fade = new Box(1600, 900, 255);
+	Box *Fade = new Box(1600.0f, 900.0f, 255);
 	bool OnWall = false;
-	VECTOR BasePoint = VGet(0, 0, 0);
+	VECTOR BasePoint = VGet(0, 0.0f, 0.0f);
 	float FieldSize = 4000.0f;
 	Sphere_Collision Field;
 	Sphere_Collision NextPlayer;
 	Sphere_Collision NextEnemy;
-	Field.SetPos(VGet(0, 0, 0));
+	Field.SetPos(VGet(0.0f, 0, 0.0f));
 	Field.SetSphereSize(FieldSize);
 	///Effet
 	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
-	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100);
+	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100.0f);
 	EffectM::Add(*RingE);
 	////音
 	SetCreate3DSoundFlag(TRUE);
-	Set3DSoundOneMetre(200);
+	Set3DSoundOneMetre(200.0f);
 	Sound* HitSound = new Sound("data/Hit.wav");
 	Sound* AttackSound = new Sound("data/Attack.wav");
 	Sound* SpSound = new Sound("data/SpAttack.wav");
@@ -179,6 +179,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 	StartScene* start = new StartScene(camera,player,enemy,BackModel,TileModel,Fps,Fade,shadow);
+	WinScene *win =new WinScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+	LoseScene* lose = new LoseScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+
+
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
 		
@@ -200,7 +204,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		case Game:
 		{
 
-if (Fade->GetAlpha() > 0 && !InModeCheng)
+if (Fade->GetAlpha() > 0 && !InModeChange)
 {
 	Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
 }
@@ -354,7 +358,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 				SPMove->Hit();
 				player->SetMove(VGet(0, 0, 0));
 				AttackSound->Play();
-				player->AddSpGauge(20);
+				player->AddSpGauge(ChargeSpPowerAttack);
 
 				Knockback.y = 0;
 				enemy->SetKnockBack((Knockback));
@@ -390,7 +394,7 @@ if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 		{
 			enemy->SubHp(player->GetAttack());
 			AttackSound->Play();
-			player->AddSpGauge(20);
+			player->AddSpGauge(ChargeSpPowerAttack);
 
 			enemy->SetKnockBack((Knockback));
 			enemy->SetMove((Knockback));
@@ -473,20 +477,6 @@ else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != play
 	player->SetMove(VAdd(player->GetMove(), P));
 	player->UpdateCapsuleCollision(P);
 	
-	/*///衝突検査（ここでするとSphereを持ち越さない）
-	if (Collision_Measurement->Collision(NextEnemy, NextPlayer))
-	{
-		VECTOR Distance = VSub(NextPlayer.GetPos(), NextEnemy.GetPos());
-
-		VECTOR TakeDistance = VScale(VNorm(Distance), (NextEnemy.GetSphereSize() + NextPlayer.GetSphereSize() + 1));
-
- 		TakeDistance = VSub(TakeDistance, Distance);
-		TakeDistance.y = 0;
-		player->SetMove(VAdd(player->GetMove(), TakeDistance));
-
-	}*/
-
-
 
 }
 
@@ -702,243 +692,24 @@ else if (!OnWall)
 			enemy->DrawCapsuleCollision();*/
 		}
 		break;
-		case Start:
-			///クラス化にいるもの　カメラ　player enemy backmodel tileModel フェード Fps　車道　BOOl
-			if (Fade ->GetAlpha()> 0 && !InModeCheng)
-			{
-			
-			  Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
-
-			}
-			else
-			{
-				MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-
-				////回転量を算出
-				float Move = 40 * deltaTime;
-				MATRIX RotY = MGetRotY(ConversionRad(Move));
-				VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///モデルの位置とPosのずれ直し
-				enemy->SetPos(VGet(0, 0, 0));
-				camera->RotationAxis(Axis, RotY);
-				camera->Look(Axis);
-				camera->Apply();
-				enemy->AnimUpdate(deltaTime);
-
-				if (CheckHitKey(KEY_INPUT_W))
-				{
-					HitSound->Play(VGet(0,0,0),VGet(6000,0,0),VGet(1,0,0),VGet(0,1,0),VGet(0,0,1));
-					/*EffectM::Add(*ImpactE);*/
-					EffectM::Add(*RingE);
-
-				}
-				if (!enemy->GetIsAnim())
-				{
-					enemy->SetNowAnimTime(0.0f);
-				}
-				if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0 && GetJoypadNum() != 0)
-				{
-					InModeCheng = true;
-
-
-				}
-				if (InModeCheng)
-				{
-					///画面を暗く
-					Fade->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
-				}
-				else
-				{
-					///Modeチェンジが押されるまでの表現
-				}
-				if (Fade->GetAlpha() >= 255)///画面が真っ黒になったら
-				{
-					GameMode = Game;
-				    camera->ResetOffset(DefaultCamera,player->GetPos());
-					InModeCheng = false;
-					player->SetPos(StartPlayerPos);
-					player->Initial();
-
-					bool isJump = false;
-					player->SetDir(VGet(0, 0, 0));
-					player->SetAnimSpeed(PlayerAnimSpeed);
-					player->SetAnimType(player->Stop);
-					player->SetNowAnimTime(0);
-					MV1SetAttachAnimTime(player->GetImg(), player->GetAnimType(), player->GetNowAnimTime());
-					MV1SetPosition(player->GetImg(), player->GetPos());
-					player->SetScale(1.0f);// 試しに10倍
-					player->SetHp(playerMaxHp);
-					
-
-					
-					///enemy初期化
-					
-					enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
-					MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-					enemy->SetDir(VGet(0, ConversionRad(180), 0));
-					enemy->SetAnimSpeed(EnemyAnimSpeed);
-					enemy->SetAnimType(enemy->Dance);
-					enemy->SetNowAnimTime(0);
-					enemy->SetTarget(*player);
-					enemy->SetScale(5.0f);  // 試しに10倍
-					enemy->SetHp(EnemyHP);
-					enemy->SetMove(VGet(0, 0, 0));
-					enemy->Initial();
-
-					enemyHpBar->ResetOwner(enemy,VGet(-400,900,0));
-
-
-					MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
-	                camera->ResetOffset(DefaultCamera,  player->GetPos());
-					camera->CalculateAngle(player->GetPos());
-					camera->CalculateTargetAngle(player->GetPos());
-
-					
-				}
-				
-			
-				SetFontSize(256);
-				DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
-				SetFontSize(64);
-				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
-				
-			}
-			SetUseBackCulling(FALSE);
-			shadow->Draw();
-			shadow->StartUse();
-			MV1DrawModel(BackModel);
-			MV1DrawModel(TileModel);
-			// 描画先を裏画面に変更
-			/*DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
-			
-			EffectM::Update(deltaTime);
-			EffectM::Draw();
-			enemy->Draw();
-			shadow->EndUse();
-			
-	
-			
-
-			
 		
-
-			
-			break;
 		case  Win:
-			MV1DrawModel(BackModel);
-			{
 
-			if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
-			{
-				InModeCheng = true;
-				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
-				camera->ResetOffset(StartCamera, enemy->GetPos());
-				enemy->SetAnimType(enemy->Dance);
-			}
-			if (InModeCheng)
-			{
-				///画面を暗く
-				Fade ->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
-			}
-			else
-			{
-				///Modeチェンジが押されるまでの表現
-			}
-			
-			float Time = enemy->GetLiveTime() - enemy->GetStartLiveTime();
-			if (Time <= 2)
-			{
-
-			}
-			else if (Time <= 4)
-			{
-			camera->ResetOffset(DefaultCamera,player->GetPos());
-			}
-			else
-			{
-
-				VECTOR Offset = WinCameraFast;
-				camera->ResetOffset(Offset, enemy->GetPos());
-				camera->Look(enemy->GetPos());
-				if (!enemy->GetIsAnim())
-				{
-					SetFontSize(128);
-					DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
-					SetFontSize(64);
-					DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
-
-				}
-				
-
-			}
-		}
-			camera->Apply();
-
-			enemy->AddLiveTime(deltaTime);
-			enemy->AnimUpdate(deltaTime);
-			shadow->Draw();
-			shadow->StartUse();
-			MV1DrawModel(TileModel);
-			player->Draw();
-			/*;DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
-			enemy->Draw();
-			shadow->EndUse();
-			
-			if (Fade->GetAlpha()== 255)///画面が真っ黒になったら
+			if (win->Update())
 			{
 				GameMode = Start;
-				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
-				camera->ResetOffset(StartCamera, enemy->GetPos());
-				enemy->SetAnimType(enemy->Dance);
-				InModeCheng = false;
 			}
+
 			break;
+
 		case Lose:
-			MV1DrawModel(BackModel);
-			if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
-			{
-				InModeCheng = true;
-
-			}
-			if (InModeCheng)
-			{
-				///画面を暗く
-				///画面を暗く
-				Fade->SetAlpha(Fade->GetAlpha() + 255 / 2 * deltaTime);
-			}
-			else
-			{
-				///Modeチェンジが押されるまでの表現
-			}
-			if (Fade->GetAlpha()== 255)///画面が真っ黒になったら
+			if (lose->Update())
 			{
 				GameMode = Start;
-				enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
-				MV1SetPosition(enemy->GetImg(), enemy->GetPos());
-				camera->ResetOffset(StartCamera, enemy->GetPos());
-				InModeCheng = false;
-
 			}
-			if (!player->GetIsAnim())
-			{
-				SetFontSize(128);
-				DrawString(500, 350, "YOU LOSE", GetColor(244, 229, 17));
-				SetFontSize(64);
-				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
-			}
-			camera->Apply();
-
-			player->AddLiveTime(deltaTime);
-			player->AnimUpdate(deltaTime);
-			shadow->Draw();
-			shadow->StartUse();
-			MV1DrawModel(TileModel);
-			player->Draw();
-			shadow->EndUse();
-			/*DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
-
-
 			break;
-		case 7:
+
+		case Start:
 			if (start->Update())
 			{
 				GameMode = Game;
@@ -975,7 +746,10 @@ else if (!OnWall)
 	delete(SpSound);
 	delete(BGM);
 	delete(Fade);
-	
+	delete(start);
+	delete(win);
+	delete(lose);
+
 
 	Effkseer_End();
 
