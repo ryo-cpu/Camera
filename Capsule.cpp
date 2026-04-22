@@ -1,5 +1,5 @@
 #include "Capsule.h"
-#include"ModelCheckers.h"
+#include "ModelCheckers.h"
 
 Capsule::Capsule(char* startName, char* endName, float rsize)
 {

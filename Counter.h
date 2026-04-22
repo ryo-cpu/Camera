@@ -1,5 +1,5 @@
 #pragma once
-#include"SpecialMove.h"
+#include "SpecialMove.h"
 /// <summary>
 /// 動きを制御するクラス（カウンター）
 /// </summary>

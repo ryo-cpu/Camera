@@ -1,6 +1,6 @@
 #pragma once
-#include"Enemy.h"
-#include"Camera.h"
+#include "Enemy.h"
+#include "Camera.h"
 
 const int MaxSpGauge = 100;
 const float MaxSpeed =10.0f;

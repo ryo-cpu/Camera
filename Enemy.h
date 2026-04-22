@@ -1,5 +1,5 @@
 #pragma once
-#include"Character.h"
+#include "Character.h"
 #include <algorithm>
 const float MaxTurn = 0.1f;
 const int EnemyHP = 300;

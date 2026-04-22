@@ -1,11 +1,11 @@
 ﻿#pragma once
 #include<iostream>
 #include<vector>
-#include"DxLib.h"
-#include"Sphere_Collision.h"
+#include "DxLib.h"
+#include "Sphere_Collision.h"
 #include<cmath>
-#include"EffectM.h"
-#include"Capsule.h"
+#include "EffectM.h"
+#include "Capsule.h"
 
 
 class Character

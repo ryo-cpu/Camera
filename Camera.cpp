@@ -1,6 +1,6 @@
 #include<vector>
 #include "DxLib.h"
-#include"Camera.h"
+#include "Camera.h"
 
 Camera::Camera()
 {

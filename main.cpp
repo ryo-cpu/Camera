@@ -1,8 +1,6 @@
 ﻿
 #include <vector>
 #include "DxLib.h"
-
-
 #include "Box.h"
 #include "fps.h"
 #include "Counter.h"
@@ -17,16 +15,17 @@
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
-enum GameModeType{Start,Win,Lose,Game};
+const float HitStopTime = 20.0f;
+enum GameModeType { Start, Win, Lose, Game };
 const char* HipName = "mixamorig:Hips";
 /// メイン関数
 /// </summary>
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	  // 確実に存在
-	
-	
-	// ＤＸライブラリ初期化処理
+	// 確実に存在
+
+
+  // ＤＸライブラリ初期化処理
 	if (DxLib_Init() == -1)
 	{
 		return -1;	// エラーが起きたら直ちに終了
@@ -36,8 +35,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//ChangeWindowMode(TRUE);
 	ChangeWindowMode(TRUE);
 	SetGraphMode(1600, 900, 16);
-	
-	VECTOR PlayerPos = VGet(0,0.0f,0.0f);
+
+	VECTOR PlayerPos = VGet(0, 0.0f, 0.0f);
 
 
 	SetDrawScreen(DX_SCREEN_BACK);	// 裏画面を描画対象にする
@@ -46,19 +45,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SetUseBackCulling(TRUE);		// バックカリングを行う
 	SetWriteZBuffer3D(TRUE);
 
-	if(Effekseer_Init(8000) == -1)
+	if (Effekseer_Init(8000) == -1)
 	{
 		DxLib_End();
 		return -1;
 	}
 	SetChangeScreenModeGraphicsSystemResetFlag(FALSE);
-	
+
 	///player初期化
 	float BaseY = NULL;
 	VECTOR JumpPower = VGet(0.0f, 30.0f, 0.0f);
 	VECTOR G = VGet(0.0f, -1, 0.0f);
 
-	Player *player=new Player(MV1LoadModel("data/player.mv1"));
+	Player* player = new Player(MV1LoadModel("data/player.mv1"));
 	player->SetCapsuleCollisionRsize(10.0f);
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
@@ -76,8 +75,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 	SetUseBackCulling(FALSE);
 	MV1SetPosition(player->GetImg(), player->GetPos());
-	player->SetScale(1.0f);// 試しに10倍
-	
+	player->SetScale(1.0f);
+
 
 	///enemy初期化
 	Enemy* enemy = new Enemy(MV1LoadModel("data/Monstor.mv1"));
@@ -88,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	enemy->SetAnimType(enemy->Dance);
 	enemy->SetNowAnimTime(0);
 	enemy->SetTarget(*player);
-	enemy->SetScale(5.0f);  // 試しに10倍
+	enemy->SetScale(5.0f);
 	enemy->SetCapsuleCollisionRsize(80.0f);
 
 
@@ -114,49 +113,53 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	///////カメラの初期化
 	SetCameraPositionAndTarget_UpVecY(VGet(0, 0.0f, 0.0f), player->GetPos());
 	////スタート時のカメラ
-	Camera* camera = new Camera(100.0f, 10000.0f, VAdd(enemy->GetPos(),StartCamera), enemy->GetPos());
+	Camera* camera = new Camera(100.0f, 10000.0f, VAdd(enemy->GetPos(), StartCamera), enemy->GetPos());
 	camera->CalculateAngle(PlayerPos);
 	camera->CalculateTargetAngle(player->GetPos());
+
+
 	SetUseLighting(TRUE);
 	SetLightAmbColor(GetColorF(0.3f, 0.3f, 0.3f, 0.3f));
 	ChangeLightTypeDir(VGet(0, -1, 0.0f));
 	VECTOR Light = VGet(0.5f, -1, 0.5f);
 	SetLightDirection(Light);
 	///影
-	Shadow* shadow= new Shadow(Light);
+	Shadow* shadow = new Shadow(Light);
 
 	shadow->AddTarget(player->GetImg());
 	shadow->AddTarget(enemy->GetImg());
-	
-	
 
 
 
-	
 
-	
-	fps *Fps = new fps();
+
+
+
+
+	fps* Fps = new fps();
 	Fps->Initialization(1.0 / 60.0);
 
-	
-	Sphere_Collision *Collision_Measurement=new Sphere_Collision;
-	
-	
+	float HitStopStratTime = 0.0f;
+	bool InHitStop = false;
+
+
+	Sphere_Collision* Collision_Measurement = new Sphere_Collision;
+
+
 	//Bar *playerHp= new Bar(player);
-	Bar *enemyHpBar=new Bar(enemy);
-	UIBar* playerHP = new UIBar(player,100,700);
-	SpecialMove *SPMove= new SpecialMove(*camera, *player, *enemy);
+	Bar* enemyHpBar = new Bar(enemy);
+	UIBar* playerHP = new UIBar(player, 100, 700);
+	SpecialMove* SPMove = new SpecialMove(*camera, *player, *enemy);
 	Counter* counter = new Counter(*camera, *player, *enemy);
-	
+
 	float deltaTime = Fps->GetDeltaTime();
 	float TotalTime = 0.0f;
 	///ゲームモード設定
 	int GameMode = Start;
 	bool isInput = false;
-	bool InModeChange = false;
 
 	//fedein.out用　の透明化できるボックス
-	Box *Fade = new Box(1600.0f, 900.0f, 255);
+	Box* Fade = new Box(1600.0f, 900.0f, 255);
 	bool OnWall = false;
 	VECTOR BasePoint = VGet(0, 0.0f, 0.0f);
 	float FieldSize = 4000.0f;
@@ -167,7 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Field.SetSphereSize(FieldSize);
 	///Effet
 	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
-	EffectImg* RingE = new EffectImg("data/Ring.efkefc",100.0f);
+	EffectImg* RingE = new EffectImg("data/Ring.efkefc", 100.0f);
 	EffectM::Add(*RingE);
 	////音
 	SetCreate3DSoundFlag(TRUE);
@@ -178,365 +181,376 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sound* BGM = new Sound("data/Thunderstorm.wav");
 
 
-	StartScene* start = new StartScene(camera,player,enemy,BackModel,TileModel,Fps,Fade,shadow);
-	WinScene *win =new WinScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+	StartScene* start = new StartScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+	WinScene* win = new WinScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 	LoseScene* lose = new LoseScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
-		
+
 		isInput = false;
 		Effekseer_Sync3DSetting();
 
 
 		SetUseLighting(true); // ライティングを有効にする
 
-        Fps->Start();
-	
- 		ClearDrawScreen();
-		deltaTime=Fps->GetDeltaTime();
+		Fps->Start();
 
-		GetJoypadXInputState(DX_INPUT_PAD1,player->GetInputState());
+		ClearDrawScreen();
+		deltaTime = Fps->GetDeltaTime();
+
+		GetJoypadXInputState(DX_INPUT_PAD1, player->GetInputState());
 
 		switch (GameMode)
 		{
 		case Game:
 		{
-
-if (Fade->GetAlpha() > 0 && !InModeChange)
-{
-	Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
-}
-
-
-if (player->GetIsHit())
-{
-	float Checker = player->GetPos().y + G.y;
-	if (Checker >= 0)
-	{
-
-	player->SetMove(VAdd(player->GetMove(), G));
-
-	}	
-	/////
-	
-	if (StunTime <= player->GetNowAnimTime() + deltaTime)
-	{
-
-		camera->ResetOffset(VTransformSR(DefaultCamera,MGetRotY(player->GetDir().y)), player->GetPos());
-		camera->CalculateAngle(player->GetPos());
-		camera->CalculateTargetAngle(player->GetPos());
-		player->SetIsHit(false);
-		////////////////////////////////////
-		const char* HipName = "mixamorig:Hips";
-		VECTOR test = player->GetFramPos("mixamorig:Hips");
-		int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
-		if (HipIndex >= 0)
-		{
-			VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
-			SetPos.y = 0;
-			player->SetPos(SetPos);
-		}
-
-	}
-
-}
-else if (!player->GetInSpecialMove())
-{
-	isInput = player->Input(*camera);
-	enemy->SelectMove();
-}
-
-////入力された移動を調整
-if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
-{
-	OnWall = true;
-}
-else
-{
-	OnWall = false;
-}
-if (VSize(VAdd(player->GetPos(), player->GetMove())) > FieldSize)
-{
-	VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
-	VECTOR SetPoint = VNorm(PassingPoint);
-	SetPoint = VScale(SetPoint, FieldSize);
-	player->SetMove(VSub(SetPoint, player->GetPos()));
-}
-if (player->GetPos().y <= BaseY)
-{
-	isJump = false;
-	player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
-	JumpPower = VGet(0, 30, 0);
-
-}
-
-////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
-///次の動きの判定
-NextPlayer.SetPos(VAdd(player->GetFramPos(HipName), player->GetMove()));
-NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
-NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
-NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
-NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
-player->AnimUpdate(deltaTime);
-enemy->AnimUpdate(deltaTime);
-player->AnimUpdate(deltaTime);
-player->UpdateCapsuleCollision();
-player->UpdateCapsuleCollision(player->GetMove());
-enemy->UpdateCapsuleCollision();
-enemy->UpdateCapsuleCollision(enemy->GetMove());
-
-
-///かべとplayer
-if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize()&&!player->GetInSpecialMove())
-{
-
-	////1中心から
-	VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
-	///中心から敵の最長
-	AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (player->GetCollision().GetSphereSize() / 2)));
-	///フィールドの端から敵の最長（フィールドの長さを引く）
-	AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
-	///反転（敵の最奥から中心から）
-	AddMove = VScale(AddMove, -1);
-
-	///fieldの半径
-	///ヒットじの特殊処理
-	if (player->GetAnimType() == player->Hit)
-	{
-	
-	}
-
-	player->SetMove(VAdd(player->GetMove(), AddMove));
-	player->UpdateCapsuleCollision(AddMove);
-	///再更新　ほかの判定でも使うので
-	NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
-	NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
-}
-
-///かべとenemy
-if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize()/2 && !player->GetInSpecialMove())
-{
-	
-	VECTOR AddMove = VSub(NextEnemy.GetPos(),Field.GetPos());
-	///中心から敵の最長
-	AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (enemy->GetCollision().GetSphereSize() / 2)));
-	///フィールドの端から敵の最長（フィールドの長さを引く）
-	AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
-	///反転（敵の最奥から中心から）
-	AddMove = VScale(AddMove, -1);
-	if (enemy->GetAnimType() == enemy->Hit)
-	{
-		VECTOR HipPos = enemy->GetFramPos(HipName);
-		HipPos.y = AddMove.y;
-		AddMove = VAdd(AddMove, VSub(enemy->GetPos(), HipPos));
-	}
-	enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
-	enemy->UpdateCapsuleCollision(AddMove);
-	///再更新　ほかの判定でも使うので
-	NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
-	NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
-}
-///enemy攻撃p
-////player攻撃
-if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
-{
-	////敵の方向
-	if (!enemy->GetIsInvincible()|| (player->GetInSpecialMove()))
-	{
-		VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
-		float Angle = atan2f(EnemyDir.x, EnemyDir.z);
-		enemy->SetDir(VGet(0, Angle, 0));
-		VECTOR Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime);
-		if (player->GetInSpecialMove())
-		{
-			Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
-			if (SPMove->GetWasHit() == false)
+			///画面をフェードイン
+			if (Fade->GetAlpha() > 0)
 			{
-				enemy->SubHp(player->GetAttack());
-				SPMove->Hit();
-				player->SetMove(VGet(0, 0, 0));
-				AttackSound->Play();
-				player->AddSpGauge(ChargeSpPowerAttack);
+				Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
+			}
 
-				Knockback.y = 0;
-				enemy->SetKnockBack((Knockback));
-				enemy->SetMove((Knockback));
-				enemy->SetMoveType(enemy->hit_stop);
-				enemy->SetAnimType(enemy->Hit);
-
-
-				enemy->SetAnimSpeed(EnemyAnimSpeed);
-				
-				const char* HipName = "mixamorig:Hips";
-				VECTOR test = MV1GetPosition(enemy->GetImg());
-				int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
-				int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
-
-
-				if (enemyIndex >= 0 && PlayerIndex >= 0)
+			//playerの状態による更新
+			if (player->GetIsHit())
+			{
+				float Checker = player->GetPos().y + G.y;
+				if (Checker >= 0)
 				{
-					VECTOR EffctPos;
-					VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
-					VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
-					EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+					player->SetMove(VAdd(player->GetMove(), G));
+
+				}
 
 
-					VECTOR EffectMove = VSub(EffctPos, player->GetPos());
-					EffectMove = VNorm(EffectMove);
-					EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+				if (StunTime <= player->GetNowAnimTime() + deltaTime)
+				{
+
+					camera->ResetOffset(VTransformSR(DefaultCamera, MGetRotY(player->GetDir().y)), player->GetPos());
+					camera->CalculateAngle(player->GetPos());
+					camera->CalculateTargetAngle(player->GetPos());
+					player->SetIsHit(false);
+
+					const char* HipName = "mixamorig:Hips";
+					VECTOR test = player->GetFramPos("mixamorig:Hips");
+					int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
+					if (HipIndex >= 0)
+					{
+						VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
+						SetPos.y = 0;
+						player->SetPos(SetPos);
+					}
+
+				}
+
+			}
+			///インプットを止め映像の更新のみをおこなう
+			else if (InHitStop)
+			{
+				if (HitStopTime < player->GetLiveTime() - HitStopStratTime)
+				{
+					InHitStop = false;
 				}
 			}
-			
-		}
-		else
-		{
-			enemy->SubHp(player->GetAttack());
-			AttackSound->Play();
-			player->AddSpGauge(ChargeSpPowerAttack);
-
-			enemy->SetKnockBack((Knockback));
-			enemy->SetMove((Knockback));
-			enemy->SetMoveType(enemy->hit_stop);
-			enemy->SetAnimType(enemy->Hit);
-
-
-			enemy->SetAnimSpeed(EnemyAnimSpeed);
-			Knockback.y = 0;
-			const char* HipName = "mixamorig:Hips";
-			VECTOR test = MV1GetPosition(enemy->GetImg());
-			int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
-			int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
-
-
-			if (enemyIndex >= 0 && PlayerIndex >= 0)
+			else if (!player->GetInSpecialMove())
 			{
-				VECTOR EffctPos;
-				VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
-				VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
-				EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
-
-
-				VECTOR EffectMove = VSub(EffctPos, player->GetPos());
-				EffectMove = VNorm(EffectMove);
-				EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+				isInput = player->Input(*camera);
+				enemy->SelectMove();
 			}
-		}
-		
 
-		
-		
-		StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
-	}
-	else///無敵中攻撃判定
-	{
-		StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
-	}
-	
+			////入力された移動を調整
+			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
+			{
+				OnWall = true;
+			}
+			else
+			{
+				OnWall = false;
+			}
+			if (VSize(VAdd(player->GetPos(), player->GetMove())) > FieldSize)
+			{
+				VECTOR PassingPoint = VAdd(player->GetPos(), player->GetMove());
+				VECTOR SetPoint = VNorm(PassingPoint);
+				SetPoint = VScale(SetPoint, FieldSize);
+				player->SetMove(VSub(SetPoint, player->GetPos()));
+			}
+			if (player->GetPos().y <= BaseY)
+			{
+				isJump = false;
+				player->SetPos(VGet(player->GetPos().x, BaseY, player->GetPos().z));
+				JumpPower = VGet(0, 30, 0);
 
-}
+			}
 
-
-else if (player->isHitCaracters(*player,*enemy) && player->GetAnimType() != player->Hit&&(enemy->GetAnimType()==enemy->ArmSwing||enemy->GetAnimType()==enemy->Run)&& player->GetAnimType() != player->Roll)
-{
-	if (enemy->GetAttackCollision().GetSphereSize() == 0)
-	{
-		
-	}
-	else 
-	{
-		VECTOR Move = VGet(0, 0, -100);
-		Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
-		Move.y = 10.0f;
-		Move = VScale(VNorm(Move), enemy->GetAttackCollision().GetSphereSize());
-		player->SetMove(Move);
-		player->SetAnimType(player->Hit);
-		player->SetIsHit(true);
-		player->SubHp(enemy->GetAttack());
-		player->SetLastDamageTime();
-		/////必殺キャンセル
-		player->SetInSpecialMove(false);
-
-		/*///playerの正面に移動
-		VECTOR FRONT = VGet(0, 100, -1000);
-		FRONT =VTransformSR(FRONT, MGetRotY(player->GetDir().y));
-		camera->ResetOffset(FRONT, player->GetPos());
-		camera->CalculateAngle(player->GetPos());
-		camera->CalculateTargetAngle(player->GetPos());*/
-
-		/*					camera->ResetOffset(DefaultCamera, VAdd( player->GetPos(),PlayerTopPos));*/
-		StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
-	}
-}
-
- else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000&& (enemy->GetAnimType() != enemy->Hit|| player->GetAnimType() != player->Hit))
-{
-	VECTOR P= player->PushBackCapsuleCollison(*player, *enemy);
-	
-	player->SetMove(VAdd(player->GetMove(), P));
-	player->UpdateCapsuleCollision(P);
-	
-
-}
+			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
+			///次の動きの判定
+			NextPlayer.SetPos(VAdd(player->GetFramPos(HipName), player->GetMove()));
+			NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
+			NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
+			NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
+			NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
+			player->AnimUpdate(deltaTime);
+			enemy->AnimUpdate(deltaTime);
+			player->AnimUpdate(deltaTime);
+			player->UpdateCapsuleCollision();
+			player->UpdateCapsuleCollision(player->GetMove());
+			enemy->UpdateCapsuleCollision();
+			enemy->UpdateCapsuleCollision(enemy->GetMove());
 
 
-////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			///かべとplayer
+			if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize() && !player->GetInSpecialMove())
+			{
+
+				////1中心から
+				VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
+				///中心から敵の最長
+				AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (player->GetCollision().GetSphereSize() / 2)));
+				///フィールドの端から敵の最長（フィールドの長さを引く）
+				AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
+				///反転（敵の最奥から中心から）
+				AddMove = VScale(AddMove, -1);
+
+				///fieldの半径
+				///ヒットじの特殊処理
+				if (player->GetAnimType() == player->Hit)
+				{
+
+				}
+
+				player->SetMove(VAdd(player->GetMove(), AddMove));
+				player->UpdateCapsuleCollision(AddMove);
+				///再更新　ほかの判定でも使うので
+				NextPlayer.SetPos(VAdd(player->GetPos(), player->GetMove()));
+				NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
+			}
+
+			///かべとenemy
+			if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize() / 2 && !player->GetInSpecialMove())
+			{
+
+				VECTOR AddMove = VSub(NextEnemy.GetPos(), Field.GetPos());
+				///中心から敵の最長
+				AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (enemy->GetCollision().GetSphereSize() / 2)));
+				///フィールドの端から敵の最長（フィールドの長さを引く）
+				AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
+				///反転（敵の最奥から中心から）
+				AddMove = VScale(AddMove, -1);
+				if (enemy->GetAnimType() == enemy->Hit)
+				{
+					VECTOR HipPos = enemy->GetFramPos(HipName);
+					HipPos.y = AddMove.y;
+					AddMove = VAdd(AddMove, VSub(enemy->GetPos(), HipPos));
+				}
+				enemy->SetMove(VAdd(enemy->GetMove(), AddMove));
+				enemy->UpdateCapsuleCollision(AddMove);
+				///再更新　ほかの判定でも使うので
+				NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
+				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
+			}
+			///enemy攻撃p
+			////player攻撃
+			if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
+			{
+				////敵の方向
+				if (!enemy->GetIsInvincible() || (player->GetInSpecialMove()))
+				{
+					VECTOR EnemyDir = VNorm(VSub(NextEnemy.GetPos(), player->GetPos()));
+					float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+					enemy->SetDir(VGet(0, Angle, 0));
+					VECTOR Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime);
+					if (player->GetInSpecialMove())
+					{
+						Knockback = VScale(VNorm(VSub(NextEnemy.GetPos(), NextPlayer.GetPos())), player->GetAttackCollision().GetSphereSize() * deltaTime * 10);
+						if (SPMove->GetWasHit() == false)
+						{
+							enemy->SubHp(player->GetAttack());
+							SPMove->Hit();
+							player->SetMove(VGet(0, 0, 0));
+							AttackSound->Play();
+							player->AddSpGauge(ChargeSpPowerAttack);
+
+							Knockback.y = 0;
+							enemy->SetKnockBack((Knockback));
+							enemy->SetMove((Knockback));
+							enemy->SetMoveType(enemy->hit_stop);
+							enemy->SetAnimType(enemy->Hit);
 
 
-		//必殺技時のカメラの動き
-if (player->GetInSpecialMove())
-{
-	player->SetInSpecialMove(SPMove->Update(deltaTime));
+							enemy->SetAnimSpeed(EnemyAnimSpeed);
 
-}
-///通常時
-else if (!OnWall)
-{
-	if (player->GetAnimType() == player->Roll)
-	{
-		float RollZoom = 500.0f;
-		camera->StartZoom(RollZoom);
-		const char* HipName = "mixamorig:Hips";
-		VECTOR test = MV1GetPosition(player->GetImg());
-		int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
-		if (HipIndex >= 0)
-		{
-			VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
-		
-			camera->StartMove(VSub(VAdd(SetPos, camera->GetOffset()), camera->GetPos()));
-			camera->Look(SetPos);
-		}
+							const char* HipName = "mixamorig:Hips";
+							VECTOR test = MV1GetPosition(enemy->GetImg());
+							int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+							int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
 
-	
-	}
-	else if(camera->GetisZoom())
-	{
-		camera->ZoomOut(1.0f);
-		camera->Look(VAdd(player->GetPos(),PlayerTopPoint));
 
-	}
+							if (enemyIndex >= 0 && PlayerIndex >= 0)
+							{
+								VECTOR EffctPos;
+								VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+								VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+								EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
 
-	if (!isInput|| player->GetAnimType() != player->Roll)
-	{
-		camera->StartMove(VScale(VSub(VAdd(VAdd( player->GetPos(),PlayerTopPoint), camera->GetOffset()), camera->GetPos()), 0.1f));
 
-		if (VSize(player->GetMove()) <= 0)
-		{
-			BasePoint = player->GetPos();
+								VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+								EffectMove = VNorm(EffectMove);
+								EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+							}
+						}
 
-		}
-	}
-	else if (VSize(VSub(player->GetPos(), BasePoint)) >= 200)
-	{
-		/////切り替えし。ターンの処理
-		if (player->GetTurn())
-		{
-			BasePoint = player->GetPos();
-		}
-		 camera->StartMove(VScale(player->GetMove(), 1.0f));
-	}
-}
+					}
+					else
+					{
+						enemy->SubHp(player->GetAttack());
+						AttackSound->Play();
+						player->AddSpGauge(ChargeSpPowerAttack);
+
+						enemy->SetKnockBack((Knockback));
+						enemy->SetMove((Knockback));
+						enemy->SetMoveType(enemy->hit_stop);
+						enemy->SetAnimType(enemy->Hit);
+
+
+						enemy->SetAnimSpeed(EnemyAnimSpeed);
+						Knockback.y = 0;
+						const char* HipName = "mixamorig:Hips";
+						VECTOR test = MV1GetPosition(enemy->GetImg());
+						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+						a
+						player->SetAttackCollision(player->GetPos(), NULL);
+					
+						InHitStop = true;
+						HitStopStratTime = player->GetLiveTime();
+						if (enemyIndex >= 0 && PlayerIndex >= 0)
+						{
+							VECTOR EffctPos;
+							VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+							VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+							EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+
+							VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+							EffectMove = VNorm(EffectMove);
+							EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+						}
+					}
+
+
+
+
+					StartJoypadVibration(DX_INPUT_PAD1, 500, 400, -1);
+				}
+				else///無敵中攻撃判定
+				{
+					StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+				}
+
+
+			}
+
+
+			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll)
+			{
+				if (enemy->GetAttackCollision().GetSphereSize() == 0)
+				{
+
+				}
+				else
+				{
+					VECTOR Move = VGet(0, 0, -100);
+					Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
+					Move.y = 10.0f;
+					Move = VScale(VNorm(Move), enemy->GetAttackCollision().GetSphereSize());
+					player->SetMove(Move);
+					player->SetAnimType(player->Hit);
+					player->SetIsHit(true);
+					player->SubHp(enemy->GetAttack());
+					player->SetLastDamageTime();
+					/////必殺キャンセル
+					player->SetInSpecialMove(false);
+
+					/*///playerの正面に移動
+					VECTOR FRONT = VGet(0, 100, -1000);
+					FRONT =VTransformSR(FRONT, MGetRotY(player->GetDir().y));
+					camera->ResetOffset(FRONT, player->GetPos());
+					camera->CalculateAngle(player->GetPos());
+					camera->CalculateTargetAngle(player->GetPos());*/
+
+					/*					camera->ResetOffset(DefaultCamera, VAdd( player->GetPos(),PlayerTopPos));*/
+					StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+				}
+			}
+
+			else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000 && (enemy->GetAnimType() != enemy->Hit || player->GetAnimType() != player->Hit))
+			{
+				VECTOR P = player->PushBackCapsuleCollison(*player, *enemy);
+
+				player->SetMove(VAdd(player->GetMove(), P));
+				player->UpdateCapsuleCollision(P);
+
+
+			}
+
+
+			////カメラ系///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+					//必殺技時のカメラの動き
+			if (player->GetInSpecialMove())
+			{
+				player->SetInSpecialMove(SPMove->Update(deltaTime));
+
+			}
+			///通常時
+			else if (!OnWall)
+			{
+				if (player->GetAnimType() == player->Roll)
+				{
+					float RollZoom = 500.0f;
+					camera->StartZoom(RollZoom);
+					const char* HipName = "mixamorig:Hips";
+					VECTOR test = MV1GetPosition(player->GetImg());
+					int HipIndex = MV1SearchFrame(player->GetImg(), HipName);
+					if (HipIndex >= 0)
+					{
+						VECTOR SetPos = MV1GetFramePosition(player->GetImg(), HipIndex);
+
+						camera->StartMove(VSub(VAdd(SetPos, camera->GetOffset()), camera->GetPos()));
+						camera->Look(SetPos);
+					}
+
+
+				}
+				else if (camera->GetisZoom())
+				{
+					camera->ZoomOut(1.0f);
+					camera->Look(VAdd(player->GetPos(), PlayerTopPoint));
+
+				}
+
+				if (!isInput || player->GetAnimType() != player->Roll)
+				{
+					camera->StartMove(VScale(VSub(VAdd(VAdd(player->GetPos(), PlayerTopPoint), camera->GetOffset()), camera->GetPos()), 0.1f));
+
+					if (VSize(player->GetMove()) <= 0)
+					{
+						BasePoint = player->GetPos();
+
+					}
+				}
+				else if (VSize(VSub(player->GetPos(), BasePoint)) >= 200)
+				{
+					/////切り替えし。ターンの処理
+					if (player->GetTurn())
+					{
+						BasePoint = player->GetPos();
+					}
+					camera->StartMove(VScale(player->GetMove(), 1.0f));
+				}
+			}
 			/////カメラが壁に触れているときは動きと同じ大きさの壁ー＞中心のベクトルを足したものをカメラにつける
 			else
 			{
@@ -545,7 +559,7 @@ else if (!OnWall)
 				VECTOR Line = camera->GetPos();
 				Line.y = 0;
 				////カメラに近づく力を求める
-				VECTOR  Proj = VScale(Line,( VDot(Move, Line) / VDot(Line,Line)));
+				VECTOR  Proj = VScale(Line, (VDot(Move, Line) / VDot(Line, Line)));
 				VECTOR PassingPoint = VAdd(player->GetPos(), Move);
 				VECTOR SetPoint = VNorm(PassingPoint);
 				SetPoint = VScale(SetPoint, FieldSize);
@@ -553,20 +567,20 @@ else if (!OnWall)
 				SetPoint.y = 100;
 				///SetPoint.y=Rate;
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
-				camera->ResetOffset(Offset,VAdd(player->GetPos(), PlayerTopPoint));
-			/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
+				camera->ResetOffset(Offset, VAdd(player->GetPos(), PlayerTopPoint));
+				/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
 
-				/////ちかちかする理由
-				if (VSize(DefaultCamera)<VSize(camera->GetOffset()))
+					/////ちかちかする理由
+				if (VSize(DefaultCamera) < VSize(camera->GetOffset()))
 				{
 					camera->StartMove(player->GetMove());
 				}
 				else
 				{
-					
-					
-				
-					
+
+
+
+
 					/////壁からの横移動.
 					//Move = VSub(Move, Proj);
 					/////回転移動　軸を中心にして
@@ -588,17 +602,17 @@ else if (!OnWall)
 				{
 					enemy->Update(deltaTime);
 				}
-			
+
 			}
 			else
 			{
 				BGM->Stop();
 			}
 			//////カメラの押し戻し
-			camera->Update(VAdd(player->GetPos(),PlayerTopPoint));
+			camera->Update(VAdd(player->GetPos(), PlayerTopPoint));
 			///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-			
+
 			playerHP->Update();
 			enemyHpBar->Update(*camera);
 			/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
@@ -611,17 +625,17 @@ else if (!OnWall)
 				{
 					enemyHpBar->Draw();
 				}
-				
+
 				playerHP->Draw();
 			}
 			////エネミーの点滅
-			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove()&& fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f&&player->GetAttackCollision().GetSphereSize()>0)
+			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove() && fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f && player->GetAttackCollision().GetSphereSize() > 0)
 			{
 				enemy->SetisDraw(!enemy->GetisDraw());
 				if (camera->GetisZoom())
 				{
 					camera->EndZoom();
-				} 
+				}
 				else
 				{
 					camera->StartZoom(200.0f);
@@ -631,38 +645,28 @@ else if (!OnWall)
 			{
 				enemy->SetisDraw(true);
 			}
-			/*if (VSize(VGet(camera->GetPos().x,0,camera->GetPos() .z))> FieldSize)
-			{
-				camera->SetPos(VScale(VNorm(camera->GetPos()), FieldSize));
-				OnWall = true;
-			}
-			else
-			{
-				OnWall = false;
-			}
-			*/
-		
+
 			if (VSize(enemy->GetPos()) > FieldSize)
 			{
 				enemy->SetPos(VScale(VNorm(enemy->GetPos()), FieldSize));
 			}
 			//////勝ち判定
-			if (player->GetHp() <= 0&&player->GetAnimType()!=player->Hit)
+			if (player->GetHp() <= 0 && player->GetAnimType() != player->Hit)
 			{
 				GameMode = Lose;
 				player->SetAnimSpeed(10);
 				MATRIX RotY = MGetRotY(enemy->GetDir().y);
-				VECTOR Offset =VTransformSR(LoseCamera, RotY);
+				VECTOR Offset = VTransformSR(LoseCamera, RotY);
 				camera->ResetOffset(Offset, player->GetPos());
 				player->SetAnimType(player->Down);
 				BGM->Stop();
 				EffectM::Clear();
 			}
-			if (enemy->GetHp() <= 0&&!player->GetInSpecialMove())
+			if (enemy->GetHp() <= 0 && !player->GetInSpecialMove())
 			{
 				GameMode = Win;
 				MATRIX RotY = MGetRotY(enemy->GetDir().y);
-				VECTOR Offset =VTransformSR(WinCameraFast, RotY);
+				VECTOR Offset = VTransformSR(WinCameraFast, RotY);
 				enemy->SetisDraw(true);
 				enemy->SetAnimType(enemy->Down);
 				camera->ResetOffset(Offset, enemy->GetPos());
@@ -676,7 +680,7 @@ else if (!OnWall)
 			shadow->StartUse();
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
-		/*	DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
+			/*	DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			player->Draw();
@@ -685,14 +689,15 @@ else if (!OnWall)
 				enemy->Draw();
 			}
 			shadow->EndUse();
-			 // モデルの描画
 			// モデルの描画
-				   // モデルの描画
-			/*player->DrawCapsuleCollision();
-			enemy->DrawCapsuleCollision();*/
+		   // モデルの描画
+				  // モデルの描画
+		   /*player->DrawCapsuleCollision();
+		   enemy->DrawCapsuleCollision();*/
 		}
+
 		break;
-		
+
 		case  Win:
 
 			if (win->Update())
@@ -703,31 +708,35 @@ else if (!OnWall)
 			break;
 
 		case Lose:
+
 			if (lose->Update())
 			{
 				GameMode = Start;
 			}
+
 			break;
 
 		case Start:
+
 			if (start->Update())
 			{
 				GameMode = Game;
 				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
 				playerHP->ResetOwner(player);
 			}
-			break;
-		
-		}
-		
-		
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////	
-		Fade->Draw();
-		
 
-		
+			break;
+
+		}
+
+
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+		Fade->Draw();
+
+
+
 		ScreenFlip();// 裏画面の内容を表画面に反映 
-///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		Fps->End();
 	}
 	MV1DeleteModel(BackModel);

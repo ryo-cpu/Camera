@@ -1,6 +1,6 @@
 #pragma once
-#include"Camera.h"
-#include"Character.h"
+#include "Camera.h"
+#include "Character.h"
 
 
 class UIBar

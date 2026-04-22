@@ -1,6 +1,6 @@
 #pragma once
-#include"Camera.h"
-#include"Character.h"
+#include "Camera.h"
+#include "Character.h"
 const int screenW = 1600;
 const int screenH = 900;
 class Bar

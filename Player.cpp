@@ -200,14 +200,14 @@ void Player::Update(float deltaTime)
 {
 	
 	
-	
+	//空中にいるときに重力作成
 	if (GRund.y < Pos.y)
 	{
 		Pos = VAdd(Pos, G);
 
 		Pos.y = Pos.y < 0 ? 0 : Pos.y;
 	 }
-
+	///ケリの時の自動移動と攻撃の作成
 	if (AnimType == Kick)
 	{
 		if (NowAnimTime >= 30.0f && NowAnimTime <= AnimTotalTime)
@@ -216,11 +216,12 @@ void Player::Update(float deltaTime)
 			AttackPos =VTransformSR(AttackPos, MGetRotY(GetDir().y));
 			SetAttackCollision(VAdd(Pos, AttackPos), 30.f);
 		}
+		//攻撃の時間から外れた時攻撃判定を削除
 		else
 		{
 			AttackCollision = {};
 		}
-		
+		//アニメーション終了時デフォルトアニメーションに戻す
 		if (!IsAnim)
 		{
 			SetAnimType(Stop);
@@ -242,10 +243,12 @@ void Player::Update(float deltaTime)
 	{
 		SetAnimType(Stop);
 	}
+	//ローリング時の自動移動更新
 	if (InRolling)
 	{
 		SetAnimSpeed(20.0);
 		InRolling = Rolling();
+		//ローリング停止時
 		if (!InRolling)
 		{
 			const char* HipName = "mixamorig:Hips";
@@ -262,6 +265,7 @@ void Player::Update(float deltaTime)
 			
 		}
 	}
+	//ローリング以外の位置更新
 	else
 	{
 		
@@ -269,8 +273,8 @@ void Player::Update(float deltaTime)
 	    SetPos(VAdd(Pos, Move));
 		
 	}
-	//AnimUpdate(deltaTime);
 	
+	///Spgaugeの自動増加
 	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
 	{
 	

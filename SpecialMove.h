@@ -1,7 +1,7 @@
 #pragma once
-#include"DxLib.h"
-#include"Camera.h"
-#include"Player.h"
+#include "DxLib.h"
+#include "Camera.h"
+#include "Player.h"
 #include<vector>
 const VECTOR SPInitPos = VGet(0, 1000, -2000);
 const int SpEffctID = 2034;

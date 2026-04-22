@@ -1,6 +1,6 @@
 #pragma once
 #include<vector>
-#include"DxLib.h"
+#include "DxLib.h"
 class Shadow
 {
 private:

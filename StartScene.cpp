@@ -51,7 +51,8 @@ bool StartScene::Update()
 			player->Initial();
 
 			bool isJump = false;
-			player->SetDir(VGet(0, 0, 0));
+			player->SetPos(VGet(0.0f, 0.0f, 0.0f));
+			player->SetDir(VGet(0.0f, 0.0f, 0));
 			player->SetAnimSpeed(PlayerAnimSpeed);
 			player->SetAnimType(player->Stop);
 			player->SetNowAnimTime(0);
