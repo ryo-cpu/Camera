@@ -12,6 +12,7 @@
 #include "UIBar.h"
 #include "Shadow.h"
 #include "Scene's.h"
+#include"Counter.h"
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
