@@ -15,7 +15,7 @@
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
-const float HitStopTime = 20.0f;
+const float HitStopTime = 0.4f;
 enum GameModeType { Start, Win, Lose, Game };
 const char* HipName = "mixamorig:Hips";
 /// メイン関数
@@ -154,6 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	float deltaTime = Fps->GetDeltaTime();
 	float TotalTime = 0.0f;
+
 	///ゲームモード設定
 	int GameMode = Start;
 	bool isInput = false;
@@ -248,7 +249,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			///インプットを止め映像の更新のみをおこなう
 			else if (InHitStop)
 			{
-				if (HitStopTime < player->GetLiveTime() - HitStopStratTime)
+				if (HitStopTime < TotalTime - HitStopStratTime)
 				{
 					InHitStop = false;
 				}
@@ -285,18 +286,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			////衝突////////////////////////////////////////////////////////////////////////////////////////////////////
 			///次の動きの判定
-			NextPlayer.SetPos(VAdd(player->GetFramPos(HipName), player->GetMove()));
-			NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
-			NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
-			NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
-			NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
-			player->AnimUpdate(deltaTime);
-			enemy->AnimUpdate(deltaTime);
-			player->AnimUpdate(deltaTime);
-			player->UpdateCapsuleCollision();
-			player->UpdateCapsuleCollision(player->GetMove());
-			enemy->UpdateCapsuleCollision();
-			enemy->UpdateCapsuleCollision(enemy->GetMove());
+			if (!InHitStop)
+			{
+				NextPlayer.SetPos(VAdd(player->GetFramPos(HipName), player->GetMove()));
+				NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
+				NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
+				NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
+				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
+				player->AnimUpdate(deltaTime);
+				enemy->AnimUpdate(deltaTime);
+				player->AnimUpdate(deltaTime);
+				player->UpdateCapsuleCollision();
+				player->UpdateCapsuleCollision(player->GetMove());
+				enemy->UpdateCapsuleCollision();
+				enemy->UpdateCapsuleCollision(enemy->GetMove());
+
+			}
+					
 
 
 			///かべとplayer
@@ -419,11 +425,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						VECTOR test = MV1GetPosition(enemy->GetImg());
 						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
 						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
-						a
-						player->SetAttackCollision(player->GetPos(), NULL);
+						
+						player->SetAttackCollision(player->GetPos(), 0.0f);
 					
 						InHitStop = true;
-						HitStopStratTime = player->GetLiveTime();
+						HitStopStratTime = TotalTime;
 						if (enemyIndex >= 0 && PlayerIndex >= 0)
 						{
 							VECTOR EffctPos;
@@ -445,7 +451,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 				else///無敵中攻撃判定
 				{
-					StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
+					StartJoypadVibration(DX_INPUT_PAD1, 1000, 100, 1);
 				}
 
 
@@ -597,12 +603,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (!player->GetInSpecialMove())
 			{
 				BGM->Loop();
-				player->Update(deltaTime);
-				if (player->GetAnimType() != player->Hit)
-				{
-					enemy->Update(deltaTime);
-				}
+				if (!InHitStop)
 
+				{
+					player->Update(deltaTime);
+					if (player->GetAnimType() != player->Hit)
+					{
+						enemy->Update(deltaTime);
+					}
+				}
 			}
 			else
 			{
@@ -737,6 +746,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		ScreenFlip();// 裏画面の内容を表画面に反映 
 		///////fps調整///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		TotalTime += deltaTime;
 		Fps->End();
 	}
 	MV1DeleteModel(BackModel);
