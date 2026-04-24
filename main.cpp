@@ -423,9 +423,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						enemy->SubHp(player->GetAttack());
 						AttackSound->Play();
 						player->AddSpGauge(ChargeSpPowerAttack);
-
+						const char* HipName = "mixamorig:Hips";
+						VECTOR test = MV1GetPosition(enemy->GetImg());
+						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
 						if (enemy->GetAnimType() == enemy->DownArmSwing || enemy->GetAnimType()== enemy->Run)
 						{
+							VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+							camera->Look(EPos);
 							InCounter= counter->Start();
 							InHitStop = false;
 						}
@@ -437,10 +442,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 						enemy->SetAnimSpeed(EnemyAnimSpeed);
 						Knockback.y = 0;
-						const char* HipName = "mixamorig:Hips";
-						VECTOR test = MV1GetPosition(enemy->GetImg());
-						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
-						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+						
 						
 						player->SetAttackCollision(player->GetPos(), 0.0f);
 					
@@ -557,6 +559,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				player->SetInSpecialMove(SPMove->Update(deltaTime));
 
+			}
+			else if (InCounter)
+			{
+					
 			}
 			///通常時
 			else if (!OnWall)

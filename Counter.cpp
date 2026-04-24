@@ -25,9 +25,9 @@ bool Counter::Update(float DeltaTime)
 	///待機状態
 	else if(InWait)
 	{
-		
-		
-			////攻撃の再入力まち
+
+		camera.EndMove();
+		  			////攻撃の再入力まち
 			if (player.GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InWait = false;
@@ -47,6 +47,7 @@ bool Counter::Update(float DeltaTime)
 		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
 		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 10.f);
 		player.SetMove(Move);
+		camera.StartMove(VScale(Move, 0.9f));
 		
 	}
 	///ヒットストップ
@@ -78,7 +79,7 @@ void Counter::SetHit(bool isHit)
 		player.SetMove(VGet(0, 0, 0));
 		player.SetStartLiveTime(player.GetLiveTime());
 		
-
+		camera.EndMove();
 
 		
 	}
@@ -87,10 +88,11 @@ void Counter::SetHit(bool isHit)
 
 bool Counter::Start()
 {
+	
 	camera.ResetOffset(VTransformSR(CounterCamera, MGetRotY(player.GetDir().y)), player.GetPos());
 	camera.CalculateAngle(player.GetPos());
 	camera.CalculateTargetAngle(player.GetPos());
-	camera.Look(enemy.GetPos());
+	
 	player.SetMove(VGet(0, 0, 0));
 	player.SetPos(VAdd(InitCounter,enemy.GetPos()));
 	enemy.SetIsInvincible(false);
