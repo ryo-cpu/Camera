@@ -1,8 +1,9 @@
 #include "Counter.h"
-const float CounterTime = 300.0f;
-const float CounterHitStopTime=30.0f;
-const float HitWaitTime = 10.0f;
-Counter::Counter(Camera& Camera, Player& Player, Character& Enemy) : camera(Camera), player(Player), enemy(Enemy)
+const float CounterTime = 30.0f;
+const float CounterHitStopTime=1.5f;
+const float AttackTime = 10.0f;
+const VECTOR InitCounter = VGet(0, 0, 1000);
+Counter::Counter(Camera& Camera, Player& Player, Enemy& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {
 	InWait = true;
 	IsHit = false;
@@ -30,7 +31,6 @@ bool Counter::Update(float DeltaTime)
 			if (player.GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 			{
 				InWait = false;
-				InAttackTime = player.GetLiveTime();
 			}
 		
 	}
@@ -38,14 +38,15 @@ bool Counter::Update(float DeltaTime)
 	else if(!IsHit)
 	{
 		///攻撃生成と移動力決定
-		VECTOR Distance = VSub(player.GetPos(), enemy.GetPos());
-		Distance.y = 0;
+	
+	
 		//毎回同じ時間で終わりたいので攻撃開始から経過を引き　攻撃にかかる秒数から引き　その値で割ることで　大体同じ秒数で終わるはず
-		VECTOR Move = VScale(Distance, (1 / (HitWaitTime - (player.GetLiveTime() - InAttackTime))));
+		VECTOR Move = VScale(Distance,-1/AttackTime );
 		///攻撃の判定を作成
 		VECTOR AttackPos = VGet(0, 0, 0);
 		AttackPos = VTransformSR(AttackPos, MGetRotY(player.GetDir().y));
-		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 200.f);
+		player.SetAttackCollision(VAdd(player.GetPos(), AttackPos), 10.f);
+		player.SetMove(Move);
 		
 	}
 	///ヒットストップ
@@ -53,6 +54,12 @@ bool Counter::Update(float DeltaTime)
 	{
 		if (ElapsedTime > CounterHitStopTime)
 		{
+			camera.ResetOffset(VTransformSR(DefaultCamera, MGetRotY(player.GetDir().y)), player.GetPos());
+			camera.CalculateAngle(player.GetPos());
+			camera.CalculateTargetAngle(player.GetPos());
+			enemy.SetisDraw(true);
+			InWait = true;
+			IsHit = false;
 			return false;
 		}
 		
@@ -67,7 +74,28 @@ void Counter::SetHit(bool isHit)
 	////ヒット時の処理
 	if (isHit)
 	{
+		IsHit = true;
+		player.SetMove(VGet(0, 0, 0));
 		player.SetStartLiveTime(player.GetLiveTime());
+		
 
+
+		
 	}
+
+}
+
+bool Counter::Start()
+{
+	camera.ResetOffset(VTransformSR(CounterCamera, MGetRotY(player.GetDir().y)), player.GetPos());
+	camera.CalculateAngle(player.GetPos());
+	camera.CalculateTargetAngle(player.GetPos());
+	camera.Look(enemy.GetPos());
+	player.SetMove(VGet(0, 0, 0));
+	player.SetPos(VAdd(InitCounter,enemy.GetPos()));
+	enemy.SetIsInvincible(false);
+	Distance = VSub(player.GetPos(), enemy.GetPos());
+
+
+	return true;
 }

@@ -11,7 +11,7 @@ Shadow::Shadow(VECTOR lightDir)
 		VGet(-10000.0f, -100.0f, -10000.0f),
 		VGet(10000.0f, 1000.0f, 10000.0f)
 	);
-	SetShadowMapAdjustDepth(MapHandle, 0.005);
+	SetShadowMapAdjustDepth(MapHandle, 0.005f);
 }
 
 Shadow::~Shadow()

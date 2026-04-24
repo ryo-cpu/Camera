@@ -25,6 +25,7 @@ public:
     void SetKnockBack(VECTOR knockback);
     int GetMoveType();
     bool GetIsInvincible();
+    void SetIsInvincible(bool isinvincible);
     ///‚±‚¤‚Ç‚¤////
     void SelectMove();
     bool TackleAttack(VECTOR targetPos);

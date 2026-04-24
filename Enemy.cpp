@@ -261,6 +261,12 @@ bool Enemy::GetIsInvincible()
 	return IsInvincible;
 }
 
+void Enemy::SetIsInvincible(bool isinvincible)
+{
+
+	IsInvincible = isinvincible;
+}
+
 
 void Enemy::Update(float deltaTime)
 {

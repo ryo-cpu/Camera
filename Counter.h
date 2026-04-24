@@ -9,15 +9,13 @@ class Counter
 private:
 	Camera& camera;
 	Player& player;
-	Character& enemy;
+	Enemy& enemy;
 	bool InWait;///待機状態か判断
 	bool IsHit;
-	/// <summary>
-	/// 攻撃状態に入った時間
-	/// </summary>
-	float InAttackTime;
+	VECTOR Distance;
+
 public:
-	Counter(Camera& Camera,Player& Player, Character& Enemy);
+	Counter(Camera& Camera,Player& Player, Enemy& Enemy);
 	~Counter();
 	/// <summary>
 	/// 
@@ -26,6 +24,7 @@ public:
 	/// <returns>アップデートするかを返す</returns>
 	bool Update(float DeltaTime);
 	void SetHit(bool isHit);
+	bool Start();
 
 
 };

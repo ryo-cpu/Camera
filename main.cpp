@@ -151,6 +151,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Bar* enemyHpBar = new Bar(enemy);
 	UIBar* playerHP = new UIBar(player, 100, 700);
 	SpecialMove* SPMove = new SpecialMove(*camera, *player, *enemy);
+	
 	Counter* counter = new Counter(*camera, *player, *enemy);
 
 	float deltaTime = Fps->GetDeltaTime();
@@ -171,8 +172,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Field.SetPos(VGet(0.0f, 0, 0.0f));
 	Field.SetSphereSize(FieldSize);
 	///Effet
-	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
+	
 	EffectImg* RingE = new EffectImg("data/Ring.efkefc", 100.0f);
+	EffectImg* ImpactE = new EffectImg("data/Shock.efkefc", 100);
+
 	EffectM::Add(*RingE);
 	////音
 	SetCreate3DSoundFlag(TRUE);
@@ -187,6 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	WinScene* win = new WinScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 	LoseScene* lose = new LoseScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 
+	bool InCounter = false;
 
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
@@ -246,6 +250,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 				}
 
+			}
+			else if (InCounter)
+			{
+				InCounter = counter->Update(deltaTime);
 			}
 			///インプットを止め映像の更新のみをおこなう
 			else if (InHitStop)
@@ -408,12 +416,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						}
 
 					}
-					else
+					else if(!InCounter)
 					{
+						InHitStop = true;
+						HitStopStratTime = TotalTime;
 						enemy->SubHp(player->GetAttack());
 						AttackSound->Play();
 						player->AddSpGauge(ChargeSpPowerAttack);
 
+						if (enemy->GetAnimType() == enemy->DownArmSwing || enemy->GetAnimType()== enemy->Run)
+						{
+							InCounter= counter->Start();
+							InHitStop = false;
+						}
 						enemy->SetKnockBack((Knockback));
 						enemy->SetMove((Knockback));
 						enemy->SetMoveType(enemy->hit_stop);
@@ -429,8 +444,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						
 						player->SetAttackCollision(player->GetPos(), 0.0f);
 					
-						InHitStop = true;
-						HitStopStratTime = TotalTime;
+						
+						
 						if (enemyIndex >= 0 && PlayerIndex >= 0)
 						{
 							VECTOR EffctPos;
@@ -444,7 +459,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
 						}
 					}
+					else
+					{
+						counter->SetHit(true);
 
+						enemy->SubHp(player->GetAttack());
+						AttackSound->Play();
+						player->AddSpGauge(ChargeSpPowerAttack);
+						enemy->SetMoveType(enemy->hit_stop);
+						enemy->SetAnimType(enemy->Hit);
+						const char* HipName = "mixamorig:Hips";
+						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
+						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+
+						player->SetAttackCollision(player->GetPos(), 0.0f);
+						enemy->SetKnockBack((Knockback));
+						enemy->SetMove((Knockback));
+						enemy->SetMoveType(enemy->hit_stop);
+						enemy->SetAnimType(enemy->Hit);
+						
+						if (enemyIndex >= 0 && PlayerIndex >= 0)
+						{
+							VECTOR EffctPos;
+							VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
+							VECTOR PPos = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+							EffctPos = VAdd(PPos, VScale(VSub(EPos, PPos), 0.25));
+
+
+							VECTOR EffectMove = VSub(EffctPos, player->GetPos());
+							EffectMove = VNorm(EffectMove);
+							EffectM::Add(*ImpactE, EffctPos, VGet(0, 0, 0), EffectMove);
+
+						}
+					}
 
 
 
@@ -605,10 +652,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				BGM->Loop();
 				if (!InHitStop)
-
 				{
 					player->Update(deltaTime);
-					if (player->GetAnimType() != player->Hit)
+					if (player->GetAnimType() != player->Hit && !InCounter)
 					{
 						enemy->Update(deltaTime);
 					}

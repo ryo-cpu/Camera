@@ -12,6 +12,8 @@ const VECTOR LoseCamera = VGet(0, 300, 500);
 const VECTOR WinCameraFast = VGet(500, 1000, 1000);
 const VECTOR WinCameraSecand = VGet(0, 1000, -1000);
 const VECTOR WaitCamera = VGet(0, 200, 1500);
+const VECTOR CounterCamera = VGet(100, -100, 200);
+
 
 
 
