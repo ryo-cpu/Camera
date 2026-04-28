@@ -1,10 +1,10 @@
 #include "Shadow.h"
 
-
+const int ShadowResolution = 8192;
 
 Shadow::Shadow(VECTOR lightDir)
 {
-	MapHandle = MakeShadowMap(2048, 2048);
+	MapHandle = MakeShadowMap(ShadowResolution,ShadowResolution);
 	SetShadowMapLightDirection(MapHandle, lightDir);
 	SetShadowMapDrawArea(
 		MapHandle,

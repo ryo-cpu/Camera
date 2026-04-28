@@ -1,8 +1,8 @@
 #include "Counter.h"
-const float CounterTime = 30.0f;
+const float CounterTime = 10.0f;
 const float CounterHitStopTime=1.5f;
 const float AttackTime = 10.0f;
-const VECTOR InitCounter = VGet(0, 0, 1000);
+const VECTOR InitCounter = VGet(0, 0, -1000);
 Counter::Counter(Camera& Camera, Player& Player, Enemy& Enemy) : camera(Camera), player(Player), enemy(Enemy)
 {
 	InWait = true;
@@ -26,9 +26,9 @@ bool Counter::Update(float DeltaTime)
 	else if(InWait)
 	{
 
-		camera.EndMove();
+		    camera.EndMove();
 		  			////UŒ‚‚ÌÄ“ü—Í‚Ü‚¿
-			if (player.GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
+			if (player.GetInputState()->Buttons[XINPUT_BUTTON_B] != 0)
 			{
 				InWait = false;
 			}
@@ -76,7 +76,7 @@ void Counter::SetHit(bool isHit)
 	if (isHit)
 	{
 		IsHit = true;
-		player.SetMove(VGet(0, 0, 0));
+		player.SetMove(VGet(0.0f, 0.0f, 0.0f));
 		player.SetStartLiveTime(player.GetLiveTime());
 		
 		camera.EndMove();
@@ -88,15 +88,28 @@ void Counter::SetHit(bool isHit)
 
 bool Counter::Start()
 {
-	
+	///“G‚Ì³–Ê‚ÉƒvƒŒƒCƒ„[‚ğˆÚ“®
+	const char* HipName = "mixamorig:Hips";
+	int enemyIndex = MV1SearchFrame(enemy.GetImg(), HipName);
+	VECTOR EPos = MV1GetFramePosition(enemy.GetImg(), enemyIndex);
+	EPos.y = 0;
+	/// ////UŒ‚‰ŠúˆÊ’u‚ğ‰ñ“]‚¹‚ê‚é
+	VECTOR Init = VTransformSR(InitCounter, MGetRotY(enemy.GetDir().y));
+	player.SetMove(VGet(0.0f, 0.0f, 0.0f));
+	player.SetPos(VAdd(Init, EPos));
+	///ƒvƒŒƒCƒ„[‚ÌŒü‚«‚ğ“G‚ÉŒü‚¯‚é
+	VECTOR Front = VNorm(VSub(player.GetPos(), enemy.GetPos()));
+	float Angle = atan2f(Front.x, Front.z);
+	player.SetDir(VGet(0, Angle, 0));
+	MV1SetRotationXYZ(player.GetImg(), player.GetDir());
+	/// ƒJƒƒ‰‚ğİ’è
 	camera.ResetOffset(VTransformSR(CounterCamera, MGetRotY(player.GetDir().y)), player.GetPos());
 	camera.CalculateAngle(player.GetPos());
 	camera.CalculateTargetAngle(player.GetPos());
-	
-	player.SetMove(VGet(0, 0, 0));
-	player.SetPos(VAdd(InitCounter,enemy.GetPos()));
+
+	///–³“G‚Ì‰ğœ‚ÆˆÚ“®‹——£
 	enemy.SetIsInvincible(false);
-	Distance = VSub(player.GetPos(), enemy.GetPos());
+	Distance = VSub(player.GetPos(), EPos);
 
 
 	return true;

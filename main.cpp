@@ -131,12 +131,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	shadow->AddTarget(enemy->GetImg());
 
 
-
-
-
-
-
-
 	fps* Fps = new fps();
 	Fps->Initialization(1.0 / 60.0);
 
@@ -215,7 +209,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			///画面をフェードイン
 			if (Fade->GetAlpha() > 0)
 			{
-				Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
+				Fade->SetAlpha(Fade->GetAlpha() - (static_cast<int> (255 / 2 * deltaTime)));
 			}
 
 			//playerの状態による更新
@@ -364,7 +358,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
 				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 			}
-			///enemy攻撃p
+			///enemy攻撃
 			////player攻撃
 			if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 			{
@@ -427,7 +421,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 						VECTOR test = MV1GetPosition(enemy->GetImg());
 						int enemyIndex = MV1SearchFrame(enemy->GetImg(), HipName);
 						int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
-						if (enemy->GetAnimType() == enemy->DownArmSwing || enemy->GetAnimType()== enemy->Run)
+						if (enemy->GetAnimType() == enemy->ArmSwing)
 						{
 							VECTOR EPos = MV1GetFramePosition(enemy->GetImg(), enemyIndex);
 							camera->Look(EPos);
