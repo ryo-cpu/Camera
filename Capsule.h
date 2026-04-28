@@ -40,7 +40,7 @@ public:
 
     void SetFrameName(char* StartName,char* EndName);
 
-
+    char* GetStartName();
    
 };
 

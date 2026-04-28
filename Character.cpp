@@ -393,6 +393,17 @@ VECTOR Character::GetFramPos(const char* framName)
     return Pos;
 }
 
+Capsule Character::SearchCapsule(const char* frameName)
+{
+    for (int i = 0; i > CapsuleCollision.size(); i++)
+    {
+                if(CapsuleCollision[i].GetStartName() == frameName)
+                {
+                    return CapsuleCollision[i];
+                }
+    }
+}
+
 
 
 void Character::Turn(VECTOR RotatePower)

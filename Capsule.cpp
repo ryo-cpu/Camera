@@ -166,3 +166,8 @@ void Capsule::SetFrameName(char* StartName, char* EndName)
     SetStartFrameName(StartName);
     SetEndFrameName(EndName);
 }
+
+char* Capsule::GetStartName()
+{
+    return StartFrameName;
+}
