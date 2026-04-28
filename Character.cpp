@@ -1,5 +1,7 @@
 #include "Character.h"
 #include "iostream"
+#include <algorithm> 
+ 
 Character::Character()
 {
     LiveTime = 0.0f;
@@ -325,6 +327,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
     std::vector<Capsule> M = Move.GetCapsuleCollision();
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
+    std::vector<int> HitCapusuleListN;
 
     for (int i = 0; i <M.size(); i++)
     {
@@ -332,11 +335,23 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
         {
             if (Jag.Survey(M[i], N[j]))
             {
-             VECTOR p= Jag.PushBack(M[i], N[j]);
+                 VECTOR p= Jag.PushBack(M[i], N[j]);
+                 HitCapusuleListN.push_back(j);
 
-             pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
+    }
+    std::sort(HitCapusuleListN.begin(), HitCapusuleListN.end());
+    auto it = std::unique(HitCapusuleListN.begin(), HitCapusuleListN.end());
+    HitCapusuleListN.erase(it, HitCapusuleListN.end());
+    for (int i = 0; i < HitCapusuleListN.size(); i++)
+    {
+        const char* HipName = "mixamorig:Hips";
+
+        int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
+
+        MV1CollCheck_Capsule(Move.GetImg(), HipIndex, N[i].GetStartPos(), N[i].GetEndPos(), N[i].GetRSize());
 
     }
 

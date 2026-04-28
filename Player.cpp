@@ -1,6 +1,5 @@
 #include "Player.h"
 #include<DxLib.h>
-
 #include<cmath>
 
 
