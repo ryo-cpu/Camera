@@ -328,6 +328,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
     std::vector<int> HitCapusuleListN;
+	ModelCheckers Checkers;
 
     for (int i = 0; i <M.size(); i++)
     {
@@ -337,6 +338,27 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
             {
                  VECTOR p= Jag.PushBack(M[i], N[j]);
                  HitCapusuleListN.push_back(j);
+                 const char* HipName = "mixamorig:Hips";
+
+                 int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
+				 ///相手のカプセルにモデルの部分を取得
+                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetImg(), HipIndex, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetImg(), HipIndex, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+
+
+                for (int m = 0; m < MovePolys.HitNum; m++)
+                {
+                    for(int n = 0; n < NotMovePolys.HitNum; n++)
+                    {
+						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
+						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
+                      ///ポリゴン同士のの当たり判定かつ押し返し
+                        if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
+                        {
+
+                        }
+					}
+                }
 
                  pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
@@ -347,11 +369,9 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
     HitCapusuleListN.erase(it, HitCapusuleListN.end());
     for (int i = 0; i < HitCapusuleListN.size(); i++)
     {
-        const char* HipName = "mixamorig:Hips";
+       
 
-        int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
-
-        MV1CollCheck_Capsule(Move.GetImg(), HipIndex, N[i].GetStartPos(), N[i].GetEndPos(), N[i].GetRSize());
+     
 
     }
 
@@ -397,10 +417,10 @@ Capsule Character::SearchCapsule(const char* frameName)
 {
     for (int i = 0; i > CapsuleCollision.size(); i++)
     {
-                if(CapsuleCollision[i].GetStartName() == frameName)
-                {
-                    return CapsuleCollision[i];
-                }
+       if(CapsuleCollision[i].GetStartName() == frameName)
+       {
+           return CapsuleCollision[i];
+       }
     }
 }
 

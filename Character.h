@@ -6,6 +6,7 @@
 #include<cmath>
 #include "EffectM.h"
 #include "Capsule.h"
+#include "ModelCheckers.h"
 
 
 class Character
