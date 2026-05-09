@@ -736,7 +736,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			shadow->StartUse();
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
-			/*	DrawCube3D(VGet(-10000.0f, -100.0f, -10000.0f), VGet(10000.0f, 0.0f, 10000.0f), GetColor(200, 250, 250), GetColor(0, 0, 0), TRUE);*/
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
 			player->Draw();
