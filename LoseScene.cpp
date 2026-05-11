@@ -23,6 +23,7 @@ bool LoseScene::Update()
 	if (Fade->GetAlpha() == 255&&InModeChange)///画面が真っ黒になったら
 	{
 		enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
+		enemy->SetAnimType(enemy->Dance);
 		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 		camera->ResetOffset(StartCamera, enemy->GetPos());
 		InModeChange = false;

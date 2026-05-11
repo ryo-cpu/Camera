@@ -9,9 +9,7 @@ bool WinScene::Update()
 		if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 		{
 			InModeChange = true;
-			enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
-			camera->ResetOffset(StartCamera, enemy->GetPos());
-			enemy->SetAnimType(enemy->Dance);
+			
 		}
 		if (InModeChange)
 		{
@@ -63,7 +61,8 @@ bool WinScene::Update()
 
 	if (Fade->GetAlpha() == 255&&InModeChange)///画面が真っ黒になったら
 	{
-		
+		enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
+		camera->ResetOffset(StartCamera, enemy->GetPos());
 		enemy->SetPos(VGet(0.0f, 0.0f, 0.0f));
 		camera->ResetOffset(StartCamera, enemy->GetPos());
 		enemy->SetAnimType(enemy->Dance);

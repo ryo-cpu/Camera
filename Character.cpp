@@ -353,7 +353,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 }
-                
+                int count = 0;
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
@@ -365,8 +365,9 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
 
                         if (VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]))<(MR+NR))
                         {
-                            DrawSphere3D(NotMoveP.Position[0], NR, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
-                          
+                            DrawSphere3D(NotMoveP.Position[0], NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                            count++;
+                            
                             ///ポリゴン同士のの当たり判定かつ押し返し
                             if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
                             {
@@ -378,6 +379,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                       
 					}
                 }
+                int ans = count;
                    //pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
