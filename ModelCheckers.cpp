@@ -122,48 +122,59 @@ bool ModelCheckers::IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
 
 bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VECTOR SphereP, float R)
 {
-    ////階層分けによって計算を減らす
-    bool isJoint = false;
-
-    VECTOR PT1 = VSub(T1, SphereP);
-    VECTOR PT2 = VSub(T2, SphereP);
-    VECTOR PT3 = VSub(T3, SphereP);
-    VECTOR Min = VMin(PT1, PT2, PT3);
-    if (VSize(Min) >= R)
-    {
-     
-        VECTOR T1T2 = VSub(SphereP,VProject(SphereP, T1, T2));
-        VECTOR T1T3 = VSub(SphereP, VProject(SphereP, T1, T3));
-        VECTOR T2T3 = VSub(SphereP, VProject(SphereP, T2, T3));
-
-     
-        Min = VMin(T1T2,T1T3,T2T3);
-        if (VSize(Min) >= R)
-        {
-            ///法線ベクトル
-            VECTOR N = VCross(VSub(T1, T2), VSub(T1, T3));
-            float nlen = VSize(N);
-            if (nlen < 1e-8f) {
-                // 退化三角形（面が無い）に到達した場合、安全策としてここでは辺/頂点判定が既に終わっているので false を返す。
-                // 実際の要件に応じて true/false を調整してください。
-                return false;
-            }
-            float D = -(T1.x * N.x + T1.y * N.y + T1.z * N.z);
-
-            float Size =fabs(SphereP.x * N.x + SphereP.y * N.y + SphereP.z * N.z + D) / VSize(N);
-
-            return R >= Size;
-
-        }
-        else
-        {
-            return true;
-        }
+    ///法線ベクトルを出す
+    VECTOR Edge1 = VSub(T2, T1);
+    VECTOR Edge2 = VSub(T3, T1);
+    VECTOR Normal = VCross(Edge1, Edge2);
+    float NormalLen = VSize(Normal);
+    // 退化三角形チェック
+    if (NormalLen < 1e-8f) {
+        return false;
     }
-    else
-    {
+
+    // 法線を正規化
+    Normal = VScale(Normal, 1.0f / NormalLen);
+
+    // 球の中心から三角形平面への距離
+    VECTOR T1toSphere = VSub(SphereP, T1);
+    float Distance = fabs(VDot(T1toSphere, Normal));
+
+    // 距離がR以上なら衝突していない
+    if (Distance > R) {
+        return false;
+    }
+    // 球の中心から平面への最近点を求める
+    VECTOR ClosestPointOnPlane = VSub(SphereP, VScale(Normal, VDot(T1toSphere, Normal)));
+
+    // その点が三角形内にあるかチェック（重心座標を使用）
+    if (IsPointInTriangle_Robust(ClosestPointOnPlane, T1, T2, T3)) {
+        return true;  // 平面内に衝突点がある
+    }
+
+    // 三角形の3つの辺との距離をチェック
+    float MinDist = R;
+
+    // 辺1 (T1-T2)
+    if (IsPointToSegmentDistance(SphereP, T1, T2, R)) {
         return true;
     }
+
+    // 辺2 (T2-T3)
+    if (IsPointToSegmentDistance(SphereP, T2, T3, R)) {
+        return true;
+    }
+
+    // 辺3 (T3-T1)
+    if (IsPointToSegmentDistance(SphereP, T3, T1, R)) {
+        return true;
+    }
+
+    // 3つの頂点との距離をチェック
+    if (VSize(VSub(SphereP, T1)) <= R) return true;
+    if (VSize(VSub(SphereP, T2)) <= R) return true;
+    if (VSize(VSub(SphereP, T3)) <= R) return true;
+
+    return false;
 }
 
 bool ModelCheckers::IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, VECTOR TB2, VECTOR TB3)
@@ -266,4 +277,58 @@ bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R
 
 
     return false;
+}
+
+bool ModelCheckers::IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
+{
+    VECTOR v0 = VSub(T3, T1);
+    VECTOR v1 = VSub(T2, T1);
+    VECTOR v2 = VSub(P, T1);
+
+    ///ないせきをとる
+    float dot00 = VDot(v0, v0);
+    float dot01 = VDot(v0, v1);
+    float dot02 = VDot(v0, v2);
+    float dot11 = VDot(v1, v1);
+    float dot12 = VDot(v1, v2);
+
+    float invDenom = 1.0f / (dot00 * dot11 - dot01 * dot01);
+    float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+    float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+
+    return (u >= 0) && (v >= 0) && (u + v <= 1);
+}
+
+bool ModelCheckers::IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float R)
+{
+    VECTOR AP = VSub(P, A);
+    VECTOR AB = VSub(B, A);
+    float ABLen = VSize(AB);
+
+    if (ABLen < 1e-8f) {
+        return VSize(AP) <= R;
+    }
+
+    float t = VDot(AP, AB) / (ABLen * ABLen);
+    t = (t < 0.0f) ? 0.0f : (t > 1.0f) ? 1.0f : t;
+
+    VECTOR ClosestPoint = VAdd(A, VScale(AB, t));
+    return VSize(VSub(P, ClosestPoint)) <= R;
+}
+
+bool ModelCheckers::IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
+{
+    VECTOR Normal = VCross(VSub(T2, T1), VSub(T3, T1));
+
+    VECTOR C1 = VCross(VSub(T2, T1), VSub(P, T1));
+    VECTOR C2 = VCross(VSub(T3, T2), VSub(P, T2));
+    VECTOR C3 = VCross(VSub(T1, T3), VSub(P, T3));
+
+    float d1 = VDot(Normal, C1);
+    float d2 = VDot(Normal, C2);
+    float d3 = VDot(Normal, C3);
+
+    const float EPSILON = 1e-6f;
+    return (d1 >= -EPSILON && d2 >= -EPSILON && d3 >= -EPSILON) ||
+        (d1 <= EPSILON && d2 <= EPSILON && d3 <= EPSILON);
 }

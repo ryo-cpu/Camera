@@ -1,4 +1,4 @@
-#include "Character.h"
+Ôªø#include "Character.h"
 #include "iostream"
 #include <algorithm> 
  
@@ -24,7 +24,7 @@ Character::Character()
 }
 Character::Character(int img)
 {
-    //ÉÇÉfÉãÇ™ìØÇ∂ÇÃÇ∆èàóùåyå∏ÇÃÇΩÇﬂéËìÆ
+    //„É¢„Éá„É´„ÅåÂêå„Åò„ÅÆ„Å®Âá¶ÁêÜËªΩÊ∏õ„ÅÆ„Åü„ÇÅÊâãÂãï
     Img = img;
     isDraw = true;
     Capsule Body("mixamorig:Hips", "mixamorig:Neck", 100, Img);
@@ -178,7 +178,7 @@ void Character::SetAnimType(int animType)
     IsAnim = true;
 
     NowAnimTime = 0;
-    MV1SetAttachAnimTime(Img, AnimIndex, NowAnimTime);  // ÉAÉjÉÅÅ[ÉVÉáÉìéûä‘Çê›íË
+    MV1SetAttachAnimTime(Img, AnimIndex, NowAnimTime);  // „Ç¢„Éã„É°„Éº„Ç∑„Éß„É≥ÊôÇÈñì„ÇíË®≠ÂÆö
 
 }
 
@@ -220,7 +220,7 @@ float Character::GetAnimSpeed()
 void Character::AnimUpdate(float deltaTime)
 {
 
-    NowAnimTime+= deltaTime * AnimSpeed;  // ÉAÉjÉÅÅ[ÉVÉáÉìéûä‘ÇêiÇﬂÇÈ
+    NowAnimTime+= deltaTime * AnimSpeed;  // „Ç¢„Éã„É°„Éº„Ç∑„Éß„É≥ÊôÇÈñì„ÇíÈÄ≤„ÇÅ„Çã
 
     IsAnim = true;
 
@@ -228,7 +228,7 @@ void Character::AnimUpdate(float deltaTime)
     {
         IsAnim=false;
     }
-    MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime);  // ÉAÉjÉÅÅ[ÉVÉáÉìéûä‘Çê›íË
+    MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime);  // „Ç¢„Éã„É°„Éº„Ç∑„Éß„É≥ÊôÇÈñì„ÇíË®≠ÂÆö
 }
 
 void Character::MoveUpdate(VECTOR move)
@@ -340,9 +340,12 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                  VECTOR p= Jag.PushBack(M[i], N[j]);
                  HitCapusuleListN.push_back(j);
                  const char* HipName =M[i].GetStartName();
+                 // ‚úÖ „Éá„Éê„ÉÉ„Ç∞Âá∫ÂäõÔºàÁ¢∫Ë™çÁî®Ôºâ
+                //DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                 //DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
-				 ///ëäéËÇÃÉJÉvÉZÉãÇ…ÉÇÉfÉãÇÃïîï™ÇéÊìæ
+				 ///Áõ∏Êâã„ÅÆ„Ç´„Éó„Çª„É´„Å´„É¢„Éá„É´„ÅÆÈÉ®ÂàÜ„ÇíÂèñÂæó
                 MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
                 MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
 
@@ -350,24 +353,32 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 }
-
+                
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
 						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
-                      ///É|ÉäÉSÉììØémÇÃÇÃìñÇΩÇËîªíËÇ©Ç¬âüÇµï‘Çµ
-                        if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
-                        {
-                            ///////////////
-                            pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                        float MR = VSize(Checkers.VMax(VSub(MoveP.Position[0], MoveP.Position[1]), VSub(MoveP.Position[0], MoveP.Position[2])));
+                        float NR = VSize(Checkers.VMax(VSub(NotMoveP.Position[0], NotMoveP.Position[1]), VSub(NotMoveP.Position[0], NotMoveP.Position[2])));
 
+                        if (VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]))<(MR+NR))
+                        {
+                            DrawSphere3D(NotMoveP.Position[0], NR, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                          
+                            ///„Éù„É™„Ç¥„É≥ÂêåÂ£´„ÅÆ„ÅÆÂΩì„Åü„ÇäÂà§ÂÆö„Åã„Å§Êäº„ÅóËøî„Åó
+                            if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
+                            {
+                                ///////////////
+                                pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+
+                            }
                         }
+                      
 					}
                 }
-
-               //pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                   //pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }
@@ -437,7 +448,7 @@ void Character::Turn(VECTOR RotatePower)
 {
    
     Dir = VAdd(Dir, RotatePower);
-    // äpìxÇYé≤âÒì]Ç…ÉZÉbÉg
+    // ËßíÂ∫¶„ÇíYËª∏ÂõûËª¢„Å´„Çª„ÉÉ„Éà
     MV1SetRotationXYZ(Img,Dir);
 }
 
