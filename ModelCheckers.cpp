@@ -187,21 +187,25 @@ bool ModelCheckers::IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3
             Axes.push_back(VCross(EdgesA[i], EdgesB[j]));
         }
     }
+    
+    const float EPSILON = 1e-6f;  // ïÇìÆè¨êîì_åÎç∑ÇÃóeç∑
 
     for(const auto& Axis : Axes)
     {
+        if (VSize(Axis) < EPSILON)continue;
+
 		float MinA=0, MinB=0, MaxA=0, MaxB=0;
 
 		TProject(Triangle_A, Axis, MinA, MaxA);
 		TProject(Triangle_B, Axis, MinB, MaxB);
 
-        if (MaxA < MinB || MaxB < MinA)
+        if (MaxA < MinB - EPSILON || MaxB < MinA - EPSILON)
         {
             return false; 
         }
 	}
 
-    return false;
+    return true;
 }
 
 void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float &OutMax)

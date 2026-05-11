@@ -20,6 +20,7 @@ Character::Character()
     AnimType = -1;
     AnimSpeed = 1.0f;
     IsAnim = false;
+    MV1SetupCollInfo(Img, 0, -1, -1);
 }
 Character::Character(int img)
 {
@@ -338,13 +339,17 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
             {
                  VECTOR p= Jag.PushBack(M[i], N[j]);
                  HitCapusuleListN.push_back(j);
-                 const char* HipName = "mixamorig:Hips";
+                 const char* HipName =M[i].GetStartName();
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
-                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetImg(), HipIndex, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
-                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetImg(), HipIndex, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
 
+                if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
+                {
+                  VSize(p) > VSize(pushBack) ? p : pushBack;
+                }
 
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
@@ -355,12 +360,14 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                       ///ポリゴン同士のの当たり判定かつ押し返し
                         if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
                         {
+                            ///////////////
+                            pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
 
                         }
 					}
                 }
 
-                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+               //pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }
