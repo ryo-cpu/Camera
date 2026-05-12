@@ -54,23 +54,40 @@ void Enemy::SelectMove()
 			SetStartLiveTime(LiveTime);
 			SetAnimType(Dance);
 		}
-		else if (VSize(distance) >= 1000)
+		else 
 		{
-			MotionType = Tackle;
-			AttackCollision = GetCollision();
-			SetStartLiveTime(LiveTime);
-			SetAnimType(Jump);
-			SetSpeed(20);
-		}
-		else
-		{
-			VECTOR EnemyDir = VNorm(VSub(GetPos(), Target->GetPos()));
-			float Angle = atan2f(EnemyDir.x, EnemyDir.z);
-			SetDir(VGet(0, Angle, 0));
-			MotionType = DownArmSwing;
-			SetAnimType(ArmSwing);
+			///この距離以上は必ずタックル
+			const int  MaxArmAttackDistnce=1000;
+			int TackleProbability = (static_cast<int>( VSize(distance)) / MaxArmAttackDistnce)*100;
+			if (TackleProbability < 0)
+			{
+				TackleProbability = 0;
+			}
+			else if (TackleProbability > 100)
+			{
+				TackleProbability = 100;
+			}
 
+			if (GetRand(100)<= TackleProbability)
+			{
+				MotionType = Tackle;
+				AttackCollision = GetCollision();
+				SetStartLiveTime(LiveTime);
+				SetAnimType(Jump);
+				SetSpeed(20);
+			}
+			else
+			{
+				VECTOR EnemyDir = VNorm(VSub(GetPos(), Target->GetPos()));
+				float Angle = atan2f(EnemyDir.x, EnemyDir.z);
+				SetDir(VGet(0, Angle, 0));
+				MotionType = DownArmSwing;
+				SetAnimType(ArmSwing);
+
+			}
+			
 		}
+		
 		StartLiveTime = LiveTime;
 		IsMotion = true;
 	}
