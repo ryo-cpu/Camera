@@ -1,4 +1,4 @@
-#include "ModelCheckers.h"
+ï»¿#include "ModelCheckers.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -8,7 +8,7 @@ struct Triangle {
     VECTOR v[3];
 };
 
-// OBJ“Ç‚İ‚İ—p
+// OBJèª­ã¿è¾¼ã¿ç”¨
 struct Vertex {
     float x, y, z;
 };
@@ -26,13 +26,13 @@ bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
         std::string prefix;
         ss >> prefix;
 
-        if (prefix == "v")  // ’¸“_À•W
+        if (prefix == "v")  // é ‚ç‚¹åº§æ¨™
         {
             Vertex v;
             ss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
         }
-        else if (prefix == "f") // OŠpŒ`–Ê
+        else if (prefix == "f") // ä¸‰è§’å½¢é¢
         {
             int idx[3];
             ss >> idx[0] >> idx[1] >> idx[2];
@@ -40,7 +40,7 @@ bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
             Triangle tri;
             for (int i = 0; i < 3; i++)
             {
-                Vertex& v = vertices[idx[i] - 1]; // OBJ‚Í1n‚Ü‚è
+                Vertex& v = vertices[idx[i] - 1]; // OBJã¯1å§‹ã¾ã‚Š
                 tri.v[i] = VGet(v.x, v.y, v.z);
             }
             tris.push_back(tri);
@@ -99,7 +99,7 @@ VECTOR VMin(VECTOR V1, VECTOR V2, VECTOR V3)
 VECTOR VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR EndGround)
 {
     VECTOR Ground = VSub(EndGround, StartGround);
-    ////CheckPint‚Íˆø”‚Æ•Ê‚ê‚Ä‚¢‚é‚Æl‚¦‚é@•ÏX‚µ‚Ä‚àˆø”‘¤‚ğ‰ü•Ï‚µ‚È‚¢
+    ////CheckPintã¯å¼•æ•°ã¨åˆ¥ã‚Œã¦ã„ã‚‹ã¨è€ƒãˆã‚‹ã€€å¤‰æ›´ã—ã¦ã‚‚å¼•æ•°å´ã‚’æ”¹å¤‰ã—ãªã„
     CheckPoint = VSub(CheckPoint, StartGround);
     VECTOR  Proj = VScale(Ground, (VDot(CheckPoint, Ground) / VDot(Ground, Ground)));
     return Proj;
@@ -122,54 +122,54 @@ bool IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
 
 bool IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VECTOR SphereP, float R)
 {
-    ///–@üƒxƒNƒgƒ‹‚ğo‚·
+    ///æ³•ç·šãƒ™ã‚¯ãƒˆãƒ«ã‚’å‡ºã™
     VECTOR Edge1 = VSub(T2, T1);
     VECTOR Edge2 = VSub(T3, T1);
     VECTOR Normal = VCross(Edge1, Edge2);
     float NormalLen = VSize(Normal);
-    // ‘Ş‰»OŠpŒ`ƒ`ƒFƒbƒN
+    // é€€åŒ–ä¸‰è§’å½¢ãƒã‚§ãƒƒã‚¯
     if (NormalLen < 1e-8f) {
         return false;
     }
 
-    // –@ü‚ğ³‹K‰»
+    // æ³•ç·šã‚’æ­£è¦åŒ–
     Normal = VScale(Normal, 1.0f / NormalLen);
 
-    // ‹…‚Ì’†S‚©‚çOŠpŒ`•½–Ê‚Ö‚Ì‹——£
+    // çƒã®ä¸­å¿ƒã‹ã‚‰ä¸‰è§’å½¢å¹³é¢ã¸ã®è·é›¢
     VECTOR T1toSphere = VSub(SphereP, T1);
     float Distance = fabs(VDot(T1toSphere, Normal));
 
-    // ‹——£‚ªRˆÈã‚È‚çÕ“Ë‚µ‚Ä‚¢‚È‚¢
+    // è·é›¢ãŒRä»¥ä¸Šãªã‚‰è¡çªã—ã¦ã„ãªã„
     if (Distance > R) {
         return false;
     }
-    // ‹…‚Ì’†S‚©‚ç•½–Ê‚Ö‚ÌÅ‹ß“_‚ğ‹‚ß‚é
+    // çƒã®ä¸­å¿ƒã‹ã‚‰å¹³é¢ã¸ã®æœ€è¿‘ç‚¹ã‚’æ±‚ã‚ã‚‹
     VECTOR ClosestPointOnPlane = VSub(SphereP, VScale(Normal, VDot(T1toSphere, Normal)));
 
-    // ‚»‚Ì“_‚ªOŠpŒ`“à‚É‚ ‚é‚©ƒ`ƒFƒbƒNidSÀ•W‚ğg—pj
+    // ãã®ç‚¹ãŒä¸‰è§’å½¢å†…ã«ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ï¼ˆé‡å¿ƒåº§æ¨™ã‚’ä½¿ç”¨ï¼‰
     if (IsPointInTriangle_Robust(ClosestPointOnPlane, T1, T2, T3)) {
-        return true;  // •½–Ê“à‚ÉÕ“Ë“_‚ª‚ ‚é
+        return true;  // å¹³é¢å†…ã«è¡çªç‚¹ãŒã‚ã‚‹
     }
 
-    // OŠpŒ`‚Ì3‚Â‚Ì•Ó‚Æ‚Ì‹——£‚ğƒ`ƒFƒbƒN
+    // ä¸‰è§’å½¢ã®3ã¤ã®è¾ºã¨ã®è·é›¢ã‚’ãƒã‚§ãƒƒã‚¯
     float MinDist = R;
 
-    // •Ó1 (T1-T2)
+    // è¾º1 (T1-T2)
     if (IsPointToSegmentDistance(SphereP, T1, T2, R)) {
         return true;
     }
 
-    // •Ó2 (T2-T3)
+    // è¾º2 (T2-T3)
     if (IsPointToSegmentDistance(SphereP, T2, T3, R)) {
         return true;
     }
 
-    // •Ó3 (T3-T1)
+    // è¾º3 (T3-T1)
     if (IsPointToSegmentDistance(SphereP, T3, T1, R)) {
         return true;
     }
 
-    // 3‚Â‚Ì’¸“_‚Æ‚Ì‹——£‚ğƒ`ƒFƒbƒN
+    // 3ã¤ã®é ‚ç‚¹ã¨ã®è·é›¢ã‚’ãƒã‚§ãƒƒã‚¯
     if (VSize(VSub(SphereP, T1)) <= R) return true;
     if (VSize(VSub(SphereP, T2)) <= R) return true;
     if (VSize(VSub(SphereP, T3)) <= R) return true;
@@ -199,7 +199,7 @@ bool IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, V
         }
     }
     
-    const float EPSILON = 1e-6f;  // •‚“®¬”“_Œë·‚Ì—e·
+    const float EPSILON = 1e-6f;  // æµ®å‹•å°æ•°ç‚¹èª¤å·®ã®å®¹å·®
 
     for(const auto& Axis : Axes)
     {
@@ -232,7 +232,7 @@ void TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float
 
 bool IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
 {
-  ///M‚Q‚Ìƒ‚ƒfƒ‹‚©‚çOŠpŒ`‚ÌƒŠƒXƒg‚ğì¬ ‚±‚±‚ª‚Ç‚¤‚É‚à‚Å‚«‚È‚¢
+  ///Mï¼’ã®ãƒ¢ãƒ‡ãƒ«ã‹ã‚‰ä¸‰è§’å½¢ã®ãƒªã‚¹ãƒˆã‚’ä½œæˆ ã“ã“ãŒã©ã†ã«ã‚‚ã§ããªã„
     std::vector<VECTOR> List;
     std::vector<VECTOR> M1List;
 
@@ -247,7 +247,7 @@ bool IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
 
          if (IsTriangle_Joint_Sphere(Triangle[1], Triangle[0], Triangle[2], MV1GetPosition(M1), M1_R))
          {
-             ///‚à‚Á‚Æ‚à—£‚ê‚½“ñ‚Â‚ğo‚·
+             ///ã‚‚ã£ã¨ã‚‚é›¢ã‚ŒãŸäºŒã¤ã‚’å‡ºã™
              VECTOR V1 = VSub(Triangle[0], Triangle[1]);
              VECTOR V2 = VSub(Triangle[0], Triangle[2]);
              VECTOR V3 = VSub(Triangle[2], Triangle[1]);
@@ -255,7 +255,7 @@ bool IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
              float Max = VSize(VMax(V1, V2, V3));
              for(int Triangle2Index = 0; Triangle2Index <= M1List.size(); Triangle2Index += 3)
              {
-                 ///‚³‚Á‚«‚Ì”½‘Î‚Ìƒ‚ƒfƒ‹‚Å‚à“¯‚¶‚±‚Æ‚ğ‚·‚é
+                 ///ã•ã£ãã®åå¯¾ã®ãƒ¢ãƒ‡ãƒ«ã§ã‚‚åŒã˜ã“ã¨ã‚’ã™ã‚‹
                  VECTOR Triangle2[3];
                  Triangle2[0] = List[Triangle2Index];
                  Triangle2[1] = List[Triangle2Index + 1];
@@ -285,7 +285,7 @@ bool IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
     VECTOR v1 = VSub(T2, T1);
     VECTOR v2 = VSub(P, T1);
 
-    ///‚È‚¢‚¹‚«‚ğ‚Æ‚é
+    ///ãªã„ã›ãã‚’ã¨ã‚‹
     float dot00 = VDot(v0, v0);
     float dot01 = VDot(v0, v1);
     float dot02 = VDot(v0, v2);
@@ -331,4 +331,13 @@ bool IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
     const float EPSILON = 1e-6f;
     return (d1 >= -EPSILON && d2 >= -EPSILON && d3 >= -EPSILON) ||
         (d1 <= EPSILON && d2 <= EPSILON && d3 <= EPSILON);
+}
+void PrintTestResult(const char* testName, bool result, bool expected)
+{
+    bool passed = (result == expected);
+    const char* status = passed ? "âœ“ PASS" : "âœ— FAIL";
+    const char* resultStr = result ? "true" : "false";
+    const char* expectedStr = expected ? "true" : "false";
+
+    printf("%s: %s (result: %s, expected: %s)\n", status, testName, resultStr, expectedStr);
 }

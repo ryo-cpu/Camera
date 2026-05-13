@@ -8,7 +8,6 @@
 #include "Capsule.h"
 #include "ModelCheckers.h"
 
-
 class Character
 {
 protected:
@@ -122,5 +121,6 @@ public:
 	bool isHitCaracters(Character A, Character B);
 	VECTOR GetFramPos (const char* framName);
 	Capsule SearchCapsule(const char* frameName);
+	void DrawSearchCapusle(const char* frameName);
 };
 

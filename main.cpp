@@ -18,6 +18,8 @@ using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
 const float HitStopTime = 0.4f;
 enum GameModeType { Start, Win, Lose, Game };
+const char* LeftHand = "mixamorig:LeftHand";
+
 const char* HipName = "mixamorig:Hips";
 /// メイン関数
 /// </summary>
@@ -504,7 +506,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll)
 			{
-				if (enemy->GetAttackCollision().GetSphereSize() == 0)
+				Capsule ArmCapule = enemy->SearchCapsule(LeftHand);
+				std::vector<Capsule> PlayerCapsule = player->GetCapsuleCollision();
+				bool HitArm = false;
+				for (int i = 0 ;i<= PlayerCapsule.size(); i++)
+				{
+					HitArm=ArmCapule.Survey(ArmCapule, PlayerCapsule[i]);
+					if (HitArm) break;
+				}
+				if (!HitArm&&enemy->ArmSwing)
 				{
 
 				}
@@ -680,6 +690,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (enemyHpBar->CheakIsDraw(*player, *camera))
 				{
 					enemyHpBar->Draw();
+					enemy->DrawSearchCapusle(LeftHand);
 				}
 
 				playerHP->Draw();

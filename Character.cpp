@@ -435,12 +435,24 @@ VECTOR Character::GetFramPos(const char* framName)
 
 Capsule Character::SearchCapsule(const char* frameName)
 {
-    for (int i = 0; i > CapsuleCollision.size(); i++)
+    for (int i = 0; i < CapsuleCollision.size(); i++)
     {
        if(CapsuleCollision[i].GetStartName() == frameName)
        {
            return CapsuleCollision[i];
        }
+    }
+}
+
+void Character::DrawSearchCapusle(const char* frameName)
+{
+    for (int i = 0; i < CapsuleCollision.size(); i++)
+    {
+        if (CapsuleCollision[i].GetStartName() == frameName)
+        {
+            DrawCapsule3D(CapsuleCollision[i].GetStartPos(), CapsuleCollision[i].GetEndPos(), CapsuleCollision[i].GetRSize(), 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+            break;
+        }
     }
 }
 
