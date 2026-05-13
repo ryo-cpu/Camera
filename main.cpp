@@ -506,19 +506,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll)
 			{
-				Capsule ArmCapule = enemy->SearchCapsule(LeftHand);
-				std::vector<Capsule> PlayerCapsule = player->GetCapsuleCollision();
-				bool HitArm = false;
-				for (int i = 0 ;i<= PlayerCapsule.size(); i++)
+				bool isHit = true;
+
+                if (enemy->ArmSwing)
 				{
-					HitArm=ArmCapule.Survey(ArmCapule, PlayerCapsule[i]);
-					if (HitArm) break;
-				}
-				if (!HitArm&&enemy->ArmSwing)
-				{
+					Capsule ArmCapule = enemy->SearchCapsule(LeftHand);
+					std::vector<Capsule> PlayerCapsule = player->GetCapsuleCollision();
+					isHit = false;
+					for (int i = 0; i < PlayerCapsule.size(); i++)
+					{
+						
+						isHit= ArmCapule.Survey(ArmCapule, PlayerCapsule[i]);
+
+						if (isHit)
+						{
+							break;
+						}
+					}
 
 				}
-				else
+				if(isHit)
 				{
 					VECTOR Move = VGet(0, 0, -100);
 					Move = VTransformSR(Move, MGetRotY(enemy->GetDir().y));
@@ -690,7 +697,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (enemyHpBar->CheakIsDraw(*player, *camera))
 				{
 					enemyHpBar->Draw();
-					enemy->DrawSearchCapusle(LeftHand);
+					
 				}
 
 				playerHP->Draw();

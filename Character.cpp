@@ -380,7 +380,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
 					}
                 }
                 int ans = count;
-                   //pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }
@@ -442,6 +442,7 @@ Capsule Character::SearchCapsule(const char* frameName)
            return CapsuleCollision[i];
        }
     }
+    return Capsule();
 }
 
 void Character::DrawSearchCapusle(const char* frameName)
