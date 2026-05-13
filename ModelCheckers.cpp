@@ -51,7 +51,7 @@ bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
 }
 
 
-void ModelCheckers::ShowTextureName(int Model)
+void ShowTextureName(int Model)
 {
    int num= MV1GetTextureNum(Model);
    SetFontSize(12);
@@ -61,7 +61,7 @@ void ModelCheckers::ShowTextureName(int Model)
    }
 }
 
-void ModelCheckers::ShowFrameName(int Model)
+void ShowFrameName(int Model)
 {
     int num = MV1GetFrameNum(Model);
     SetFontSize(12);
@@ -72,31 +72,31 @@ void ModelCheckers::ShowFrameName(int Model)
   
 }
 
-VECTOR ModelCheckers::VMax(VECTOR V1, VECTOR V2)
+VECTOR VMax(VECTOR V1, VECTOR V2)
 {
     return VSize(V1) > VSize(V2) ? V1 : V2;
 }
 
-VECTOR ModelCheckers::VMax(VECTOR V1, VECTOR V2, VECTOR V3)
+VECTOR VMax(VECTOR V1, VECTOR V2, VECTOR V3)
 {
     VECTOR MAX = VMax(V1, V2);
     MAX = VMax(MAX, V3);
     return MAX;
 }
 
-VECTOR ModelCheckers::VMin(VECTOR V1, VECTOR V2)
+VECTOR VMin(VECTOR V1, VECTOR V2)
 {
     return VSize(V1) < VSize(V2) ? V1 : V2;;
 }
 
-VECTOR ModelCheckers::VMin(VECTOR V1, VECTOR V2, VECTOR V3)
+VECTOR VMin(VECTOR V1, VECTOR V2, VECTOR V3)
 {
     VECTOR MIN = VMin(V1, V2);
     MIN = VMin(MIN, V3);
     return MIN;
 }
 
-VECTOR ModelCheckers::VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR EndGround)
+VECTOR VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR EndGround)
 {
     VECTOR Ground = VSub(EndGround, StartGround);
     ////CheckPintは引数と別れていると考える　変更しても引数側を改変しない
@@ -105,7 +105,7 @@ VECTOR ModelCheckers::VProject(VECTOR CheckPoint, VECTOR StartGround, VECTOR End
     return Proj;
 }
 
-bool ModelCheckers::IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
+bool IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
 {
     VECTOR Pos_inA = VProject(B1, A1, A2);
     VECTOR ShadowPos = VAdd(A1, Pos_inA);
@@ -120,7 +120,7 @@ bool ModelCheckers::IsParallel(VECTOR A1, VECTOR A2, VECTOR B1, VECTOR B2)
     return Shadow_B1 == Shadow_B2;
 }
 
-bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VECTOR SphereP, float R)
+bool IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VECTOR SphereP, float R)
 {
     ///法線ベクトルを出す
     VECTOR Edge1 = VSub(T2, T1);
@@ -177,7 +177,7 @@ bool ModelCheckers::IsTriangle_Joint_Sphere(VECTOR T1, VECTOR T2, VECTOR T3, VEC
     return false;
 }
 
-bool ModelCheckers::IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, VECTOR TB2, VECTOR TB3)
+bool IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3, VECTOR TB1, VECTOR TB2, VECTOR TB3)
 {
     VECTOR Triangle_A[3] = {TA1,TA2,TA3};
     VECTOR Triangle_B[3] = {TB1,TB2,TB3};
@@ -219,7 +219,7 @@ bool ModelCheckers::IsTriangle_Joint_Triangle(VECTOR TA1, VECTOR TA2, VECTOR TA3
     return true;
 }
 
-void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float &OutMax)
+void TProject(const VECTOR Triangle[3], const VECTOR& Axis, float& OutMin, float &OutMax)
 {
 	float p0 = VDot(Triangle[0], Axis);
 	float p1 = VDot(Triangle[1], Axis);
@@ -230,7 +230,7 @@ void ModelCheckers::TProject(const VECTOR Triangle[3], const VECTOR& Axis, float
 
 }
 
-bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
+bool IsModel_Joint_Model(const int& M1, const int& M2, float M1_R)
 {
   ///M２のモデルから三角形のリストを作成 ここがどうにもできない
     std::vector<VECTOR> List;
@@ -279,7 +279,7 @@ bool ModelCheckers::IsModel_Joint_Model(const int& M1, const int& M2, float M1_R
     return false;
 }
 
-bool ModelCheckers::IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
+bool IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
 {
     VECTOR v0 = VSub(T3, T1);
     VECTOR v1 = VSub(T2, T1);
@@ -299,7 +299,7 @@ bool ModelCheckers::IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
     return (u >= 0) && (v >= 0) && (u + v <= 1);
 }
 
-bool ModelCheckers::IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float R)
+bool IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float R)
 {
     VECTOR AP = VSub(P, A);
     VECTOR AB = VSub(B, A);
@@ -316,7 +316,7 @@ bool ModelCheckers::IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float
     return VSize(VSub(P, ClosestPoint)) <= R;
 }
 
-bool ModelCheckers::IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
+bool IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3)
 {
     VECTOR Normal = VCross(VSub(T2, T1), VSub(T3, T1));
 

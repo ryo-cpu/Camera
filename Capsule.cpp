@@ -74,7 +74,7 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
 
     
     //////並行時の分岐 二点とimmodilityの近さを比較して並行かどうか調べる
-    ModelCheckers Tmp;
+  
 
     VECTOR pA = Move.GetStartPos();
     VECTOR qA = Move.GetEndPos();
@@ -83,11 +83,11 @@ VECTOR Capsule::PushBack(const Capsule& Move, const Capsule& Immodility)
     VECTOR qB = Immodility.GetEndPos();
 
     // A始点 → B線分 最近点
-    VECTOR c1 = VAdd(pB, Tmp.VProject(pA, pB, qB));
+    VECTOR c1 = VAdd(pB, VProject(pA, pB, qB));
     VECTOR v1 = VSub(pA, c1);
 
     // A終点 → B線分 最近点
-    VECTOR c2 = VAdd(pB, Tmp.VProject(qA, pB, qB));
+    VECTOR c2 = VAdd(pB, VProject(qA, pB, qB));
     VECTOR v2 = VSub(qA, c2);
 
     // 短い方

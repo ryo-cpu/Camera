@@ -329,7 +329,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
     std::vector<int> HitCapusuleListN;
-	ModelCheckers Checkers;
+	
 
     for (int i = 0; i <M.size(); i++)
     {
@@ -360,8 +360,8 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                     {
 						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
-                        float MR = VSize(Checkers.VMax(VSub(MoveP.Position[0], MoveP.Position[1]), VSub(MoveP.Position[0], MoveP.Position[2])));
-                        float NR = VSize(Checkers.VMax(VSub(NotMoveP.Position[0], NotMoveP.Position[1]), VSub(NotMoveP.Position[0], NotMoveP.Position[2])));
+                        float MR = VSize(VMax(VSub(MoveP.Position[0], MoveP.Position[1]), VSub(MoveP.Position[0], MoveP.Position[2])));
+                        float NR = VSize(VMax(VSub(NotMoveP.Position[0], NotMoveP.Position[1]), VSub(NotMoveP.Position[0], NotMoveP.Position[2])));
 
                         if (VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]))<(MR+NR))
                         {
@@ -369,7 +369,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                             count++;
                             
                             ///ポリゴン同士のの当たり判定かつ押し返し
-                            if (Checkers.IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
+                            if (IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
                             {
                                 ///////////////
                                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;

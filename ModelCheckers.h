@@ -3,9 +3,7 @@
 #include<cmath>
 #include<vector>
 #include<algorithm>
- class ModelCheckers
-{
-public:
+ 
    void ShowTextureName(int Model);
    void ShowFrameName(int Model);
    VECTOR VMax(VECTOR V1, VECTOR V2);
@@ -52,5 +50,5 @@ public:
    bool IsPointInTriangle(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3); 
    bool IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float R);
    bool IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3);
-};
+
 
