@@ -504,7 +504,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 
-			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll)
+			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll&&player->GetAnimType() != player->Kick)
 			{
 				bool isHit = true;
 
