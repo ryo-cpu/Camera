@@ -3,6 +3,7 @@
 class SpawnScene :
     public Scene
 {
+    VECTOR speed;
 public:
 
     bool Update() override;

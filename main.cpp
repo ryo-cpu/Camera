@@ -17,7 +17,7 @@
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
 const float HitStopTime = 0.4f;
-enum GameModeType { Start, Win, Lose, Game };
+enum GameModeType { Start, Win, Lose, Game,Spawn };
 const char* LeftHand = "mixamorig:LeftHand";
 
 const char* HipName = "mixamorig:Hips";

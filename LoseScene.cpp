@@ -4,7 +4,7 @@ bool LoseScene::Update()
 {
 	MV1DrawModel(BackModel);
 	float deltaTime = Fps->GetDeltaTime();
-
+	player->SetAnimSpeed(20.0f);
 	if (player->GetInputState()->Buttons[XINPUT_BUTTON_START] != 0)
 	{
 		InModeChange = true;
