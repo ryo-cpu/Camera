@@ -155,11 +155,7 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		move.y = 0;
 		Move = move;
 		AttackCollision.SetPos(VAdd(Pos,move));
-		///‚Ô‚Â‚©‚Á‚½‚çŽ~‚Ü‚é
-		if (isHitCaracters(*this,*Target))
-		{
-			return false;
-		}
+		
 
 		if (!IsAnim)
 		{

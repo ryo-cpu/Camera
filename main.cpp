@@ -508,7 +508,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				bool isHit = true;
 
-                if (enemy->ArmSwing)
+                if (enemy->GetAnimType() == enemy->ArmSwing)
 				{
 					Capsule ArmCapule = enemy->SearchCapsule(LeftHand);
 					std::vector<Capsule> PlayerCapsule = player->GetCapsuleCollision();

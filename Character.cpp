@@ -354,20 +354,39 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 }
                 int count = 0;
+                VECTOR TEST[6];
+
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
 						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
+                        ////カプセルが１ｆ先の位置にあるのでPolysも動かす
+                        MoveP.Position[0] = VAdd(MoveP.Position[0], Move.GetMove());
+                        MoveP.Position[1] = VAdd(MoveP.Position[1], Move.GetMove());
+                        MoveP.Position[2] = VAdd(MoveP.Position[2], Move.GetMove());
+                        NotMoveP.Position[0] = VAdd(NotMoveP.Position[0], NotMove.GetMove());
+                        NotMoveP.Position[1] = VAdd(NotMoveP.Position[1], NotMove.GetMove());
+                        NotMoveP.Position[2] = VAdd(NotMoveP.Position[2], NotMove.GetMove());
+
                         float MR = VSize(VMax(VSub(MoveP.Position[0], MoveP.Position[1]), VSub(MoveP.Position[0], MoveP.Position[2])));
                         float NR = VSize(VMax(VSub(NotMoveP.Position[0], NotMoveP.Position[1]), VSub(NotMoveP.Position[0], NotMoveP.Position[2])));
-
+                        float Min = VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]));
                         if (VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]))<(MR+NR))
                         {
                             DrawSphere3D(NotMoveP.Position[0], NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
                             count++;
-                            
+                            ///テストのため一番近いデータを保存
+                            if (Min >= VSize(VSub(NotMoveP.Position[0], MoveP.Position[0])))
+                            {
+                                TEST[0] = MoveP.Position[0];
+                                TEST[1] = MoveP.Position[1];
+                                TEST[2] = MoveP.Position[2];
+                                TEST[3] = NotMoveP.Position[0];
+                                TEST[4] = NotMoveP.Position[1];
+                                TEST[5] = NotMoveP.Position[2];
+                             }
                             ///ポリゴン同士のの当たり判定かつ押し返し
                             if (IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
                             {
@@ -380,7 +399,8 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
 					}
                 }
                 int ans = count;
-                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                
+                // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }

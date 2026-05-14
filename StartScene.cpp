@@ -7,7 +7,15 @@ bool StartScene::Update()
 	
 	if (Fade->GetAlpha() > 0 && !InModeChange)
 	{
-
+		MV1SetPosition(enemy->GetImg(), enemy->GetPos());
+		float Move = 40 * deltaTime;
+		MATRIX RotY = MGetRotY(ConversionRad(Move));
+		VECTOR Axis = VAdd(enemy->GetPos(), VGet(0, 0, 200));///ƒ‚ƒfƒ‹‚ÌˆÊ’u‚ÆPos‚Ì‚¸‚ê’¼‚µ
+		enemy->SetPos(VGet(0, 0, 0));
+		camera->RotationAxis(Axis, RotY);
+		camera->Look(Axis);
+		camera->Apply();
+		enemy->AnimUpdate(deltaTime);
 		Fade->SetAlpha(Fade->GetAlpha() - (255 / 2 * deltaTime));
 
 	}
