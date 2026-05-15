@@ -121,14 +121,15 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 {
 	const float EndTime=10;
 	Move = VGet(0, 0, 0);
-	IsInvincible = false;
+	IsInvincible = true;
+
 	if (!IsAnim && AnimType != Run)
 	{
-		
 		SetAnimType(Run);
 	}
 	else if (!IsAnim || AnimType == Run)
 	{
+		IsInvincible = false;
 		VECTOR move = VNorm(targetPos);
 		VECTOR Front =VTransformSR(VGet(0, 0, -1), MGetRotY(GetDir().y));
 		
@@ -155,7 +156,6 @@ bool Enemy::TackleAttack(VECTOR targetPos)
 		move.y = 0;
 		Move = move;
 		AttackCollision.SetPos(VAdd(Pos,move));
-		
 
 		if (!IsAnim)
 		{

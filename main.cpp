@@ -185,6 +185,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	StartScene* start = new StartScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 	WinScene* win = new WinScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 	LoseScene* lose = new LoseScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+	SpawnScene* spawn = new SpawnScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
+
 
 	bool InCounter = false;
 
@@ -693,14 +695,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			MV1SetPosition(player->GetImg(), player->GetPos());
 			MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 			if (!player->GetInSpecialMove())
-			{
-				if (enemyHpBar->CheakIsDraw(*player, *camera))
+			{ 
+				if (!InCounter)
 				{
-					enemyHpBar->Draw();
-					
-				}
+					playerHP->Draw();
+					if (enemyHpBar->CheakIsDraw(*player, *camera))
+					{
+						enemyHpBar->Draw();
 
-				playerHP->Draw();
+					}
+				}
+				
+
+				
 			}
 			////エネミーの点滅
 			if (enemy->GetMoveType() == enemy->hit_stop && player->GetInSpecialMove() && fabs(fmod(player->GetLiveTime(), 0.1f)) < 0.01f && player->GetAttackCollision().GetSphereSize() > 0)
@@ -793,6 +800,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			if (start->Update())
 			{
+				GameMode = Spawn;
+				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
+				playerHP->ResetOwner(player);
+			}
+
+			break;
+
+		case Spawn:
+
+			if (spawn->Update())
+			{
 				GameMode = Game;
 				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
 				playerHP->ResetOwner(player);
@@ -832,6 +850,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	delete(start);
 	delete(win);
 	delete(lose);
+	delete(spawn);
 
 
 	Effkseer_End();
