@@ -73,12 +73,11 @@ bool StartScene::Update()
 
 			///enemy‰Šú‰»
 
-			enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
+			enemy->SetPos(VGet(0.0f, 2900.0f, -600.0f));
 			MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 			enemy->SetDir(VGet(0, ConversionRad(180), 0));
 			enemy->SetAnimSpeed(EnemyAnimSpeed);
-			enemy->SetAnimType(enemy->Dance);
-			enemy->SetNowAnimTime(0);
+			enemy->SetAnimType(enemy->Jump);
 			enemy->SetTarget(*player);
 			enemy->SetScale(5.0f);  // ŽŽ‚µ‚É10”{
 			enemy->SetHp(EnemyHP);
@@ -89,6 +88,8 @@ bool StartScene::Update()
 
 
 			MV1SetAttachAnimTime(enemy->GetImg(), enemy->GetAnimType(), enemy->GetNowAnimTime());
+			camera->EndZoom();
+			camera->EndMove();
 			camera->ResetOffset(DefaultCamera, player->GetPos());
 			camera->CalculateAngle(player->GetPos());
 			camera->CalculateTargetAngle(player->GetPos());

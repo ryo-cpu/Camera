@@ -4,6 +4,7 @@ class SpawnScene :
     public Scene
 {
     VECTOR speed;
+    float waitTime;
 public:
 
     bool Update() override;
