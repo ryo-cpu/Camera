@@ -47,6 +47,7 @@ public:
     float GetLastDamageTime();
     bool Rolling();
     void AddSpGauge(int add);
+	int GetSpGauge();
     bool GetTurn();
     XINPUT_STATE* GetInputState();
     void Initial()override;

@@ -389,6 +389,11 @@ void Player::AddSpGauge(int add)
 
 }
 
+int Player::GetSpGauge()
+{
+	return SpGauge;
+}
+
 bool Player::GetTurn()
 {
 	return isTurn;

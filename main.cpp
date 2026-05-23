@@ -13,12 +13,14 @@
 #include "Shadow.h"
 #include "Scene's.h"
 #include"Counter.h"
+#include"UI.h"
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
 const float HitStopTime = 0.4f;
 enum GameModeType { Start, Win, Lose, Game,Spawn };
 const char* LeftHand = "mixamorig:LeftHand";
+const int HPFontSize = 100;
 
 const char* HipName = "mixamorig:Hips";
 /// メイン関数
@@ -146,8 +148,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//Bar *playerHp= new Bar(player);
 	Bar* enemyHpBar = new Bar(enemy);
 	UIBar* playerHP = new UIBar(player, 100, 700);
+	UIBar* playerSP = new UIBar(player, 100, 800);
+	playerSP->SetMaxValue(MaxSpGauge);
+	playerSP->SetFillColor(GetColor(255, 200, 0));
+	playerSP->SetHandleSize(500, 20);
 	SpecialMove* SPMove = new SpecialMove(*camera, *player, *enemy);
-	
+	UI* ui = new UI();
+	ui->SetMessage("H P");
+	ui->SetMessagePos(100, 600);
+	ui->SetMessageSize(HPFontSize);
 	Counter* counter = new Counter(*camera, *player, *enemy);
 
 	float deltaTime = Fps->GetDeltaTime();
@@ -689,6 +698,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			// HPバーの更新//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 			playerHP->Update();
+			playerSP->Update(player->GetSpGauge());
 			enemyHpBar->Update(*camera);
 			/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
@@ -698,7 +708,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{ 
 				if (!InCounter)
 				{
+					ui->DrawMessage();
 					playerHP->Draw();
+					playerSP->Draw();
 					if (enemyHpBar->CheakIsDraw(*player, *camera))
 					{
 						enemyHpBar->Draw();
@@ -755,6 +767,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				BGM->Stop();
 				EffectM::Clear();
 
+
+			}
+			if(!player->GetInSpecialMove())
+			{
+				if (!InCounter)
+				{
+					ui->DrawMessage();
+					
+				}
 
 			}
 			shadow->Draw();

@@ -44,6 +44,11 @@ public:
     /// <param name="owner"></param>
     void ResetOwner(Character* owner);
     void Update();
+    /// <summary>
+	/// ’l‚ğHP‚Å‚È‚¢‚Æ‚«‚ÉXV‚·‚é‚½‚ß‚ÌŠÖ”
+    /// </summary>
+    /// <param name="value"></param>
+    void Update(int value);
     void Draw();
 
 };

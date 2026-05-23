@@ -179,9 +179,11 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shadow.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SpawnScene.cpp" />
     <ClCompile Include="SpecialMove.cpp" />
     <ClCompile Include="Sphere_Collision.cpp" />
     <ClCompile Include="StartScene.cpp" />
+    <ClCompile Include="UI.cpp" />
     <ClCompile Include="UIBar.cpp" />
     <ClCompile Include="WinScene.cpp" />
   </ItemGroup>
@@ -206,9 +208,11 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shadow.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="SpawnScene.h" />
     <ClInclude Include="SpecialMove.h" />
     <ClInclude Include="Sphere_Collision.h" />
     <ClInclude Include="StartScene.h" />
+    <ClInclude Include="UI.h" />
     <ClInclude Include="UIBar.h" />
     <ClInclude Include="WinScene.h" />
   </ItemGroup>

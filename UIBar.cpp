@@ -127,7 +127,10 @@ void UIBar::Update()
     value = Owner->GetHp();
    
 }
-
+void UIBar::Update(int value)
+{
+    SetValue(value);
+}
 void UIBar::Draw()
 {
     float Proportion;
@@ -141,6 +144,6 @@ void UIBar::Draw()
     }
    
     DrawBox(position.x, position.y, position.x + handleSize.x, position.y + handleSize.y,HPBackColor, true);
-    DrawBox(position.x, position.y, position.x + handleSize.x * Proportion, position.y + handleSize.y, HPBaseColor, true);
+    DrawBox(position.x, position.y, position.x + handleSize.x * Proportion, position.y + handleSize.y, fillColor, true);
 
 }
