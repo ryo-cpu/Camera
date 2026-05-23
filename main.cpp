@@ -157,6 +157,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ui->SetMessage("H P");
 	ui->SetMessagePos(100, 600);
 	ui->SetMessageSize(HPFontSize);
+	UI* Explanation = new UI();	
+	Explanation->SetMessage("B :ATTACK \nX :SpecialMove\nRB:Rolling");
+	Explanation->SetMessagePos(1000, 0);
+	Explanation->SetMessageSize(80);	
 	Counter* counter = new Counter(*camera, *player, *enemy);
 
 	float deltaTime = Fps->GetDeltaTime();
@@ -774,7 +778,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (!InCounter)
 				{
 					ui->DrawMessage();
-					
+					Explanation->DrawMessage();
 				}
 
 			}

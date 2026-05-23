@@ -2,6 +2,9 @@
 
 UI::UI()
 {
+    Message=NULL;
+	MessageSize=10;
+    Img=NULL;
 	MessagePosX = 0.0f;
 	MessagePosX = 0.0f;
 	ImgPosX = 0.0f;
@@ -16,8 +19,10 @@ void UI::DrawImg()
 void UI::DrawMessage()
 {
 	SetFontSize(MessageSize);
-	DrawString(MessagePosX, MessagePosY, Message, GetColor(244, 229, 17));
+	DrawFormatString(MessagePosX, MessagePosY, GetColor(244, 229, 17), Message);
+
 }
+
 
 void UI::SetMessagePos(float X, float Y)
 {
