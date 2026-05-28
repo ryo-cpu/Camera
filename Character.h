@@ -117,7 +117,7 @@ public:
 	void UpdateCapsuleCollision(VECTOR move);
 	void SetCapsuleCollisionRsize(float r);
     std::vector<Capsule> GetCapsuleCollision();
-	VECTOR PushBackCapsuleCollison(Character Move,Character NotMove);
+	VECTOR PushBackCapsuleCollison(Character &Move,Character &NotMove);
 	bool isHitCaracters(Character A, Character B);
 	VECTOR GetFramPos (const char* framName);
 	Capsule SearchCapsule(const char* frameName);

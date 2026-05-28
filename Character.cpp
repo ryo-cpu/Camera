@@ -322,15 +322,14 @@ std::vector<Capsule> Character::GetCapsuleCollision()
     return CapsuleCollision;
 }
 
-VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
+VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 {
     VECTOR pushBack = VGet(0, 0, 0);
     std::vector<Capsule> M = Move.GetCapsuleCollision();
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
     std::vector<int> HitCapusuleListN;
-	
-
+  
     for (int i = 0; i <M.size(); i++)
     {
         for (int j = 0; j < N.size(); j++)
@@ -341,8 +340,8 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                  HitCapusuleListN.push_back(j);
                  const char* HipName =M[i].GetStartName();
                  // ✅ デバッグ出力（確認用）
-                //DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
-                 //DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                  DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                  DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
@@ -355,30 +354,53 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                 }
                 int count = 0;
                 VECTOR TEST[6];
-
+                float Min =100.0f;
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
+                        ////////////////////////////////////////////////
 						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
-                        ////カプセルが１ｆ先の位置にあるのでPolysも動かす
-                        MoveP.Position[0] = VAdd(MoveP.Position[0], Move.GetMove());
-                        MoveP.Position[1] = VAdd(MoveP.Position[1], Move.GetMove());
-                        MoveP.Position[2] = VAdd(MoveP.Position[2], Move.GetMove());
-                        NotMoveP.Position[0] = VAdd(NotMoveP.Position[0], NotMove.GetMove());
-                        NotMoveP.Position[1] = VAdd(NotMoveP.Position[1], NotMove.GetMove());
-                        NotMoveP.Position[2] = VAdd(NotMoveP.Position[2], NotMove.GetMove());
+                    
+                        
+                        ///適当な辺の長さを求める(MoveP.Position[0]
+                        VECTOR MoveCenterPoint =VSub(MoveP.Position[1],MoveP.Position[0]);
+                        ///その長さの半分を求める
+                        MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        MoveCenterPoint = VAdd(MoveCenterPoint, MoveP.Position[0]);
+                        ///辺に入っていない残りの点への長さを求める これは後で MoveP.Position[2]からの座標にするのでこの形
+                        MoveCenterPoint = VSub(MoveCenterPoint, MoveP.Position[2]);
+                        ///その長さの半分を求める
+                        MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        MoveCenterPoint = VAdd(MoveCenterPoint, MoveP.Position[2]);
 
-                        float MR = VSize(VMax(VSub(MoveP.Position[0], MoveP.Position[1]), VSub(MoveP.Position[0], MoveP.Position[2])));
-                        float NR = VSize(VMax(VSub(NotMoveP.Position[0], NotMoveP.Position[1]), VSub(NotMoveP.Position[0], NotMoveP.Position[2])));
-                        float Min = VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]));
-                        if (VSize(VSub(NotMoveP.Position[0], MoveP.Position[0]))<(MR+NR))
+                        ///適当な辺の長さを求める(MoveP.Position[0]
+                        VECTOR NotMoveCenterPoint = VSub(NotMoveP.Position[1], NotMoveP.Position[0]);
+                        ///その長さの半分を求める
+                        NotMoveCenterPoint = VScale(NotMoveCenterPoint, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMoveP.Position[0]);
+                        ///辺に入っていない残りの点への長さを求める これは後で MoveP.Position[2]からの座標にするのでこの形
+                        NotMoveCenterPoint = VSub(NotMoveCenterPoint, NotMoveP.Position[2]);
+                        ///その長さの半分を求める
+                        NotMoveCenterPoint = VScale(NotMoveCenterPoint, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMoveP.Position[2]);
+
+
+                        ///センターから最も離れたてんを半径とした球体を作る
+                        float MR = VSize(VMax(VSub(MoveCenterPoint, MoveP.Position[1]), VSub(MoveCenterPoint, MoveP.Position[2]), VSub(MoveCenterPoint, MoveP.Position[0])));
+                        float NR = VSize(VMax(VSub(NotMoveCenterPoint, NotMoveP.Position[1]), VSub(NotMoveCenterPoint, NotMoveP.Position[2]), VSub(NotMoveCenterPoint, NotMoveP.Position[0])));
+                      
+                        if (VSize(VSub(NotMoveCenterPoint, MoveCenterPoint))<(MR+NR))
                         {
-                            DrawSphere3D(NotMoveP.Position[0], NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                            DrawSphere3D(NotMoveCenterPoint, NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
                             count++;
                             ///テストのため一番近いデータを保存
-                            if (Min >= VSize(VSub(NotMoveP.Position[0], MoveP.Position[0])))
+                            if (Min >= VSize(VSub(NotMoveCenterPoint, MoveCenterPoint)))
                             {
                                 TEST[0] = MoveP.Position[0];
                                 TEST[1] = MoveP.Position[1];
@@ -386,6 +408,7 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                                 TEST[3] = NotMoveP.Position[0];
                                 TEST[4] = NotMoveP.Position[1];
                                 TEST[5] = NotMoveP.Position[2];
+                                Min = VSize(VSub(NotMoveCenterPoint, MoveCenterPoint));
                              }
                             ///ポリゴン同士のの当たり判定かつ押し返し
                             if (IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
@@ -403,16 +426,6 @@ VECTOR Character::PushBackCapsuleCollison(Character Move, Character NotMove)
                 // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
-    }
-    std::sort(HitCapusuleListN.begin(), HitCapusuleListN.end());
-    auto it = std::unique(HitCapusuleListN.begin(), HitCapusuleListN.end());
-    HitCapusuleListN.erase(it, HitCapusuleListN.end());
-    for (int i = 0; i < HitCapusuleListN.size(); i++)
-    {
-       
-
-     
-
     }
 
     return pushBack;
