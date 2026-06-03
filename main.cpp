@@ -109,7 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	MV1SetPosition(BackModel, VGet(0, 0.0f, 0.0f));
 	MV1SetPosition(TileModel, VGet(0.0f, 0.0f, 0.0f));
 	MV1SetScale(BackModel, VGet(5, 5, 5));
-	MV1SetScale(TileModel, VGet(15, 1.0f, 10.0f));
+	MV1SetScale(TileModel, VGet(150, 15.0f, 150.0f));
 
 
 
@@ -281,7 +281,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			////入力された移動を調整
-			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize)
+			if (VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z)) > FieldSize+20)
 			{
 				OnWall = true;
 			}
@@ -657,7 +657,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				SetPoint = VScale(SetPoint, FieldSize);
 				float Rate = VSize(SetPoint) / VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z));///Yの高さは比率でとる
 				SetPoint.y = 100;
-				///SetPoint.y=Rate;
+				SetPoint.y=Rate;
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
 				camera->ResetOffset(Offset, VAdd(player->GetPos(), PlayerTopPoint));
 				/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/

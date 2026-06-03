@@ -338,6 +338,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     std::vector<Capsule> M = Move.GetCapsuleCollision();
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
+    float penetration = 0.0f; ///貫通量
     std::vector<int> HitCapusuleListN;
     int count = 0;
     VECTOR TEST[6];
@@ -424,7 +425,10 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                             if (IsTriangle_Joint_Triangle(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
                             {
                                 ///////////////
-                                pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                                for (int i = 0; i < 3; i++)
+                                {
+                                    VECTOR vertex = MovePoly.Normal;
+                                }
 
                             }
                         }
