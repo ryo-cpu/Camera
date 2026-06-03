@@ -77,6 +77,16 @@ void Character::SetImg(int img)
     Img = img;
 }
 
+int Character::GetNextImg()
+{
+    return NextImg;
+}
+
+void Character::SetNextImg(int img)
+{
+    NextImg =MV1DuplicateModel(img);
+}
+
 VECTOR Character::GetPos()
 {
     return Pos;
@@ -329,7 +339,9 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
     std::vector<int> HitCapusuleListN;
-  
+    int count = 0;
+    VECTOR TEST[6];
+    float Min = 1000.0f;
     for (int i = 0; i <M.size(); i++)
     {
         for (int j = 0; j < N.size(); j++)
@@ -345,73 +357,71 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
-                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
-                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 }
-                int count = 0;
-                VECTOR TEST[6];
-                float Min =100.0f;
+               
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
                         ////////////////////////////////////////////////
-						MV1_COLL_RESULT_POLY MoveP = MovePolys.Dim[m];
-						MV1_COLL_RESULT_POLY NotMoveP = NotMovePolys.Dim[n];
+						MV1_COLL_RESULT_POLY MovePoly = MovePolys.Dim[m];
+						MV1_COLL_RESULT_POLY NotMovePoly = NotMovePolys.Dim[n];
                     
                         
-                        ///適当な辺の長さを求める(MoveP.Position[0]
-                        VECTOR MoveCenterPoint =VSub(MoveP.Position[1],MoveP.Position[0]);
+                        ///適当な辺の長さを求める(MovePoly.Position[0]
+                        VECTOR MoveCenterPoint =VSub(MovePoly.Position[1],MovePoly.Position[0]);
                         ///その長さの半分を求める
                         MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
                         ///辺のスタート位置をあわせ座標化
-                        MoveCenterPoint = VAdd(MoveCenterPoint, MoveP.Position[0]);
-                        ///辺に入っていない残りの点への長さを求める これは後で MoveP.Position[2]からの座標にするのでこの形
-                        MoveCenterPoint = VSub(MoveCenterPoint, MoveP.Position[2]);
+                        MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[0]);
+                        ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
+                        MoveCenterPoint = VSub(MoveCenterPoint, MovePoly.Position[2]);
                         ///その長さの半分を求める
                         MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
                         ///辺のスタート位置をあわせ座標化
-                        MoveCenterPoint = VAdd(MoveCenterPoint, MoveP.Position[2]);
+                        MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[2]);
 
-                        ///適当な辺の長さを求める(MoveP.Position[0]
-                        VECTOR NotMoveCenterPoint = VSub(NotMoveP.Position[1], NotMoveP.Position[0]);
+                        ///適当な辺の長さを求める(MovePoly.Position[0]
+                        VECTOR NotMoveCenterPoint = VSub(NotMovePoly.Position[1], NotMovePoly.Position[0]);
                         ///その長さの半分を求める
                         NotMoveCenterPoint = VScale(NotMoveCenterPoint, 1 / 2.0f);
                         ///辺のスタート位置をあわせ座標化
-                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMoveP.Position[0]);
-                        ///辺に入っていない残りの点への長さを求める これは後で MoveP.Position[2]からの座標にするのでこの形
-                        NotMoveCenterPoint = VSub(NotMoveCenterPoint, NotMoveP.Position[2]);
+                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMovePoly.Position[0]);
+                        ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
+                        NotMoveCenterPoint = VSub(NotMoveCenterPoint, NotMovePoly.Position[2]);
                         ///その長さの半分を求める
                         NotMoveCenterPoint = VScale(NotMoveCenterPoint, 1 / 2.0f);
                         ///辺のスタート位置をあわせ座標化
-                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMoveP.Position[2]);
+                        NotMoveCenterPoint = VAdd(NotMoveCenterPoint, NotMovePoly.Position[2]);
 
 
                         ///センターから最も離れたてんを半径とした球体を作る
-                        float MR = VSize(VMax(VSub(MoveCenterPoint, MoveP.Position[1]), VSub(MoveCenterPoint, MoveP.Position[2]), VSub(MoveCenterPoint, MoveP.Position[0])));
-                        float NR = VSize(VMax(VSub(NotMoveCenterPoint, NotMoveP.Position[1]), VSub(NotMoveCenterPoint, NotMoveP.Position[2]), VSub(NotMoveCenterPoint, NotMoveP.Position[0])));
-                      
+                        float MR = VSize(VMax(VSub(MoveCenterPoint, MovePoly.Position[1]), VSub(MoveCenterPoint, MovePoly.Position[2]), VSub(MoveCenterPoint, MovePoly.Position[0])));
+                        float NR = VSize(VMax(VSub(NotMoveCenterPoint, NotMovePoly.Position[1]), VSub(NotMoveCenterPoint, NotMovePoly.Position[2]), VSub(NotMoveCenterPoint, NotMovePoly.Position[0])));
+                        ///テストのため一番近いデータを保存
+                        if (Min >= VSize(VSub(NotMoveCenterPoint, MoveCenterPoint)))
+                        {
+                            TEST[0] = MovePoly.Position[0];
+                            TEST[1] = MovePoly.Position[1];
+                            TEST[2] = MovePoly.Position[2];
+                            TEST[3] = NotMovePoly.Position[0];
+                            TEST[4] = NotMovePoly.Position[1];
+                            TEST[5] = NotMovePoly.Position[2];
+                            Min = VSize(VSub(NotMoveCenterPoint, MoveCenterPoint));
+                        }
                         if (VSize(VSub(NotMoveCenterPoint, MoveCenterPoint))<(MR+NR))
                         {
                             DrawSphere3D(NotMoveCenterPoint, NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
                             count++;
-                            ///テストのため一番近いデータを保存
-                            if (Min >= VSize(VSub(NotMoveCenterPoint, MoveCenterPoint)))
-                            {
-                                TEST[0] = MoveP.Position[0];
-                                TEST[1] = MoveP.Position[1];
-                                TEST[2] = MoveP.Position[2];
-                                TEST[3] = NotMoveP.Position[0];
-                                TEST[4] = NotMoveP.Position[1];
-                                TEST[5] = NotMoveP.Position[2];
-                                Min = VSize(VSub(NotMoveCenterPoint, MoveCenterPoint));
-                             }
+                         
                             ///ポリゴン同士のの当たり判定かつ押し返し
-                            if (IsTriangle_Joint_Triangle(MoveP.Position[0], MoveP.Position[1], MoveP.Position[2], NotMoveP.Position[0], NotMoveP.Position[1], NotMoveP.Position[2]))
+                            if (IsTriangle_Joint_Triangle(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
                             {
                                 ///////////////
                                 pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;

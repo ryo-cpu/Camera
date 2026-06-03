@@ -60,12 +60,15 @@ protected:
 	int MaxHp;
 	bool isDraw;
 	bool isUpdate;
+	int NextImg;
 public:
 	Character();
 	Character(int img);
 	~Character();
 	int 	GetImg();
 	void    SetImg(int img);
+	int 	GetNextImg();
+	void    SetNextImg(int img);
 	VECTOR  GetPos();
 	void    SetPos(VECTOR pos);
 	VECTOR  GetDir();

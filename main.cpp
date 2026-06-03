@@ -316,11 +316,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->AnimUpdate(deltaTime);
 				enemy->AnimUpdate(deltaTime);
 				player->AnimUpdate(deltaTime);
+				///モデルでも判定取りたいのでここで一時更新
+				player->SetNextImg(player->GetImg());
+				enemy->SetNextImg(enemy->GetImg());
+
+				MV1SetPosition(player->GetNextImg(), NextPlayer.GetPos());
+				MV1SetPosition(enemy->GetNextImg(), NextEnemy.GetPos());
 				player->UpdateCapsuleCollision();
 				player->UpdateCapsuleCollision(player->GetMove());
 				enemy->UpdateCapsuleCollision();
 				enemy->UpdateCapsuleCollision(enemy->GetMove());
-
+			
 			}
 					
 
