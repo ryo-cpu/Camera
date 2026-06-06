@@ -52,24 +52,24 @@ Character::Character(int img)
     CapsuleCollision.push_back(LeftLeg);
     Capsule LeftFoot("mixamorig:LeftLeg", "mixamorig:LeftFoot", 100, Img);
     CapsuleCollision.push_back(LeftFoot);
-    /*Capsule LeftToeBase("mixamorig:LeftToBase", "mixamorig:LeftFoot", 100, Img);
+    Capsule LeftToeBase("mixamorig:LeftToeBase", "mixamorig:LeftFoot", 100, Img);
     CapsuleCollision.push_back(LeftToeBase);
-    Capsule LeftToe_End("mixamorig:LeftToBase", "mixamorig:LeftToe_End", 100, Img);
-    CapsuleCollision.push_back(LeftToe_End);*/
+    Capsule LeftToe_End("mixamorig:LeftToeBase", "mixamorig:LeftToe_End", 100, Img);
+    CapsuleCollision.push_back(LeftToe_End);
     Capsule RightUpLeg("mixamorig:Hips", "mixamorig:RightUpLeg", 100, Img);
     CapsuleCollision.push_back(RightUpLeg);
     Capsule RightLeg("mixamorig:RightLeg", "mixamorig:RightUpLeg", 100, Img);
     CapsuleCollision.push_back(RightLeg);
     Capsule RightFoot("mixamorig:RightLeg", "mixamorig:RightFoot", 100, Img);
     CapsuleCollision.push_back(RightFoot);
-  /*  Capsule RightToeBase("mixamorig:RightToBase", "mixamorig:RightFoot", 100, Img);
-    CapsuleCollision.push_back(RightToeBase);*/
-   /* Capsule RightToe_End("mixamorig:RightToBase", "mixamorig:RightToe_End", 100, Img);
-    CapsuleCollision.push_back(RightToe_End);*/
+    Capsule RightToeBase("mixamorig:RightToeBase", "mixamorig:RightFoot", 100, Img);
+    CapsuleCollision.push_back(RightToeBase);
+    Capsule RightToe_End("mixamorig:RightToeBase", "mixamorig:RightToe_End", 100, Img);
+    CapsuleCollision.push_back(RightToe_End);
 }
 Character::~Character()
 {
-    MV1DrawModel(Img);
+    MV1DeleteModel(Img);
 }
 int Character::GetImg()
 {
@@ -90,6 +90,8 @@ int Character::GetNextImg()
 void Character::SetNextImg(int img)
 {
     NextImg =MV1DuplicateModel(img);
+    MV1SetScale(NextImg,VGet(Scale,Scale,Scale));
+    MV1SetRotationXYZ(NextImg, Dir);
 }
 
 VECTOR Character::GetPos()
@@ -348,7 +350,8 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     int count = 0;
     VECTOR TEST[6];
     float Min = 1000.0f;
-    Move.DrawCapsuleCollision();
+    
+    
     for (int i = 0; i <M.size(); i++)
     {
         for (int j = 0; j < N.size(); j++)
@@ -365,13 +368,21 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
                 MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
-                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
+                
+                 /* MV1DrawModel(Move.GetNextImg());
+                  MV1DrawModel(NotMove.GetNextImg());*/
+
+                  Move.SetisDraw(false);
+                  NotMove.SetisDraw(false);
+                  
                 }
                
+              
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
@@ -379,8 +390,12 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                         ////////////////////////////////////////////////
 						MV1_COLL_RESULT_POLY MovePoly = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMovePoly = NotMovePolys.Dim[n];
+                        SetFontSize(10);
                     
-                        
+                     //   DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
+                        DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);
+
+
                         ///適当な辺の長さを求める(MovePoly.Position[0]
                         VECTOR MoveCenterPoint =VSub(MovePoly.Position[1],MovePoly.Position[0]);
                         ///その長さの半分を求める
@@ -470,7 +485,8 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 
                 MV1CollResultPolyDimTerminate(MovePolys);
                 MV1CollResultPolyDimTerminate(NotMovePolys);
-
+                MV1DeleteModel(Move.NextImg);
+                MV1DeleteModel(NotMove.NextImg);
                 int ans = count;
                 
                 // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
@@ -481,7 +497,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     return pushBack;
 }
 
-bool Character::isHitCaracters(Character A, Character B)
+bool Character::isHitCaracters(Character &A, Character &B)
 {
     Capsule Jag;
     for (int i = 0; i < A.GetCapsuleCollision().size(); i++)

@@ -50,7 +50,7 @@ public:
     void SetBackColor(unsigned int setBackColor);
     void SetFillColor(unsigned int setFillColor);
     bool inScreen();
-    bool CheakIsDraw(Character CheakTarget,Camera camera);
+    bool CheakIsDraw(Character &CheakTarget,Camera camera);
     /// <summary>
     /// オーナーの変更または初期化
     /// </summary>

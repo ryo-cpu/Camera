@@ -101,7 +101,7 @@ bool Bar::inScreen()
 
 }
 
-bool Bar::CheakIsDraw(Character CheakTarget,Camera camera)
+bool Bar::CheakIsDraw(Character &CheakTarget,Camera camera)
 {
     float distance = VSize(VSub(camera.GetPos(), CheakTarget.GetPos()));
     float scale = 1.0f / (distance / 100);  // âìÇ≠Ç»ÇÈÇ∆è¨Ç≥Ç≠

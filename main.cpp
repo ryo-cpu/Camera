@@ -746,7 +746,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			else
 			{
-				enemy->SetisDraw(true);
+				//enemy->SetisDraw(true);
 			}
 
 			if (VSize(enemy->GetPos()) > FieldSize)
@@ -788,18 +788,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 
 			}
-			shadow->Draw();
-			shadow->StartUse();
+		/*	shadow->Draw();*/
+		/*	shadow->StartUse();*/
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
 			EffectM::Update(deltaTime);
 			EffectM::Draw();
-			player->Draw();
+			if (player->GetisDraw())
+			{
+				player->Draw();
+			}
+		
 			if (player->GetAnimType() != player->Hit)
 			{
 				enemy->Draw();
 			}
-			shadow->EndUse();
+		/*	shadow->EndUse();*/
 			// モデルの描画
 		   // モデルの描画
 				  // モデルの描画
