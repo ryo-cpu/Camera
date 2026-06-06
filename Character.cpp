@@ -1,6 +1,7 @@
 ﻿#include "Character.h"
 #include "iostream"
 #include <algorithm> 
+#include<math.h>
  
 Character::Character()
 {
@@ -427,7 +428,31 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                                 ///////////////
                                 for (int i = 0; i < 3; i++)
                                 {
-                                    VECTOR vertex = MovePoly.Normal;
+                                    ///ポイントが三角形状にあるか調べる
+                                    if (IsPointInTriangle(MovePoly.Position[i], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
+                                    { ///法線への射影を求め浸食度を求める
+                                         ///浸食した座標
+                                        VECTOR PentrationPoint = VProject(MovePoly.Position[i], NotMoveCenterPoint, VAdd(NotMoveCenterPoint, NotMovePoly.Normal));
+                                        ///この法線をY軸とする座標に変換し、ｙの＋ーを比較する
+
+                                        VECTOR PentrationChecker = VTransformSR(PentrationPoint, MGetAxis1(VSub(NotMovePoly.Position[0], NotMoveCenterPoint), NotMovePoly.Normal, VSub(NotMovePoly.Position[1], NotMoveCenterPoint), NotMoveCenterPoint));
+                                        if (PentrationChecker.y <= 0)
+                                        {
+                                            VECTOR PentrationPower = VSub(PentrationPoint, MovePoly.Position[i]);
+                                            PentrationPower = VScale(PentrationPower, -1);
+                                            ///現在の最大の浸食度と比較し、保存する
+                                            if ((penetration) <= (VSize(PentrationPower)))
+                                            {
+
+                                                penetration = VSize(PentrationPower); ///貫通量
+                                                pushBack = PentrationPower;
+                                            }
+
+
+                                        }
+
+
+                                    }
                                 }
 
                             }
