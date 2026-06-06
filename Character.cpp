@@ -52,16 +52,20 @@ Character::Character(int img)
     CapsuleCollision.push_back(LeftLeg);
     Capsule LeftFoot("mixamorig:LeftLeg", "mixamorig:LeftFoot", 100, Img);
     CapsuleCollision.push_back(LeftFoot);
-    Capsule LeftToeBase("mixamorig:LeftToBase", "mixamorig:LeftFoot", 100, Img);
-    CapsuleCollision.push_back(LeftFoot);
+    /*Capsule LeftToeBase("mixamorig:LeftToBase", "mixamorig:LeftFoot", 100, Img);
+    CapsuleCollision.push_back(LeftToeBase);
+    Capsule LeftToe_End("mixamorig:LeftToBase", "mixamorig:LeftToe_End", 100, Img);
+    CapsuleCollision.push_back(LeftToe_End);*/
     Capsule RightUpLeg("mixamorig:Hips", "mixamorig:RightUpLeg", 100, Img);
     CapsuleCollision.push_back(RightUpLeg);
     Capsule RightLeg("mixamorig:RightLeg", "mixamorig:RightUpLeg", 100, Img);
     CapsuleCollision.push_back(RightLeg);
     Capsule RightFoot("mixamorig:RightLeg", "mixamorig:RightFoot", 100, Img);
     CapsuleCollision.push_back(RightFoot);
-    Capsule RightToeBase("mixamorig:RightToBase", "mixamorig:RightFoot", 100, Img);
-    CapsuleCollision.push_back(RightFoot);
+  /*  Capsule RightToeBase("mixamorig:RightToBase", "mixamorig:RightFoot", 100, Img);
+    CapsuleCollision.push_back(RightToeBase);*/
+   /* Capsule RightToe_End("mixamorig:RightToBase", "mixamorig:RightToe_End", 100, Img);
+    CapsuleCollision.push_back(RightToe_End);*/
 }
 Character::~Character()
 {
@@ -344,6 +348,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     int count = 0;
     VECTOR TEST[6];
     float Min = 1000.0f;
+    Move.DrawCapsuleCollision();
     for (int i = 0; i <M.size(); i++)
     {
         for (int j = 0; j < N.size(); j++)
@@ -354,12 +359,12 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                  HitCapusuleListN.push_back(j);
                  const char* HipName =M[i].GetStartName();
                  // ✅ デバッグ出力（確認用）
-                  DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
-                  DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                 // DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                 // DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
-                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
                 MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
@@ -419,7 +424,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                         }
                         if (VSize(VSub(NotMoveCenterPoint, MoveCenterPoint))<(MR+NR))
                         {
-                            DrawSphere3D(NotMoveCenterPoint, NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                            /*DrawSphere3D(NotMoveCenterPoint, NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);*/
                             count++;
                          
                             ///ポリゴン同士のの当たり判定かつ押し返し
@@ -438,10 +443,10 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                                         VECTOR PentrationChecker = VTransformSR(PentrationPoint, MGetAxis1(VSub(NotMovePoly.Position[0], NotMoveCenterPoint), NotMovePoly.Normal, VSub(NotMovePoly.Position[1], NotMoveCenterPoint), NotMoveCenterPoint));
                                         if (PentrationChecker.y <= 0)
                                         {
-                                            VECTOR PentrationPower = VSub(PentrationPoint, MovePoly.Position[i]);
+                                            VECTOR PentrationPower =(PentrationPoint);
                                             PentrationPower = VScale(PentrationPower, -1);
                                             ///現在の最大の浸食度と比較し、保存する
-                                            if ((penetration) <= (VSize(PentrationPower)))
+                                            if ((penetration) >= (VSize(PentrationPower)))
                                             {
 
                                                 penetration = VSize(PentrationPower); ///貫通量
@@ -458,8 +463,14 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                             }
                         }
                       
+
 					}
+                 
                 }
+
+                MV1CollResultPolyDimTerminate(MovePolys);
+                MV1CollResultPolyDimTerminate(NotMovePolys);
+
                 int ans = count;
                 
                 // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;

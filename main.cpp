@@ -63,7 +63,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR G = VGet(0.0f, -1, 0.0f);
 
 	Player* player = new Player(MV1LoadModel("data/player.mv1"));
-	player->SetCapsuleCollisionRsize(10.0f);
+	player->SetCapsuleCollisionRsize(30.0f);
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
 	player->SetDir(VGet(0.0f, 0.0f, 0.0f));
