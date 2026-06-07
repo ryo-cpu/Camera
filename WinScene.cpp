@@ -39,7 +39,7 @@ bool WinScene::Update()
 			if (!enemy->GetIsAnim())
 			{
 				SetFontSize(128);
-				DrawString(600, 350, "YOU WIN", GetColor(244, 229, 17));
+				DrawString(500, 350, "YOU WIN", GetColor(244, 229, 17));
 				SetFontSize(64);
 				DrawString(600, 550, "PUSH START", GetColor(244, 229, 17));
 

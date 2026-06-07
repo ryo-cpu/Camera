@@ -97,7 +97,7 @@ bool StartScene::Update()
 			return true;
 		}
 
-		ShowFrameName(player->GetImg());
+		
 		SetFontSize(256);
 		DrawString(100, 250, "KILL ME", GetColor(244, 229, 17));
 		SetFontSize(64);

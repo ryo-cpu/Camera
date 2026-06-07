@@ -326,9 +326,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->UpdateCapsuleCollision(player->GetMove());
 				enemy->UpdateCapsuleCollision();
 				enemy->UpdateCapsuleCollision(enemy->GetMove());
-				MV1DrawModel(enemy->GetNextImg());
+			/*	MV1DrawModel(enemy->GetNextImg());
 				MV1DrawModel(player->GetNextImg());
-			
+			*/
 			}
 					
 
@@ -561,6 +561,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					player->SetLastDamageTime();
 					/////必殺キャンセル
 					player->SetInSpecialMove(false);
+					AttackSound->Play();
 
 					/*///playerの正面に移動
 					VECTOR FRONT = VGet(0, 100, -1000);
@@ -753,7 +754,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			else
 			{
-				//enemy->SetisDraw(true);
+				enemy->SetisDraw(true);
 			}
 
 			if (VSize(enemy->GetPos()) > FieldSize)
@@ -856,6 +857,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				GameMode = Game;
 				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
 				playerHP->ResetOwner(player);
+
 			}
 
 			break;

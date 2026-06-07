@@ -389,10 +389,10 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 
-                  MV1DrawModel(Move.GetNextImg());
+                /*  MV1DrawModel(Move.GetNextImg());
                   MV1DrawModel(NotMove.GetNextImg());
 
-                  Move.SetisDraw(false);
+                  Move.SetisDraw(false);*/
                  // NotMove.SetisDraw(false);
                   
                 }
@@ -407,7 +407,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                         SetFontSize(10);
                     
                      //   DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
-                        DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);
+                   /*     DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);*/
 
 
                         ///適当な辺の長さを求める(MovePoly.Position[0]
@@ -501,7 +501,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                 MV1CollResultPolyDimTerminate(NotMovePolys);
                 int ans = count;
                 
-                // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }

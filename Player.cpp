@@ -249,7 +249,7 @@ void Player::Update(float deltaTime)
 	//ローリング時の自動移動更新
 	if (InRolling)
 	{
-		SetAnimSpeed(20.0);
+		SetAnimSpeed(50.0);
 		InRolling = Rolling();
 		//ローリング停止時
 		if (!InRolling)
@@ -292,7 +292,7 @@ void Player::Update(float deltaTime)
 		if (PlayerEffect == nullptr)
 		{
 			EffectImg* AuraE = new EffectImg("data/Lightning.efkefc", 10);
-			EffectM::Add(*AuraE, Pos, VGet(0, 0, 0), VGet(0, 0, 0), PlayerAuraID);
+			EffectM::Add(*AuraE, Pos, VGet(0, 20, 0), VGet(0, 0, 0), PlayerAuraID);
 		}
 		else
 		{
