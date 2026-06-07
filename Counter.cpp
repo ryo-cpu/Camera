@@ -102,6 +102,8 @@ bool Counter::Start()
 	float Angle = atan2f(Front.x, Front.z);
 	player.SetDir(VGet(0, Angle, 0));
 	MV1SetRotationXYZ(player.GetImg(), player.GetDir());
+	MV1SetRotationXYZ(player.GetNextImg(), player.GetDir());
+
 	/// ƒJƒƒ‰‚ğİ’è
 	camera.ResetOffset(VTransformSR(CounterCamera, MGetRotY(player.GetDir().y)), player.GetPos());
 	camera.CalculateAngle(player.GetPos());

@@ -312,13 +312,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 				NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
 				NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
+
 				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 				player->AnimUpdate(deltaTime);
 				enemy->AnimUpdate(deltaTime);
-				player->AnimUpdate(deltaTime);
-				///モデルでも判定取りたいのでここで一時更新
+				/*///モデルでも判定取りたいのでここで一時更新
 				player->SetNextImg(player->GetImg());
-				enemy->SetNextImg(enemy->GetImg());
+				enemy->SetNextImg(enemy->GetImg());*/
 
 				MV1SetPosition(player->GetNextImg(), NextPlayer.GetPos());
 				MV1SetPosition(enemy->GetNextImg(), NextEnemy.GetPos());
@@ -326,6 +326,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->UpdateCapsuleCollision(player->GetMove());
 				enemy->UpdateCapsuleCollision();
 				enemy->UpdateCapsuleCollision(enemy->GetMove());
+				MV1DrawModel(enemy->GetNextImg());
+				MV1DrawModel(player->GetNextImg());
 			
 			}
 					
@@ -713,7 +715,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			/////描画//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 
 			MV1SetPosition(player->GetImg(), player->GetPos());
+			MV1SetPosition(player->GetNextImg(), player->GetPos());
+
+			
 			MV1SetPosition(enemy->GetImg(), enemy->GetPos());
+			MV1SetPosition(enemy->GetNextImg(), enemy->GetPos());
+
 			if (!player->GetInSpecialMove())
 			{ 
 				if (!InCounter)

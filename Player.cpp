@@ -134,11 +134,15 @@ bool Player::Input(Camera& camera)
 			move = VScale(move, 10);     // スピードを乗算
 			float targetAngle = atan2f(-move.x, -move.z); // ラジアン角
 			MV1SetRotationXYZ(Img, VGet(0, targetAngle, 0));
+			MV1SetRotationXYZ(NextImg, VGet(0, targetAngle, 0));
+
 
 		}
 		else
 		{
 			MV1SetRotationXYZ(Img, VGet(0, GetDir().y, 0));
+			MV1SetRotationXYZ(NextImg, VGet(0, GetDir().y, 0));
+
 
 		}
 		if ((InputState->Buttons[XINPUT_BUTTON_B]) != 0)

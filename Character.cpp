@@ -22,11 +22,13 @@ Character::Character()
     AnimSpeed = 1.0f;
     IsAnim = false;
     MV1SetupCollInfo(Img, 0, -1, -1);
+    SetNextImg(Img);
 }
-Character::Character(int img)
+Character::Character(int img):Character()
 {
     //モデルが同じのと処理軽減のため手動
     Img = img;
+    SetNextImg(Img);
     isDraw = true;
     Capsule Body("mixamorig:Hips", "mixamorig:Neck", 100, Img);
     CapsuleCollision.push_back(Body);
@@ -80,6 +82,7 @@ int Character::GetImg()
 void Character::SetImg(int img)
 {
     Img = img;
+    SetNextImg(Img);
 }
 
 int Character::GetNextImg()
@@ -92,6 +95,8 @@ void Character::SetNextImg(int img)
     NextImg =MV1DuplicateModel(img);
     MV1SetScale(NextImg,VGet(Scale,Scale,Scale));
     MV1SetRotationXYZ(NextImg, Dir);
+    MV1SetPosition(NextImg, Pos);  // ← 位置も設定
+    MV1SetAttachAnimTime(NextImg, AnimIndex, NowAnimTime);  // アニメーション時間を設定
 }
 
 VECTOR Character::GetPos()
@@ -113,6 +118,8 @@ void Character::SetDir(VECTOR dir)
 {
     Dir = dir;
     MV1SetRotationXYZ(Img,Dir);
+    MV1SetRotationXYZ(NextImg, Dir);
+
 
 }
 
@@ -146,6 +153,8 @@ void Character::SetScale(float scale)
 {
     Scale = scale;
     MV1SetScale(Img, VGet(scale, scale, scale));
+    MV1SetScale(NextImg, VGet(scale, scale, scale));
+
 
 }
 
@@ -188,15 +197,18 @@ void Character::SetAnimType(int animType)
     {
        
      MV1DetachAnim(Img, AnimIndex);
+     MV1DetachAnim(NextImg, AnimIndex);
+
     }
     AnimIndex =MV1AttachAnim(Img, animType);
+    MV1AttachAnim(NextImg, animType);
     AnimTotalTime = MV1GetAttachAnimTotalTime(Img, AnimIndex);
     AnimType = animType;
     IsAnim = true;
 
     NowAnimTime = 0;
     MV1SetAttachAnimTime(Img, AnimIndex, NowAnimTime);  // アニメーション時間を設定
-
+    MV1SetAttachAnimTime(NextImg, AnimIndex, NowAnimTime);  // アニメーション時間を設定
 }
 
 int Character::GetAnimType()
@@ -245,7 +257,9 @@ void Character::AnimUpdate(float deltaTime)
     {
         IsAnim=false;
     }
-    MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime);  // アニメーション時間を設定
+    MV1SetAttachAnimTime(Img,AnimIndex,NowAnimTime); 
+    MV1SetAttachAnimTime(NextImg, AnimIndex, NowAnimTime);  // アニメーション時間を設定
+    // アニメーション時間を設定
 }
 
 void Character::MoveUpdate(VECTOR move)
@@ -364,24 +378,24 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                  // ✅ デバッグ出力（確認用）
                  // DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
                  // DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
+                 MV1DrawModel(NotMove.GetNextImg());
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
 				 ///相手のカプセルにモデルの部分を取得
                 MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
-                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 
-                 /* MV1DrawModel(Move.GetNextImg());
-                  MV1DrawModel(NotMove.GetNextImg());*/
+                  MV1DrawModel(Move.GetNextImg());
+                  MV1DrawModel(NotMove.GetNextImg());
 
                   Move.SetisDraw(false);
-                  NotMove.SetisDraw(false);
+                 // NotMove.SetisDraw(false);
                   
                 }
-               
               
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
@@ -485,8 +499,6 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 
                 MV1CollResultPolyDimTerminate(MovePolys);
                 MV1CollResultPolyDimTerminate(NotMovePolys);
-                MV1DeleteModel(Move.NextImg);
-                MV1DeleteModel(NotMove.NextImg);
                 int ans = count;
                 
                 // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
@@ -564,6 +576,8 @@ void Character::Turn(VECTOR RotatePower)
     Dir = VAdd(Dir, RotatePower);
     // 角度をY軸回転にセット
     MV1SetRotationXYZ(Img,Dir);
+    MV1SetRotationXYZ(NextImg, Dir);
+
 }
 
 Sphere_Collision Character::GetCollision()
