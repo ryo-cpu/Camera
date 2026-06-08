@@ -154,7 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	playerSP->SetHandleSize(500, 20);
 	SpecialMove* SPMove = new SpecialMove(*camera, *player, *enemy);
 	UI* ui = new UI();
-	ui->SetMessage("H P");
+	ui->SetMessage("HP");
 	ui->SetMessagePos(100, 600);
 	ui->SetMessageSize(HPFontSize);
 	UI* Explanation = new UI();	
@@ -277,7 +277,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else if (!player->GetInSpecialMove())
 			{
 				isInput = player->Input(*camera);
-				enemy->SelectMove();
+				//enemy->SelectMove();
 			}
 
 			////入力された移動を調整
@@ -312,7 +312,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				NextPlayer.SetSphereSize(player->GetCollision().GetSphereSize());
 				NextEnemy.SetPos(VAdd(enemy->GetCollision().GetPos(), enemy->GetMove()));
 				NextEnemy.SetPos(VGet(NextEnemy.GetPos().x, 0, NextEnemy.GetPos().z));
-
+				NextPlayer.SetPos(VGet(NextPlayer.GetPos().x, 0, NextPlayer.GetPos().z));
 				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 				player->AnimUpdate(deltaTime);
 				enemy->AnimUpdate(deltaTime);
@@ -326,15 +326,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				player->UpdateCapsuleCollision(player->GetMove());
 				enemy->UpdateCapsuleCollision();
 				enemy->UpdateCapsuleCollision(enemy->GetMove());
-			/*	MV1DrawModel(enemy->GetNextImg());
+				MV1DrawModel(enemy->GetNextImg());
 				MV1DrawModel(player->GetNextImg());
-			*/
+			
 			}
 					
-
-
+			/*const char* HipName = "mixamorig:Hips";
+			int PlayerIndex = MV1SearchFrame(player->GetImg(), HipName);
+			VECTOR WallPlayer = VGet(0, 0, 0);
+			if (PlayerIndex >= 0)
+			{
+				WallPlayer = MV1GetFramePosition(player->GetImg(), PlayerIndex);
+			}*/
+			
 			///かべとplayer
-			if (VSize(VSub(Field.GetPos(), VAdd(player->GetPos(), player->GetMove()))) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize() && !player->GetInSpecialMove())
+			if (VSize(VSub(Field.GetPos(),NextPlayer.GetPos())) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize() && !player->GetInSpecialMove())
 			{
 
 				////1中心から
@@ -350,7 +356,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				///ヒットじの特殊処理
 				if (player->GetAnimType() == player->Hit)
 				{
-
+					AddMove = VScale(AddMove, 2);
 				}
 
 				player->SetMove(VAdd(player->GetMove(), AddMove));
@@ -361,7 +367,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 
 			///かべとenemy
-			if (VSize(VSub(Field.GetPos(), VAdd(enemy->GetPos(), enemy->GetMove()))) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize() / 2 && !player->GetInSpecialMove())
+			if (VSize(VSub(Field.GetPos(),NextEnemy.GetPos())) >= Field.GetSphereSize() - enemy->GetCollision().GetSphereSize() / 2 && !player->GetInSpecialMove())
 			{
 
 				VECTOR AddMove = VSub(NextEnemy.GetPos(), Field.GetPos());
@@ -754,7 +760,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}
 			else
 			{
-				enemy->SetisDraw(true);
+				//enemy->SetisDraw(true);
 			}
 
 			if (VSize(enemy->GetPos()) > FieldSize)
@@ -817,6 +823,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				  // モデルの描画
 		   /*player->DrawCapsuleCollision();
 		   enemy->DrawCapsuleCollision();*/
+			
 		}
 
 		break;

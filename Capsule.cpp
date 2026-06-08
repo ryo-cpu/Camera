@@ -171,3 +171,8 @@ char* Capsule::GetStartName()
 {
     return StartFrameName;
 }
+
+char* Capsule::GetEndName()
+{
+    return EndFrameName;
+}

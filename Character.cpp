@@ -72,6 +72,7 @@ Character::Character(int img):Character()
 Character::~Character()
 {
     MV1DeleteModel(Img);
+    MV1DeleteModel(NextImg);
 }
 int Character::GetImg()
 {
@@ -209,6 +210,7 @@ void Character::SetAnimType(int animType)
     NowAnimTime = 0;
     MV1SetAttachAnimTime(Img, AnimIndex, NowAnimTime);  // アニメーション時間を設定
     MV1SetAttachAnimTime(NextImg, AnimIndex, NowAnimTime);  // アニメーション時間を設定
+    
 }
 
 int Character::GetAnimType()
@@ -364,7 +366,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     int count = 0;
     VECTOR TEST[6];
     float Min = 1000.0f;
-    
+
     
     for (int i = 0; i <M.size(); i++)
     {
@@ -381,19 +383,38 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                  MV1DrawModel(NotMove.GetNextImg());
 
                  int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
+                 MV1RefreshCollInfo(NotMove.NextImg,-1);
+                 MV1RefreshCollInfo(Move.NextImg, -1);
+               
+
+                 MV1_COLL_RESULT_POLY_DIM AllPolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, Move.Pos, VAdd(Move.Pos,VGet(0,1000,0)), 1000.0f);
+                 for (int n = 0; n < AllPolys.HitNum; n++)
+                 {
+                     DrawTriangle3D(AllPolys.Dim[i].Position[0], AllPolys.Dim[i].Position[1], AllPolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
+                 }
+
 				 ///相手のカプセルにモデルの部分を取得
-                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+                MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
                 MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
+                
+                for (int n = 0; n < MovePolys.HitNum; n++)
+                {
+                    DrawTriangle3D(MovePolys.Dim[i].Position[0], MovePolys.Dim[i].Position[1], MovePolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
+                }
+                for (int n = 0; n < NotMovePolys.HitNum; n++)
+                {
+                    DrawTriangle3D(NotMovePolys.Dim[i].Position[0], NotMovePolys.Dim[i].Position[1], NotMovePolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
+                }
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
                 {
                   VSize(p) > VSize(pushBack) ? p : pushBack;
                 
-                /*  MV1DrawModel(Move.GetNextImg());
+                  MV1DrawModel(Move.GetNextImg());
                   MV1DrawModel(NotMove.GetNextImg());
 
-                  Move.SetisDraw(false);*/
-                 // NotMove.SetisDraw(false);
+                  Move.SetisDraw(false);
+                  NotMove.SetisDraw(false);
                   
                 }
               
@@ -406,8 +427,8 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 						MV1_COLL_RESULT_POLY NotMovePoly = NotMovePolys.Dim[n];
                         SetFontSize(10);
                     
-                     //   DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
-                   /*     DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);*/
+                        DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
+                        DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);
 
 
                         ///適当な辺の長さを求める(MovePoly.Position[0]
@@ -501,7 +522,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                 MV1CollResultPolyDimTerminate(NotMovePolys);
                 int ans = count;
                 
-                pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+               // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
             }
         }
     }

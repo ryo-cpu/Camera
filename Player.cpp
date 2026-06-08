@@ -367,8 +367,8 @@ bool Player::Rolling()
 	{
 		float move = 300;
 		Move = VNorm(Move);
-		SetPos(VAdd(Pos, VScale(Move,move)));	
-		SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);
+		/*SetPos(VAdd(Pos, VScale(Move,move)));	
+		SetCollision(VAdd(Pos, VGet(0, 100, 0)), 40.0f);*/
 
 	
 	}
