@@ -184,6 +184,7 @@
     <ClCompile Include="Sphere_Collision.cpp" />
     <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="UIArrow.cpp" />
     <ClCompile Include="UIBar.cpp" />
     <ClCompile Include="WinScene.cpp" />
   </ItemGroup>
@@ -213,6 +214,7 @@
     <ClInclude Include="Sphere_Collision.h" />
     <ClInclude Include="StartScene.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="UIArrow.h" />
     <ClInclude Include="UIBar.h" />
     <ClInclude Include="WinScene.h" />
   </ItemGroup>

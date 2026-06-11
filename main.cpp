@@ -14,6 +14,7 @@
 #include "Scene's.h"
 #include"Counter.h"
 #include"UI.h"
+#include"UIArrow.h"
 //#include "Arithmetic.h"
 using namespace std::chrono;
 const VECTOR StartPlayerPos = VGet(0.0f, 0.0f, 0.0f);
@@ -200,6 +201,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	LoseScene* lose = new LoseScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 	SpawnScene* spawn = new SpawnScene(camera, player, enemy, BackModel, TileModel, Fps, Fade, shadow);
 
+	UIArrow* Arrow = new UIArrow();
 
 	bool InCounter = false;
 
@@ -799,6 +801,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				{
 					ui->DrawMessage();
 					Explanation->DrawMessage();
+					Arrow->Make(enemy->GetPos(), player->GetPos());
+					Arrow->Draw();
 				}
 
 			}
@@ -853,7 +857,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				GameMode = Spawn;
 				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
 				playerHP->ResetOwner(player);
+				
 			}
+			
 
 			break;
 
