@@ -35,26 +35,17 @@ void UIArrow::Make(VECTOR Target, VECTOR Root)
 	Root1 = VScale(Root1, 1/4.f);
     VECTOR Root2 = VTransformSR(Top, MGetRotZ(DX_PI_F / -2));
     Root2 = VScale(Root2, 1/4.f);
-    VECTOR Move=VGet(0,0,0);
-    VECTOR Center = VGet(960, 540, 0);
-
-    Move.x = Center.x + sin(angle) * RootDistance;
-    Move.y = Center.y - cos(angle) * RootDistance;
-
-	
-    //移動行列の追加
-    MATRIX Moveing= MGetTranslate(Move);
-	
     
 
     MATRIX Rot = MGetRotZ(angle);
 
-	MATRIX All = MMult(Moveing,Rot);
 
+	Top = VTransformSR(Top, Rot);
+    Root1 = VTransformSR(Root1, Rot);
+    Root2 = VTransformSR(Root2, Rot);
 
-	Top = VTransformSR(Top, All);
-    Root1 = VTransformSR(Root1, All);
-    Root2 = VTransformSR(Root2, All);
+  
+    VECTOR Center = VGet(960, 540, 0);
 
     Center =ConvWorldPosToScreenPos(Root);
     Center.x = Center.x + sin(angle) * RootDistance;

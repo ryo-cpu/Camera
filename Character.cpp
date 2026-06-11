@@ -361,7 +361,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     std::vector<Capsule> M = Move.GetCapsuleCollision();
     std::vector<Capsule> N =NotMove.GetCapsuleCollision();
     Capsule Jag;
-    float penetration = 0.0f; ///貫通量
+    float MaxPenetration = 0.0f; ///貫通量
     std::vector<int> HitCapusuleListN;
     int count = 0;
     VECTOR TEST[6];
@@ -408,14 +408,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 
                 if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
                 {
-                  VSize(p) > VSize(pushBack) ? p : pushBack;
-                
-                  MV1DrawModel(Move.GetNextImg());
-                  MV1DrawModel(NotMove.GetNextImg());
-
-                  Move.SetisDraw(false);
-                  NotMove.SetisDraw(false);
-                  
+           
                 }
               
                 for (int m = 0; m < MovePolys.HitNum; m++)
@@ -425,7 +418,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                         ////////////////////////////////////////////////
 						MV1_COLL_RESULT_POLY MovePoly = MovePolys.Dim[m];
 						MV1_COLL_RESULT_POLY NotMovePoly = NotMovePolys.Dim[n];
-                        SetFontSize(10);
+                        
                     
                         DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
                         DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);
@@ -485,26 +478,31 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                                 {
                                     ///ポイントが三角形状にあるか調べる
                                     if (IsPointInTriangle(MovePoly.Position[i], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
-                                    { ///法線への射影を求め浸食度を求める
-                                         ///浸食した座標
-                                        VECTOR PentrationPoint = VProject(MovePoly.Position[i], NotMoveCenterPoint, VAdd(NotMoveCenterPoint, NotMovePoly.Normal));
-                                        ///この法線をY軸とする座標に変換し、ｙの＋ーを比較する
+                                    { 
+                                        VECTOR dir = VSub(MoveCenterPoint, NotMoveCenterPoint);
+                                        float dist = VSize(dir);
 
-                                        VECTOR PentrationChecker = VTransformSR(PentrationPoint, MGetAxis1(VSub(NotMovePoly.Position[0], NotMoveCenterPoint), NotMovePoly.Normal, VSub(NotMovePoly.Position[1], NotMoveCenterPoint), NotMoveCenterPoint));
-                                        if (PentrationChecker.y <= 0)
-                                        {
-                                            VECTOR PentrationPower =(PentrationPoint);
-                                            PentrationPower = VScale(PentrationPower, -1);
-                                            ///現在の最大の浸食度と比較し、保存する
-                                            if ((penetration) >= (VSize(PentrationPower)))
-                                            {
+                                        if (dist < 0.0001f)  continue;
 
-                                                penetration = VSize(PentrationPower); ///貫通量
-                                                pushBack = PentrationPower;
-                                            }
+                                         dir = VNorm(dir);
+                                         dir = VNorm(dir);
 
+                                         // -----------------------------
+                                         // 侵食量（めり込み量）
+                                         // -----------------------------
+                                         float penetration = (MR + NR) - dist;
 
-                                        }
+                                         if (penetration <= 0.0f)
+                                             continue;
+
+                                         if (penetration > MaxPenetration)
+                                         {
+                                             MaxPenetration = penetration;
+
+                                             // ★ここが重要：法線を保存
+                                             pushBack= NotMovePoly.Normal;
+                                         }
+                                       
 
 
                                     }
@@ -527,7 +525,7 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
         }
     }
 
-    return pushBack;
+    return VScale(pushBack,MaxPenetration);
 }
 
 bool Character::isHitCaracters(Character &A, Character &B)
