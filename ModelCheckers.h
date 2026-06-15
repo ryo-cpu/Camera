@@ -51,6 +51,6 @@
    bool IsPointToSegmentDistance(VECTOR P, VECTOR A, VECTOR B, float R);
    bool IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3);
    void PrintTestResult(const char* testName, bool result, bool expected);
-
+   float Vsize(VECTOR a);
 
 

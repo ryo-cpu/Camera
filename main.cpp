@@ -159,7 +159,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	ui->SetMessagePos(100, 600);
 	ui->SetMessageSize(HPFontSize);
 	UI* Explanation = new UI();	
-	Explanation->SetMessage("B :ATTACK \nX :SpecialMove\nRB:Rolling");
+	Explanation->SetMessage("B :ATTACK \nX :Special\nRB:Rolling");
 	Explanation->SetMessagePos(1000, 0);
 	Explanation->SetMessageSize(80);	
 	Counter* counter = new Counter(*camera, *player, *enemy);
@@ -827,6 +827,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				  // モデルの描画
 		   /*player->DrawCapsuleCollision();
 		   enemy->DrawCapsuleCollision();*/
+			DrawFormatString(1000,200,GetColor(255,0,0),"%f",1/Fps->GetDeltaTime());
 			
 		}
 

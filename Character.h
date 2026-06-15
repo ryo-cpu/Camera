@@ -122,6 +122,7 @@ public:
     std::vector<Capsule> GetCapsuleCollision();
 	VECTOR PushBackCapsuleCollison(Character &Move,Character &NotMove);
 	bool isHitCaracters(Character &A, Character &B);
+	bool isHitCaracter(Character& A, Character& B ,Capsule HitSpease);
 	VECTOR GetFramPos (const char* framName);
 	Capsule SearchCapsule(const char* frameName);
 	void DrawSearchCapusle(const char* frameName);

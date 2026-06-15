@@ -74,7 +74,7 @@ void ShowFrameName(int Model)
 
 VECTOR VMax(VECTOR V1, VECTOR V2)
 {
-    return VSize(V1) > VSize(V2) ? V1 : V2;
+    return Vsize(V1) > Vsize(V2) ? V1 : V2;
 }
 
 VECTOR VMax(VECTOR V1, VECTOR V2, VECTOR V3)
@@ -340,4 +340,9 @@ void PrintTestResult(const char* testName, bool result, bool expected)
     const char* expectedStr = expected ? "true" : "false";
 
     printf("%s: %s (result: %s, expected: %s)\n", status, testName, resultStr, expectedStr);
+}
+
+float Vsize(VECTOR a)
+{
+    return (a.x*a.x)+(a.y*a.y)+(a.z*a.z);
 }

@@ -2,7 +2,7 @@
 #include "iostream"
 #include <algorithm> 
 #include<math.h>
- 
+#include <chrono>
 Character::Character()
 {
     LiveTime = 0.0f;
@@ -364,9 +364,12 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     float MaxPenetration = 0.0f; ///貫通量
     std::vector<int> HitCapusuleListN;
     int count = 0;
-    VECTOR TEST[6];
+    bool isfastTouch = false;
     float Min = 1000.0f;
-
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+    std::cout << "処理時間: " << duration_ms << " ms" << std::endl;
     
     for (int i = 0; i <M.size(); i++)
     {
@@ -374,71 +377,67 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
         {
             if (Jag.Survey(M[i], N[j]))
             {
+                 count++;
                  VECTOR p= Jag.PushBack(M[i], N[j]);
                  HitCapusuleListN.push_back(j);
                  const char* HipName =M[i].GetStartName();
-                 // ✅ デバッグ出力（確認用）
-                 // DrawCapsule3D(M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize()+20, 8,GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
-                 // DrawCapsule3D(N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize() + 20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);
-                 MV1DrawModel(NotMove.GetNextImg());
-
-                 int HipIndex = MV1SearchFrame(Move.GetImg(), HipName);
-                 MV1RefreshCollInfo(NotMove.NextImg,-1);
-                 MV1RefreshCollInfo(Move.NextImg, -1);
-               
-
-                 MV1_COLL_RESULT_POLY_DIM AllPolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, Move.Pos, VAdd(Move.Pos,VGet(0,1000,0)), 1000.0f);
-                 for (int n = 0; n < AllPolys.HitNum; n++)
+              
+            
+                 if (!isfastTouch)
                  {
-                     DrawTriangle3D(AllPolys.Dim[i].Position[0], AllPolys.Dim[i].Position[1], AllPolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
+                     MV1RefreshCollInfo(NotMove.NextImg, -1);
+                     MV1RefreshCollInfo(Move.NextImg, -1);
+                     isfastTouch = true;
                  }
+              
+               
 
 				 ///相手のカプセルにモデルの部分を取得
                 MV1_COLL_RESULT_POLY_DIM MovePolys=MV1CollCheck_Capsule(Move.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
                 MV1_COLL_RESULT_POLY_DIM NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
                 
-                for (int n = 0; n < MovePolys.HitNum; n++)
-                {
-                    DrawTriangle3D(MovePolys.Dim[i].Position[0], MovePolys.Dim[i].Position[1], MovePolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
-                }
-                for (int n = 0; n < NotMovePolys.HitNum; n++)
-                {
-                    DrawTriangle3D(NotMovePolys.Dim[i].Position[0], NotMovePolys.Dim[i].Position[1], NotMovePolys.Dim[i].Position[2], GetColor(255, 0, 0), TRUE);
-                }
-
-                if (NotMovePolys.HitNum>0&&MovePolys.HitNum>0)
-                {
-           
-                }
               
+
+                if (NotMovePolys.HitNum<=0||MovePolys.HitNum<=0)
+                {
+                    MV1CollResultPolyDimTerminate(MovePolys);
+                    MV1CollResultPolyDimTerminate(NotMovePolys);
+                    continue;
+                }
+                MV1_COLL_RESULT_POLY MovePoly;
+                MV1_COLL_RESULT_POLY NotMovePoly;
+                VECTOR MoveCenterPoint;
+                VECTOR NotMoveCenterPoint;
+                start = std::chrono::high_resolution_clock::now();
                 for (int m = 0; m < MovePolys.HitNum; m++)
                 {
+                    MovePoly = MovePolys.Dim[m];
+                    ///適当な辺の長さを求める(MovePoly.Position[0]
+                    MoveCenterPoint = VSub(MovePoly.Position[1], MovePoly.Position[0]);
+                    ///その長さの半分を求める
+                    MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
+                    ///辺のスタート位置をあわせ座標化
+                    MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[0]);
+                    ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
+                    MoveCenterPoint = VSub(MoveCenterPoint, MovePoly.Position[2]);
+                    ///その長さの半分を求める
+                    MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
+                    ///辺のスタート位置をあわせ座標化
+                    MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[2]);
+
+                    float MR = Vsize(VMax(VSub(MoveCenterPoint, MovePoly.Position[1]), VSub(MoveCenterPoint, MovePoly.Position[2]), VSub(MoveCenterPoint, MovePoly.Position[0])));
+                    int count = 0;
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
                         ////////////////////////////////////////////////
-						MV1_COLL_RESULT_POLY MovePoly = MovePolys.Dim[m];
-						MV1_COLL_RESULT_POLY NotMovePoly = NotMovePolys.Dim[n];
-                        
-                    
-                        DrawTriangle3D(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], GetColor(255, 0, 0), TRUE);
-                        DrawTriangle3D(NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2], GetColor(255, 0, 0), TRUE);
+						
+                        NotMovePoly= NotMovePolys.Dim[n];
 
+
+                      
 
                         ///適当な辺の長さを求める(MovePoly.Position[0]
-                        VECTOR MoveCenterPoint =VSub(MovePoly.Position[1],MovePoly.Position[0]);
-                        ///その長さの半分を求める
-                        MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
-                        ///辺のスタート位置をあわせ座標化
-                        MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[0]);
-                        ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
-                        MoveCenterPoint = VSub(MoveCenterPoint, MovePoly.Position[2]);
-                        ///その長さの半分を求める
-                        MoveCenterPoint = VScale(MoveCenterPoint, 1 / 2.0f);
-                        ///辺のスタート位置をあわせ座標化
-                        MoveCenterPoint = VAdd(MoveCenterPoint, MovePoly.Position[2]);
-
-                        ///適当な辺の長さを求める(MovePoly.Position[0]
-                        VECTOR NotMoveCenterPoint = VSub(NotMovePoly.Position[1], NotMovePoly.Position[0]);
+                        NotMoveCenterPoint = VSub(NotMovePoly.Position[1], NotMovePoly.Position[0]);
                         ///その長さの半分を求める
                         NotMoveCenterPoint = VScale(NotMoveCenterPoint, 1 / 2.0f);
                         ///辺のスタート位置をあわせ座標化
@@ -452,28 +451,14 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
 
 
                         ///センターから最も離れたてんを半径とした球体を作る
-                        float MR = VSize(VMax(VSub(MoveCenterPoint, MovePoly.Position[1]), VSub(MoveCenterPoint, MovePoly.Position[2]), VSub(MoveCenterPoint, MovePoly.Position[0])));
-                        float NR = VSize(VMax(VSub(NotMoveCenterPoint, NotMovePoly.Position[1]), VSub(NotMoveCenterPoint, NotMovePoly.Position[2]), VSub(NotMoveCenterPoint, NotMovePoly.Position[0])));
-                        ///テストのため一番近いデータを保存
-                        if (Min >= VSize(VSub(NotMoveCenterPoint, MoveCenterPoint)))
+                        float NR = Vsize(VMax(VSub(NotMoveCenterPoint, NotMovePoly.Position[1]), VSub(NotMoveCenterPoint, NotMovePoly.Position[2]), VSub(NotMoveCenterPoint, NotMovePoly.Position[0])));
+                      
+                        if (Vsize(VSub(NotMoveCenterPoint, MoveCenterPoint))<(MR+NR))
                         {
-                            TEST[0] = MovePoly.Position[0];
-                            TEST[1] = MovePoly.Position[1];
-                            TEST[2] = MovePoly.Position[2];
-                            TEST[3] = NotMovePoly.Position[0];
-                            TEST[4] = NotMovePoly.Position[1];
-                            TEST[5] = NotMovePoly.Position[2];
-                            Min = VSize(VSub(NotMoveCenterPoint, MoveCenterPoint));
-                        }
-                        if (VSize(VSub(NotMoveCenterPoint, MoveCenterPoint))<(MR+NR))
-                        {
-                            /*DrawSphere3D(NotMoveCenterPoint, NR+20, 8, GetColor(0, 255, 0), GetColor(255, 255, 255), TRUE);*/
                             count++;
-                         
-                            ///ポリゴン同士のの当たり判定かつ押し返し
-                            if (IsTriangle_Joint_Triangle(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
-                            {
-                                ///////////////
+                            NR = sqrtf(NR);
+                            MR = sqrtf(MR);
+                          
                                 for (int i = 0; i < 3; i++)
                                 {
                                     ///ポイントが三角形状にあるか調べる
@@ -485,22 +470,21 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                                         if (dist < 0.0001f)  continue;
 
                                          dir = VNorm(dir);
-                                         dir = VNorm(dir);
 
                                          // -----------------------------
                                          // 侵食量（めり込み量）
                                          // -----------------------------
+                                        
                                          float penetration = (MR + NR) - dist;
 
-                                         if (penetration <= 0.0f)
-                                             continue;
+                                         if (penetration <= 0.0f) continue;
 
                                          if (penetration > MaxPenetration)
                                          {
                                              MaxPenetration = penetration;
 
-                                             // ★ここが重要：法線を保存
-                                             pushBack= NotMovePoly.Normal;
+                                             VECTOR dir = VSub(MoveCenterPoint, NotMoveCenterPoint);
+                                             pushBack = VNorm(dir);
                                          }
                                        
 
@@ -508,19 +492,22 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                                     }
                                 }
 
-                            }
                         }
                       
 
 					}
+                    int anananfnana=count;
                  
                 }
 
                 MV1CollResultPolyDimTerminate(MovePolys);
                 MV1CollResultPolyDimTerminate(NotMovePolys);
-                int ans = count;
-                
+              /*  int ans = count;
+                */
                // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
+                end = std::chrono::high_resolution_clock::now();
+                duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+                
             }
         }
     }
@@ -542,6 +529,70 @@ bool Character::isHitCaracters(Character &A, Character &B)
         }
 
     }
+    return false;
+}
+
+bool Character::isHitCaracter(Character& A, Character& B, Capsule HitSpease)
+{
+    MV1RefreshCollInfo(A.NextImg, -1);
+    MV1RefreshCollInfo(B.NextImg, -1);
+    MV1_COLL_RESULT_POLY_DIM APolys = MV1CollCheck_Capsule(A.GetNextImg(), -1, HitSpease.GetStartPos(), HitSpease.GetEndPos(), HitSpease.GetRSize());
+    MV1_COLL_RESULT_POLY_DIM BPolys = MV1CollCheck_Capsule(B.GetNextImg(), -1, HitSpease.GetStartPos(), HitSpease.GetEndPos(), HitSpease.GetRSize());
+    VECTOR ACenterPoint;
+    VECTOR BCenterPoint;
+    MV1_COLL_RESULT_POLY APoly;
+    MV1_COLL_RESULT_POLY BPoly;
+    float AR;
+    float BR;
+    for (int i = 0; i < APolys.HitNum; i++)
+    {
+        APoly = APolys.Dim[i];
+        ///適当な辺の長さを求める(MovePoly.Position[0]
+        ACenterPoint = VSub(APoly.Position[1], APoly.Position[0]);
+        ///その長さの半分を求める
+        ACenterPoint = VScale(ACenterPoint, 1 / 2.0f);
+        ///辺のスタート位置をあわせ座標化
+        ACenterPoint = VAdd(ACenterPoint, APoly.Position[0]);
+        ///辺に入っていない残りの点への長さを求める これは後で APoly.Position[2]からの座標にするのでこの形
+        ACenterPoint = VSub(ACenterPoint, APoly.Position[2]);
+        ///その長さの半分を求める
+        ACenterPoint = VScale(ACenterPoint, 1 / 2.0f);
+        ///辺のスタート位置をあわせ座標化
+        ACenterPoint = VAdd(ACenterPoint, APoly.Position[2]);
+        AR = VSize(VMax(VSub(ACenterPoint, APoly.Position[1]), VSub(ACenterPoint, APoly.Position[2]), VSub(ACenterPoint, APoly.Position[0])));
+
+        for (int j = 0; j < BPolys.HitNum; j++)
+        {
+            BPoly = BPolys.Dim[j];
+            ///適当な辺の長さを求める(MovePoly.Position[0]
+           BCenterPoint = VSub(BPoly.Position[1],BPoly.Position[0]);
+            ///その長さの半分を求める
+           BCenterPoint = VScale(BCenterPoint, 1 / 2.0f);
+            ///辺のスタート位置をあわせ座標化
+           BCenterPoint = VAdd(BCenterPoint,BPoly.Position[0]);
+            ///辺に入っていない残りの点への長さを求める これは後でBPoly.Position[2]からの座標にするのでこの形
+           BCenterPoint = VSub(BCenterPoint,BPoly.Position[2]);
+            ///その長さの半分を求める
+           BCenterPoint = VScale(BCenterPoint, 1 / 2.0f);
+            ///辺のスタート位置をあわせ座標化
+           BCenterPoint = VAdd(BCenterPoint,BPoly.Position[2]);
+           BR = VSize(VMax(VSub(BCenterPoint, BPoly.Position[1]), VSub(BCenterPoint, BPoly.Position[2]), VSub(BCenterPoint, BPoly.Position[0])));
+
+           if (VSize(VSub(ACenterPoint, BCenterPoint)) < (AR + BR))
+           {
+               
+               /*///ポリゴン同士のの当たり判定かつ押し返し
+               if (IsTriangle_Joint_Triangle(MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2], NotMovePoly.Position[0], NotMovePoly.Position[1], NotMovePoly.Position[2]))
+               {
+                   return true;
+             
+                }*/
+
+           }
+
+        }
+    }
+
     return false;
 }
 
