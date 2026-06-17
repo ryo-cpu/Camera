@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
 struct Triangle {
     VECTOR v[3];
 };

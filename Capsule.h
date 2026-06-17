@@ -15,9 +15,6 @@ public:
     Capsule(char* startName, char* endName, float rsize,int Model);
     Capsule(VECTOR startPos, VECTOR endPos, float rsize);
     Capsule();
-
-
-
     VECTOR   GetStartPos()const;
     VECTOR   GetEndPos()const;
     void     SetStartPos(VECTOR pos);

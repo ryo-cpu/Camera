@@ -121,6 +121,7 @@ public:
 	void SetCapsuleCollisionRsize(float r);
     std::vector<Capsule> GetCapsuleCollision();
 	VECTOR PushBackCapsuleCollison(Character &Move,Character &NotMove);
+	VECTOR PushBackCapsule(const Character& Move, const Character& NotMove);
 	bool isHitCaracters(Character &A, Character &B);
 	bool isHitCaracter(Character& A, Character& B ,Capsule HitSpease);
 	VECTOR GetFramPos (const char* framName);

@@ -3,7 +3,11 @@
 #include<cmath>
 #include<vector>
 #include<algorithm>
- 
+struct PolyInfo
+{
+	VECTOR center;
+	float radius;
+};
    void ShowTextureName(int Model);
    void ShowFrameName(int Model);
    VECTOR VMax(VECTOR V1, VECTOR V2);
