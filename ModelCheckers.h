@@ -3,10 +3,35 @@
 #include<cmath>
 #include<vector>
 #include<algorithm>
+struct AABB
+{
+	VECTOR min;
+	VECTOR max;
+};
 struct PolyInfo
 {
 	VECTOR center;
 	float radius;
+	AABB   box;
+};
+struct BVHNode
+{
+	AABB box;
+	int left = -1;
+	int right = -1;
+	std::vector<int> triangles; // ótÇæÇØ
+};
+struct Triangle {
+	VECTOR v[3];
+};
+struct SimpleBVHNode
+{
+	AABB box;
+	std::vector<int> tris; // ótÇæÇØ
+};
+// OBJì«Ç›çûÇ›óp
+struct Vertex {
+	float x, y, z;
 };
    void ShowTextureName(int Model);
    void ShowFrameName(int Model);
@@ -56,5 +81,9 @@ struct PolyInfo
    bool IsPointInTriangle_Robust(VECTOR P, VECTOR T1, VECTOR T2, VECTOR T3);
    void PrintTestResult(const char* testName, bool result, bool expected);
    float Vsize(VECTOR a);
+   AABB CreateAABB(const MV1_COLL_RESULT_POLY& poly);
+   bool IsAABBCollision(const AABB& a, const AABB& b);
+   
+
 
 

@@ -5,14 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-struct Triangle {
-    VECTOR v[3];
-};
 
-// OBJ読み込み用
-struct Vertex {
-    float x, y, z;
-};
 bool LoadOBJTriangles(const std::string& filename, std::vector<Triangle>& tris)
 {
     std::ifstream file(filename);
@@ -347,3 +340,27 @@ float Vsize(VECTOR a)
 {
     return (a.x*a.x)+(a.y*a.y)+(a.z*a.z);
 }
+
+AABB CreateAABB(const MV1_COLL_RESULT_POLY& poly)
+{
+    AABB box;
+    ///シンプルに最少と最大を　X Y Zでとる
+    box.min.x = poly.Position[0].x < poly.Position[1].x ? poly.Position[0].x < poly.Position[2].x ? poly.Position[0].x : poly.Position[2].x : poly.Position[0].x < poly.Position[2].x ? poly.Position[1].x : poly.Position[2].x;
+    box.min.x = poly.Position[0].y < poly.Position[1].y ? poly.Position[0].y < poly.Position[2].y ? poly.Position[0].y : poly.Position[2].y : poly.Position[0].y < poly.Position[2].y ? poly.Position[1].y : poly.Position[2].y;
+    box.min.z = poly.Position[0].z < poly.Position[1].z ? poly.Position[0].z < poly.Position[2].z ? poly.Position[0].z : poly.Position[2].z : poly.Position[0].z < poly.Position[2].z ? poly.Position[1].z : poly.Position[2].z;
+    box.max.x = poly.Position[0].x > poly.Position[1].x ? poly.Position[0].x > poly.Position[2].x ? poly.Position[0].x : poly.Position[2].x : poly.Position[0].x > poly.Position[2].x ? poly.Position[1].x : poly.Position[2].x;
+    box.max.x = poly.Position[0].y > poly.Position[1].y ? poly.Position[0].y > poly.Position[2].y ? poly.Position[0].y : poly.Position[2].y : poly.Position[0].y > poly.Position[2].y ? poly.Position[1].y : poly.Position[2].y;
+    box.max.z = poly.Position[0].z > poly.Position[1].z ? poly.Position[0].z > poly.Position[2].z ? poly.Position[0].z : poly.Position[2].z : poly.Position[0].z > poly.Position[2].z ? poly.Position[1].z : poly.Position[2].z;
+
+    return box;
+}
+
+bool IsAABBCollision(const AABB& a, const AABB& b)
+{
+    if (a.max.x < b.min.x || a.min.x > b.max.x) return false;
+    if (a.max.y < b.min.y || a.min.y > b.max.y) return false;
+    if (a.max.z < b.min.z || a.min.z > b.max.z) return false;
+
+    return true;
+}
+

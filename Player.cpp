@@ -235,7 +235,6 @@ void Player::Update(float deltaTime)
 	{
 		AttackCollision = {};
 		
-
 	}
 	if (Collision.GetSphereSize() == 0)
 	{

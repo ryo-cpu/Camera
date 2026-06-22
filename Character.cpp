@@ -372,110 +372,125 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
     ///チェック済みのカプセル番号の記録最初は全部入れるため配列の大きさ＋１とする
     int IsCheckeMCapsule = M.size() + 1;
     int IsCheckeNCapsule = N.size() + 1;
-
+    float NotAve = 0;
+    float MoveAve = 0;
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
     auto duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    std::cout << "処理時間: " << duration_ms << " ms" << std::endl;
     MV1_COLL_RESULT_POLY_DIM MovePolys;
     MV1_COLL_RESULT_POLY_DIM NotMovePolys;
-
+    MV1RefreshCollInfo(NotMove.NextImg, -1);
+    MV1RefreshCollInfo(Move.NextImg, -1);
     for (int i = 0; i <M.size(); i++)
     {
         for (int j = 0; j < N.size(); j++)
         {
             if (Jag.Survey(M[i], N[j]))
             {
-                 count++;
+                 
                  VECTOR p= Jag.PushBack(M[i], N[j]);
                  HitCapusuleListN.push_back(j);
                  const char* HipName =M[i].GetStartName();
-              
-            
-                 if (isfastTouch)
-                 {
-                     MV1RefreshCollInfo(NotMove.NextImg, -1);
-                     MV1RefreshCollInfo(Move.NextImg, -1);
-                     isfastTouch = false;
-                 }
-              
                
                 start = std::chrono::high_resolution_clock::now();
 				 ///相手のカプセルにモデルの部分を取得
                 ///モデル全体ととっているので1カプセル１回　にする　Iは１方向なのでこれで最初だけとれるはず
                 if (IsCheckeNCapsule != j)
                 {
-                  MovePolys = MV1CollCheck_Capsule(Move.GetNextImg(), -1, N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
+                  MovePolys = MV1CollCheck_Capsule(Move.GetNextImg(),-1 , N[j].GetStartPos(), N[j].GetEndPos(), N[j].GetRSize());
                   IsCheckeNCapsule = j;
+                  if (MoveAve)MoveAve = (MoveAve + MovePolys.HitNum) / 2;
+                  else MoveAve = MovePolys.HitNum;
                 }
                 ///モデル全体ととっているので1カプセル１回　にする　Iは１方向なのでこれで最初だけとれるはず
                 if (IsCheckeMCapsule != i)
                 {
                   NotMovePolys = MV1CollCheck_Capsule(NotMove.GetNextImg(), -1, M[i].GetStartPos(), M[i].GetEndPos(), M[i].GetRSize());
                   IsCheckeMCapsule = i;
+                  if (NotAve)NotAve = (NotAve + NotMovePolys.HitNum) / 2;
+                  else NotAve = NotMovePolys.HitNum;
                 }
                
                 MV1_COLL_RESULT_POLY MovePoly;
                 MV1_COLL_RESULT_POLY NotMovePoly;
-                start = std::chrono::high_resolution_clock::now();
-                MoveInfo.clear();
-                NotMoveInfo.clear();
-                for (int m = 0; m < MovePolys.HitNum; m++)
+              
+                if (!MoveInfo.size())///調べたことのあるカプセルを省く
                 {
-                    PolyInfo info;
-                    MovePoly = MovePolys.Dim[m];
-                    ///適当な辺の長さを求める(MovePoly.Position[0]
-                    info.center = VSub(MovePoly.Position[1], MovePoly.Position[0]);
-                    ///その長さの半分を求める
-                    info.center = VScale(info.center, 1 / 2.0f);
-                    ///辺のスタート位置をあわせ座標化
-                    info.center = VAdd(info.center, MovePoly.Position[0]);
-                    ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
-                    info.center = VSub(info.center, MovePoly.Position[2]);
-                    ///その長さの半分を求める
-                    info.center = VScale(info.center, 1 / 2.0f);
-                    ///辺のスタート位置をあわせ座標化
-                    info.center = VAdd(info.center, MovePoly.Position[2]);
+                    int size = 0;
+                    for (int m = 0; m < MovePolys.HitNum; m++)
+                    {
+                        PolyInfo info;
+                        MovePoly = MovePolys.Dim[m];
 
-                     info.radius= Vsize(VMax(VSub(info.center, MovePoly.Position[1]), VSub(info.center, MovePoly.Position[2]), VSub(info.center, MovePoly.Position[0])));
+                        if (Segment_Triangle_MinLength(M[i].GetStartPos(), M[i].GetEndPos(), MovePoly.Position[0], MovePoly.Position[1], MovePoly.Position[2]) >= M[i].GetRSize())
+                        {
+                            size++;
+                            ///適当な辺の長さを求める(MovePoly.Position[0]
+                            info.center = VSub(MovePoly.Position[1], MovePoly.Position[0]);
+                            ///その長さの半分を求める
+                            info.center = VScale(info.center, 1 / 2.0f);
+                            ///辺のスタート位置をあわせ座標化
+                            info.center = VAdd(info.center, MovePoly.Position[0]);
+                            ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
+                            info.center = VSub(info.center, MovePoly.Position[2]);
+                            ///その長さの半分を求める
+                            info.center = VScale(info.center, 1 / 2.0f);
+                            ///辺のスタート位置をあわせ座標化
+                            info.center = VAdd(info.center, MovePoly.Position[2]);
 
-                     MoveInfo.push_back(info);
+                            info.radius = Vsize(VMax(VSub(info.center, MovePoly.Position[1]), VSub(info.center, MovePoly.Position[2]), VSub(info.center, MovePoly.Position[0])));
+
+                            info.box = CreateAABB(MovePoly);
+                            MoveInfo.push_back(info);
+                        }
+                        
+                    }
+
                 }
-                for (int n = 0; n < NotMovePolys.HitNum; n++)
-                {
-                    ////////////////////////////////////////////////
-                    PolyInfo info;
-                    NotMovePoly = NotMovePolys.Dim[n];
-                    ///適当な辺の長さを求める(MovePoly.Position[0]
-                    info.center = VSub(NotMovePoly.Position[1], NotMovePoly.Position[0]);
-                    ///その長さの半分を求める
-                    info.center = VScale(info.center, 1 / 2.0f);
-                    ///辺のスタート位置をあわせ座標化
-                    info.center = VAdd(info.center, NotMovePoly.Position[0]);
-                    ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
-                    info.center = VSub(info.center, NotMovePoly.Position[2]);
-                    ///その長さの半分を求める
-                    info.center = VScale(info.center, 1 / 2.0f);
-                    ///辺のスタート位置をあわせ座標化
-                    info.center = VAdd(info.center, NotMovePoly.Position[2]);
+                if (!NotMoveInfo.size())
+                { 
+                    for (int n = 0; n < NotMovePolys.HitNum; n++)
+                    {
+                        ////////////////////////////////////////////////
+                        PolyInfo info;
+                        NotMovePoly = NotMovePolys.Dim[n];
+                        ///適当な辺の長さを求める(MovePoly.Position[0]
+                        info.center = VSub(NotMovePoly.Position[1], NotMovePoly.Position[0]);
+                        ///その長さの半分を求める
+                        info.center = VScale(info.center, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        info.center = VAdd(info.center, NotMovePoly.Position[0]);
+                        ///辺に入っていない残りの点への長さを求める これは後で MovePoly.Position[2]からの座標にするのでこの形
+                        info.center = VSub(info.center, NotMovePoly.Position[2]);
+                        ///その長さの半分を求める
+                        info.center = VScale(info.center, 1 / 2.0f);
+                        ///辺のスタート位置をあわせ座標化
+                        info.center = VAdd(info.center, NotMovePoly.Position[2]);
 
-                    ///センターから最も離れたてんを半径とした球体を作る
-                    info.radius = Vsize(VMax(VSub(info.center, NotMovePoly.Position[1]), VSub(info.center, NotMovePoly.Position[2]), VSub(info.center, NotMovePoly.Position[0])));
+                        ///センターから最も離れたてんを半径とした球体を作る
+                        info.radius = Vsize(VMax(VSub(info.center, NotMovePoly.Position[1]), VSub(info.center, NotMovePoly.Position[2]), VSub(info.center, NotMovePoly.Position[0])));
 
-                    NotMoveInfo.push_back(info);
+                        info.box = CreateAABB(NotMovePoly);
+
+                        NotMoveInfo.push_back(info);
+                    }
                 }
-                for (int m = 0; m < MovePolys.HitNum; m++)
+                 start = std::chrono::high_resolution_clock::now();
+               
+                for (int m = 0; m < MoveInfo.size(); m++)
                 {
                    
                     for(int n = 0; n < NotMovePolys.HitNum; n++)
                     {
                         ////////////////////////////////////////////////
-                        ///センターから最も離れたてんを半径とした球体を作る
-                       
+                        ///センターから最も離れたてんを半径とした球体を作る  
+                        if (!IsAABBCollision(MoveInfo[m].box, NotMoveInfo[n].box)) continue;
+                            count++;
+                         
+                        
                       
                         if (Vsize(VSub(MoveInfo[m].center,NotMoveInfo[n].center))<(MoveInfo[m].radius + NotMoveInfo[n].radius))
                         {
-                            count++;
                             float MR = sqrtf(MoveInfo[m].radius);
                             float NR = sqrtf(NotMoveInfo[n].radius);
                           
@@ -516,7 +531,6 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                       
 
 					}
-                    int anananfnana=count;
                  
                 }
                 
@@ -525,11 +539,21 @@ VECTOR Character::PushBackCapsuleCollison(Character &Move, Character &NotMove)
                // pushBack = VSize(p) > VSize(pushBack) ? p : pushBack;
                 end = std::chrono::high_resolution_clock::now();
                 duration_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-                
+              
+
 
             }
+         MoveInfo.clear();
+
         }
+        NotMoveInfo.clear();
+
+
     }
+    DrawFormatString(100, 200, GetColor(255, 0, 0), "%d", count);
+    DrawFormatString(100, 500, GetColor(255, 0, 0), "%f", NotAve);
+    DrawFormatString(100, 600, GetColor(255, 0, 0), "%f", MoveInfo.size());
+
 
     return VScale(pushBack,MaxPenetration);
 }
@@ -540,6 +564,7 @@ VECTOR Character::PushBackCapsule(const Character& Move, const Character& NotMov
     MV1_COLL_RESULT_POLY_DIM NotMovePolys;
     ///その配列番号までは検査が終わっている
     int CheckIndexMove = Move.CapsuleCollision.size() + 1;
+    
     for (int i = 0; i < Move.CapsuleCollision.size(); i++)
     {
         for (int j = 0; j < NotMove.CapsuleCollision.size(); j++)
@@ -566,7 +591,7 @@ VECTOR Character::PushBackCapsule(const Character& Move, const Character& NotMov
         }
     }
 
-    
+    return VGet(0, 0, 0);
 }
 
 bool Character::isHitCaracters(Character &A, Character &B)
