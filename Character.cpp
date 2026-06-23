@@ -22,13 +22,13 @@ Character::Character()
     AnimSpeed = 1.0f;
     IsAnim = false;
     MV1SetupCollInfo(Img, 0, -1, -1);
-    SetNextImg(Img);
+    SetNextImg(MV1DuplicateModel(Img));
 }
 Character::Character(int img):Character()
 {
     //モデルが同じのと処理軽減のため手動
     Img = img;
-    SetNextImg(Img);
+    SetNextImg(MV1DuplicateModel(Img));
     isDraw = true;
     Capsule Body("mixamorig:Hips", "mixamorig:Neck", 100, Img);
     CapsuleCollision.push_back(Body);
@@ -83,7 +83,8 @@ int Character::GetImg()
 void Character::SetImg(int img)
 {
     Img = img;
-    SetNextImg(Img);
+  
+    SetNextImg(MV1DuplicateModel(Img));
 }
 
 int Character::GetNextImg()
@@ -93,7 +94,7 @@ int Character::GetNextImg()
 
 void Character::SetNextImg(int img)
 {
-    NextImg =MV1DuplicateModel(img);
+    NextImg =img;
     MV1SetScale(NextImg,VGet(Scale,Scale,Scale));
     MV1SetRotationXYZ(NextImg, Dir);
     MV1SetPosition(NextImg, Pos);  // ← 位置も設定

@@ -64,6 +64,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	VECTOR G = VGet(0.0f, -1, 0.0f);
 
 	Player* player = new Player(MV1LoadModel("data/player.mv1"));
+	player->SetNextImg(MV1LoadModel("data/playerLow.mv1"));
 	player->SetCapsuleCollisionRsize(30.0f);
 	player->SetPos(StartPlayerPos);
 	bool isJump = false;
@@ -86,6 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	///enemy初期化
 	Enemy* enemy = new Enemy(MV1LoadModel("data/Monstor.mv1"));
+	enemy->SetNextImg(MV1LoadModel("data/MonstorLow.mv1"));
 	enemy->SetPos(VGet(0.0f, 0.0f, -600.0f));
 	MV1SetPosition(enemy->GetImg(), enemy->GetPos());
 	enemy->SetDir(VGet(0.0f, ConversionRad(180), 0.0f));
