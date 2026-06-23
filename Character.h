@@ -127,5 +127,6 @@ public:
 	VECTOR GetFramPos (const char* framName);
 	Capsule SearchCapsule(const char* frameName);
 	void DrawSearchCapusle(const char* frameName);
+	bool IsHitCharactertoCapsule(Character& character, Capsule capsule);
 };
 

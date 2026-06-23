@@ -718,6 +718,25 @@ void Character::DrawSearchCapusle(const char* frameName)
     }
 }
 
+bool Character::IsHitCharactertoCapsule(Character& character, Capsule capsule)
+{
+    std::vector<Capsule> characterCapsules = character.GetCapsuleCollision();
+    MV1_COLL_RESULT_POLY_DIM Polys;
+    for each(Capsule i in characterCapsules)
+    {
+        if (i.Survey(i, capsule))
+        {
+           Polys = MV1CollCheck_Capsule(character.GetNextImg(), -1,capsule.GetStartPos(), capsule.GetEndPos(), capsule.GetRSize());
+
+           if (Polys.HitNum)
+           {
+               return true;
+           }
+        }
+    }
+    return false;
+}
+
 
 
 void Character::Turn(VECTOR RotatePower)
