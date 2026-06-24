@@ -12,7 +12,6 @@
 #include "UIBar.h"
 #include "Shadow.h"
 #include "Scene's.h"
-#include"Counter.h"
 #include"UI.h"
 #include"UIArrow.h"
 //#include "Arithmetic.h"
@@ -175,6 +174,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//fedein.out用　の透明化できるボックス
 	Box* Fade = new Box(1600.0f, 900.0f, 255);
+	Box* DamageFade = new Box(1600.0f, 900.0f, 10);
+	DamageFade->SetColor(200, 0, 10);
+
 	bool OnWall = false;
 	VECTOR BasePoint = VGet(0, 0.0f, 0.0f);
 	float FieldSize = 4000.0f;
@@ -232,10 +234,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				Fade->SetAlpha(Fade->GetAlpha() - (static_cast<int> (255 / 2 * deltaTime)));
 			}
+		
 
 			//playerの状態による更新
 			if (player->GetIsHit())
 			{
+				
 				float Checker = player->GetPos().y + G.y;
 				if (Checker >= 0)
 				{
@@ -281,7 +285,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else if (!player->GetInSpecialMove())
 			{
 				isInput = player->Input(*camera);
-				//enemy->SelectMove();
+				enemy->SelectMove();
 			}
 
 			////入力された移動を調整
@@ -344,16 +348,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			}*/
 			
 			///かべとplayer
-			if (VSize(VSub(Field.GetPos(),NextPlayer.GetPos())) >= Field.GetSphereSize() - player->GetCollision().GetSphereSize() && !player->GetInSpecialMove())
+			if (VSize(VSub(Field.GetPos(),NextPlayer.GetPos())) >= (Field.GetSphereSize()-400.0f) - player->GetCollision().GetSphereSize() && !player->GetInSpecialMove())
 			{
 
 				////1中心から
 				VECTOR AddMove = VSub(NextPlayer.GetPos(), Field.GetPos());
-				///中心から敵の最長
+				///中心からplayerの最長
 				AddMove = VAdd(AddMove, VScale(VNorm(AddMove), (player->GetCollision().GetSphereSize() / 2)));
-				///フィールドの端から敵の最長（フィールドの長さを引く）
-				AddMove = VSub(AddMove, VScale(VNorm(AddMove), Field.GetSphereSize()));
-				///反転（敵の最奥から中心から）
+				///フィールドの端からplayerの最長（フィールドの長さを引く）
+				AddMove = VSub(AddMove, VScale(VNorm(AddMove), (Field.GetSphereSize()-400.0f)));
+				///反転（playerの最奥から中心から）
 				AddMove = VScale(AddMove, -1);
 
 				///fieldの半径
@@ -393,7 +397,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				NextEnemy.SetPos(VAdd(enemy->GetPos(), enemy->GetMove()));
 				NextEnemy.SetSphereSize(enemy->GetCollision().GetSphereSize());
 			}
-			///enemy攻撃
 			////player攻撃
 			if (Collision_Measurement->Collision(player->GetAttackCollision(), NextEnemy))
 			{
@@ -556,6 +559,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 							break;
 						}
 					}
+					if (!isHit)
+					{
+						if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000 && (enemy->GetAnimType() != enemy->Hit || player->GetAnimType() != player->Hit))
+						{
+							VECTOR P = player->PushBackCapsuleCollison(*player, *enemy);
+
+							player->SetMove(VAdd(player->GetMove(), P));
+							player->UpdateCapsuleCollision(P);
+
+
+						}
+					}
 
 				}
 				if(isHit)
@@ -584,7 +599,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					StartJoypadVibration(DX_INPUT_PAD1, 1000, 400, -1);
 				}
 			}
-
+			///何もない時のplyaerとenemyの当たり判定
 			else if (VSize(VSub(player->GetPos(), enemy->GetPos())) <= 2000 && (enemy->GetAnimType() != enemy->Hit || player->GetAnimType() != player->Hit))
 			{
 				VECTOR P = player->PushBackCapsuleCollison(*player, *enemy);
@@ -665,6 +680,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				Line.y = 0;
 				////カメラに近づく力を求める
 				VECTOR  Proj = VScale(Line, (VDot(Move, Line) / VDot(Line, Line)));
+				/*Move = VSub(Move, Proj);*/
 				VECTOR PassingPoint = VAdd(player->GetPos(), Move);
 				VECTOR SetPoint = VNorm(PassingPoint);
 				SetPoint = VScale(SetPoint, FieldSize);
@@ -672,6 +688,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				SetPoint.y = 100;
 				SetPoint.y=Rate;
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
+				
 				camera->ResetOffset(Offset, VAdd(player->GetPos(), PlayerTopPoint));
 				/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
 
@@ -772,7 +789,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				enemy->SetPos(VScale(VNorm(enemy->GetPos()), FieldSize));
 			}
 			//////勝ち判定
-			if (player->GetHp() <= 0 && player->GetAnimType() != player->Hit)
+			if (player->GetHp() <= 0 && !player->GetIsHit())
 			{
 				GameMode = Lose;
 				player->SetAnimSpeed(10);
@@ -808,8 +825,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				}
 
 			}
-		/*	shadow->Draw();*/
-		/*	shadow->StartUse();*/
+			shadow->Draw();
+			shadow->StartUse();
 			MV1DrawModel(BackModel);
 			MV1DrawModel(TileModel);
 			EffectM::Update(deltaTime);
@@ -823,7 +840,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				enemy->Draw();
 			}
-		/*	shadow->EndUse();*/
+			shadow->EndUse();
 			// モデルの描画
 		   // モデルの描画
 				  // モデルの描画
@@ -858,9 +875,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			if (start->Update())
 			{
 				GameMode = Spawn;
-				enemyHpBar->ResetOwner(enemy, VGet(-400, 900, 0));
-				playerHP->ResetOwner(player);
-				
 			}
 			
 
