@@ -1,7 +1,7 @@
 #pragma once
 #include "Character.h"
 #include <algorithm>
-const float MaxTurn = 0.1f;
+const float MaxTurn = 0.5f;
 const int EnemyHP = 300;
 const int EnemyAnimSpeed = 20;
 class Enemy: public Character

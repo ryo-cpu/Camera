@@ -40,6 +40,7 @@ void EffectM::Update(float deltaTime)
 			delete Pool[i];
 			Pool[i] = nullptr;
 			}
+			
 		}
 	}
 	// Effekseerにより再生中のエフェクトを更新する。
@@ -267,6 +268,8 @@ void EffectM::Add(EffectImg origin, VECTOR StartPos, VECTOR StartRot, VECTOR mov
 	Observer[MaxEffect - 1] = TMP;
 
 }
+
+
 
 Effect* EffectM::Search(int id)
 {
