@@ -18,6 +18,7 @@ Player::Player()
 	Move = VGet(0, 0, 0);
 	InputState = new XINPUT_STATE;
 	AnimSpeed = PlayerAnimSpeed;
+	LastDamageTime = 1.0f;
 }
 
 Player::Player(int img):Character(img)
@@ -277,10 +278,9 @@ void Player::Update(float deltaTime)
 	}
 	
 	///Spgauge‚ÌŽ©“®‘‰Á
-	if (LiveTime - LastDamageTime >= 5.0f&&GetHp()<MaxHp && fabs(fmod(LiveTime - LastDamageTime, 0.1f)) < 0.01f)
+	if (LiveTime - LastDamageTime >= 5.0f && fabs(fmod(LiveTime - LastDamageTime, 1.0f)) < 0.1f)
 	{
-	
-		AddSpGauge(1);
+	    AddSpGauge(1);
 	}
 	Effect* PlayerEffect = nullptr;
 	if (SpGauge >= MaxSpGauge)

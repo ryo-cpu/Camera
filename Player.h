@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include "Camera.h"
 
-const int MaxSpGauge = 100;
+const int MaxSpGauge = 1000;
 const float MaxSpeed =10.0f;
 const int playerMaxHp = 40;
 const float StunTime = 20.0f;

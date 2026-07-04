@@ -543,6 +543,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			else if (player->isHitCaracters(*player, *enemy) && player->GetAnimType() != player->Hit && (enemy->GetAnimType() == enemy->ArmSwing || enemy->GetAnimType() == enemy->Run) && player->GetAnimType() != player->Roll&&player->GetAnimType() != player->Kick)
 			{
 				bool isHit = true;
+				
 
                 if (enemy->GetAnimType() == enemy->ArmSwing)
 				{
@@ -685,11 +686,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				VECTOR SetPoint = VNorm(PassingPoint);
 				SetPoint = VScale(SetPoint, FieldSize);
 				float Rate = VSize(SetPoint) / VSize(VGet(camera->GetPos().x, 0, camera->GetPos().z));///Yの高さは比率でとる
-				SetPoint.y = 100;
 				SetPoint.y=Rate;
+				SetPoint.y -= 100;
+
 				VECTOR Offset = VSub(SetPoint, player->GetPos());
 				
 				camera->ResetOffset(Offset, VAdd(player->GetPos(), PlayerTopPoint));
+
+				
 				/*	camera->Look(VAdd(player->GetPos(),PlayerTopPoint));*/
 
 					/////ちかちかする理由
